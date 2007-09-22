@@ -4,7 +4,62 @@
 import pygame
 
 class Spaceship(pygame.sprite.Sprite):
+  """
+  Represents the player's ship (not necessarily a spaceship).
+
+  In near future this class should probably be split into a base class
+  (e.g. C{Ship}) and a subclass (C{PlayerShip}).
+  C{Ship} could be a parent class for both player and enemy ships.
+
+  @type g_coll: C{pygame.sprite.Group}
+  @ivar g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship can
+      collide with.
+
+  @type g_expl: C{pygame.sprite.Group}
+  @ivar g_expl: Group of independent objects (C{pygame.sprite.Sprite})
+     such as explosions, salvage, etc.
+
+  @type gfxman: L{GFXManager}
+  @ivar gfxman: The graphics manager, which takes care of different images
+     used by in-game objects.
+
+  @type rect: C{pygame.Rect}
+  @ivar rect: Rectangle describing position and size of the ship.
+
+  @type speed: integer
+  @ivar speed: Speed of the ship (in both x and y axes).
+
+  @type weapons: sequence
+  @ivar weapons: A sequence of weapons available on the ship.
+
+  @type cw: integer
+  @ivar cw: Index of the sequence C{weapons} which designates the
+     currently used weapon.
+
+  @type cooldown: unsigned integer
+  @ivar cooldown: Number of rounds that have to pass before the weapon/s
+     can be fired again.
+  """
   def __init__(self, g_coll, g_expl, gfxman, pos, speed, *groups):
+    """
+    @type  g_coll: C{pygame.sprite.Group}
+    @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship
+       can collide with.
+
+    @type  g_expl: C{pygame.sprite.Group}
+    @param g_expl: Group of independent (which perish in time) objects
+        (C{pygame.sprite.Sprite}) such as explosions, salvage, etc.
+    @type  gfxman: L{GFXManager}
+    @param gfxman: The graphics manager, which takes care of different
+       images used by in-game objects.
+    @type  pos: pair of integers
+    @param pos: Initial position of the ship. This pair defines the top-left
+        corner of the ship's rectangle C{rect}.
+    @type  speed: integer
+    @param speed: Speed of the ship (in both x and y axes).
+    @type  groups: pygame.sprite.Group
+    @param groups: A sequence of groups the object will be added to.
+    """
     pygame.sprite.Sprite.__init__(self, *groups)
     
     self.g_coll = g_coll
@@ -22,6 +77,9 @@ class Spaceship(pygame.sprite.Sprite):
     self.cooldown = 0
 
   def exhaust_on(self):
+    """
+    Changes the image of the ship by adding an engine exhaust at the bottom.
+    """
     self.image = pygame.Surface((self.gfxman['ship'].get_width(),
                                  self.gfxman['ship'].get_height() +
                                  self.gfxman['exhaust'].get_height()))
@@ -31,6 +89,9 @@ class Spaceship(pygame.sprite.Sprite):
     self.image.blit(self.gfxman['exhaust'], (13, self.gfxman['ship'].get_height()))
 
   def exhaust_off(self):
+    """
+    Changes the image of the ship by removing the engine exhaust.
+    """
     self.image = pygame.Surface((self.gfxman['ship'].get_width(),
                                  self.gfxman['ship'].get_height() +
                                  self.gfxman['exhaust2'].get_height()))
@@ -41,18 +102,33 @@ class Spaceship(pygame.sprite.Sprite):
 
   # moving
   def fly_up_start(self):
+    """
+    Turns on engine exhaust by calling C{L{exhaust_on}}. Moves the ship up.
+    """
     self.exhaust_on()
     if self.rect.top >= self.speed:
       self.rect.move_ip(0, -self.speed)
   def fly_up_stop(self):
+    """
+    Turns off the engine exhaust (by calling C{L{exhaust_off}}) when ship stops moving up.
+    """
     self.exhaust_off()
   def fly_down(self, boundary):
+    """
+    Moves the ship down.
+    """
     if self.rect.top <= boundary - (self.rect.height + self.speed):
       self.rect.move_ip(0, self.speed)
   def fly_left(self):
+    """
+    Moves the ship left.
+    """
     if self.rect.left >= self.speed:
       self.rect.move_ip(-self.speed, 0)
   def fly_right(self, boundary):
+    """
+    Moves the ship right.
+    """
     if self.rect.left <= boundary - (self.rect.width + self.speed):
       self.rect.move_ip(self.speed, 0)
 
@@ -69,6 +145,9 @@ class Spaceship(pygame.sprite.Sprite):
   #  else:
   #    self.cooldown -= 1
   def shoot(self, g_projectiles):
+    """
+    Shoots the currently selected weapon. Appropriately increases C{L{cooldown}}.
+    """
     if not self.cooldown:
       self.cooldown = self.weapons[self.cw].shoot(g_projectiles,
                                                   self.g_coll,
@@ -86,6 +165,9 @@ class Spaceship(pygame.sprite.Sprite):
   #    self.weapon = 'bullets'
   #    self.cooldown = 3
   def next_weapon(self):
+    """
+    Choose next weapon.
+    """
     if self.cw == self.weapons.__len__() - 1:
       self.cw = 0
     else:
@@ -94,6 +176,9 @@ class Spaceship(pygame.sprite.Sprite):
   #def previous_weapon(self):
   #  self.next_weapon()
   def previous_weapon(self):
+    """
+    Choose previous weapon.
+    """
     if self.cw == 0:
       self.cw = self.weapons.__len__() - 1
     else:
