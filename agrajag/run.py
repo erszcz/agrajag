@@ -4,6 +4,7 @@
 import os, sys, random
 import pygame
 
+from dbmanager import DBManager
 from gfxmanager import GfxManager
 from spaceship import Spaceship
 from background import SpaceBackground

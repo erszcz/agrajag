@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<content>
+  <gfx>
+    <resource name='ship' file='sdfsdf.png'>
+      <state name='default' />
+    </resource>
+    <resource name='exhaust' file='exhaust.png'>
+      <state name='default' />
+    </resource>
+    <resource name='exhaust1' file='exhaust1.png'>
+      <state name='default' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='explosion_class' value='SpaceshipExplosion' />
+  </properties>
+</content>

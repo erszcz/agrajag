@@ -3,6 +3,20 @@
 
 import pygame
 
+
+class AGSprite(pygame.sprite.Sprite):
+  '''Abstract sprite class used as a parent class for more specific classes like Spaceship, Enemy, Projectile or Obstacle'''
+
+  def __init__(self, conf, *groups):
+    pygame.sprite.Sprite.__init__(self, *groups)
+
+    self.conf = self.check_conf(conf)
+
+  def check_conf(self, conf):
+    '''Checks whether provided config object contains all required information and whether this information is valid'''
+    return conf
+    
+
 class Spaceship(pygame.sprite.Sprite):
   """
   Represents the player's ship (not necessarily a spaceship).
