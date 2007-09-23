@@ -33,7 +33,7 @@ class Spaceship(pygame.sprite.Sprite):
   @ivar weapons: A sequence of weapons available on the ship.
 
   @type cw: integer
-  @ivar cw: Index of the sequence C{weapons} which designates the
+  @ivar cw: Index of the sequence C{L{weapons}} which designates the
      currently used weapon.
 
   @type cooldown: unsigned integer
@@ -103,7 +103,8 @@ class Spaceship(pygame.sprite.Sprite):
   # moving
   def fly_up_start(self):
     """
-    Turns on engine exhaust by calling C{L{exhaust_on}}. Moves the ship up.
+    Turns on engine exhaust by calling C{L{exhaust_on}} and
+    moves the ship up.
     """
     self.exhaust_on()
     if self.rect.top >= self.speed:
@@ -116,6 +117,10 @@ class Spaceship(pygame.sprite.Sprite):
   def fly_down(self, boundary):
     """
     Moves the ship down.
+
+    @type  boundary: unsigned integer
+    @param boundary: Height of the viewport. Needed in order to check
+       whether the ship may fly farther downwards.
     """
     if self.rect.top <= boundary - (self.rect.height + self.speed):
       self.rect.move_ip(0, self.speed)
@@ -128,6 +133,10 @@ class Spaceship(pygame.sprite.Sprite):
   def fly_right(self, boundary):
     """
     Moves the ship right.
+
+    @type  boundary: unsigned integer
+    @param boundary: Width of the viewport. Needed in order to check
+       whether the ship may fly farther towards the right edge of the screen.
     """
     if self.rect.left <= boundary - (self.rect.width + self.speed):
       self.rect.move_ip(self.speed, 0)
@@ -146,7 +155,11 @@ class Spaceship(pygame.sprite.Sprite):
   #    self.cooldown -= 1
   def shoot(self, g_projectiles):
     """
-    Shoots the currently selected weapon. Appropriately increases C{L{cooldown}}.
+    Shoots the currently selected weapon. Appropriately
+    increases C{L{cooldown}}.
+
+    @type  g_projectiles: pygame.sprite.Group
+    @param g_projectiles: Group to add the newly created projectiles to.
     """
     if not self.cooldown:
       self.cooldown = self.weapons[self.cw].shoot(g_projectiles,
@@ -166,7 +179,7 @@ class Spaceship(pygame.sprite.Sprite):
   #    self.cooldown = 3
   def next_weapon(self):
     """
-    Choose next weapon.
+    Select next weapon.
     """
     if self.cw == self.weapons.__len__() - 1:
       self.cw = 0
@@ -177,7 +190,7 @@ class Spaceship(pygame.sprite.Sprite):
   #  self.next_weapon()
   def previous_weapon(self):
     """
-    Choose previous weapon.
+    Select previous weapon.
     """
     if self.cw == 0:
       self.cw = self.weapons.__len__() - 1
