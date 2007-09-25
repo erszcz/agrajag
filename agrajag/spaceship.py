@@ -2,22 +2,37 @@
 #coding: utf-8
 
 import pygame
+from dbmanager import DBManager
+from gfxmanager import GfxManager
 
 
 class AGSprite(pygame.sprite.Sprite):
-  '''Abstract sprite class used as a parent class for more specific classes like Spaceship, Enemy, Projectile or Obstacle'''
+  '''
+  Abstract sprite class used as a parent class for more specific classes like Spaceship, Enemy, Projectile or Obstacle
+  
+  @type gfxman: L{GFXManager}
+  @ivar gfxman: The graphics manager, which takes care of different images
+     used by in-game objects.
 
-  def __init__(self, conf, *groups):
+  '''
+
+  def __init__(self, *groups):
     pygame.sprite.Sprite.__init__(self, *groups)
 
-    self.conf = self.check_conf(conf)
+    self.conf = self.check_conf(DBManager().get(self.__class__.__name__))
+    self.gfx = GfxManager().get(self.__class__.__name__)
 
   def check_conf(self, conf):
     '''Checks whether provided config object contains all required information and whether this information is valid'''
     return conf
-    
+ 
+  def blit_state(self, image, state, pos = (0, 0)):
+    '''Blits selected image state aquired from GfxManager on image representing current instance'''
 
-class Spaceship(pygame.sprite.Sprite):
+    area = self.gfx[image]['states'][state]['x_off'], self.gfx[image]['states'][state]['y_off'], self.gfx[image]['w'], self.gfx[image]['h']
+    self.image.blit(self.gfx[image]['image'], pos, area)
+
+class Spaceship(AGSprite):
   """
   Represents the player's ship (not necessarily a spaceship).
 
@@ -32,10 +47,6 @@ class Spaceship(pygame.sprite.Sprite):
   @type g_expl: C{pygame.sprite.Group}
   @ivar g_expl: Group of independent objects (C{pygame.sprite.Sprite})
      such as explosions, salvage, etc.
-
-  @type gfxman: L{GFXManager}
-  @ivar gfxman: The graphics manager, which takes care of different images
-     used by in-game objects.
 
   @type rect: C{pygame.Rect}
   @ivar rect: Rectangle describing position and size of the ship.
@@ -54,7 +65,8 @@ class Spaceship(pygame.sprite.Sprite):
   @ivar cooldown: Number of rounds that have to pass before the weapon/s
      can be fired again.
   """
-  def __init__(self, g_coll, g_expl, gfxman, pos, speed, *groups):
+
+  def __init__(self, g_coll, g_expl, pos, speed, *groups):
     """
     @type  g_coll: C{pygame.sprite.Group}
     @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship
@@ -63,23 +75,23 @@ class Spaceship(pygame.sprite.Sprite):
     @type  g_expl: C{pygame.sprite.Group}
     @param g_expl: Group of independent (which perish in time) objects
         (C{pygame.sprite.Sprite}) such as explosions, salvage, etc.
-    @type  gfxman: L{GFXManager}
-    @param gfxman: The graphics manager, which takes care of different
-       images used by in-game objects.
+
     @type  pos: pair of integers
     @param pos: Initial position of the ship. This pair defines the top-left
         corner of the ship's rectangle C{rect}.
+
     @type  speed: integer
     @param speed: Speed of the ship (in both x and y axes).
+
     @type  groups: pygame.sprite.Group
     @param groups: A sequence of groups the object will be added to.
     """
-    pygame.sprite.Sprite.__init__(self, *groups)
+    AGSprite.__init__(self, *groups)
+    
     
     self.g_coll = g_coll
     self.g_expl = g_expl
-    self.gfxman = gfxman
-    self.exhaust_off() # inits the image
+    self.exhaust(False) # inits the image
     self.rect = pygame.Rect(pos, (self.image.get_width(),
                                   self.image.get_height()))
     self.speed = speed
@@ -90,44 +102,50 @@ class Spaceship(pygame.sprite.Sprite):
     self.cw = 0 # current weapon list index
     self.cooldown = 0
 
-  def exhaust_on(self):
-    """
-    Changes the image of the ship by adding an engine exhaust at the bottom.
-    """
-    self.image = pygame.Surface((self.gfxman['ship'].get_width(),
-                                 self.gfxman['ship'].get_height() +
-                                 self.gfxman['exhaust'].get_height()))
-    self.image.fill((50, 250, 0))
-    self.image.set_colorkey((50, 250, 0))
-    self.image.blit(self.gfxman['ship'], (0, 0))
-    self.image.blit(self.gfxman['exhaust'], (13, self.gfxman['ship'].get_height()))
+  def check_conf(self, conf):
+    req_gfx = ['ship', 'exhaust']
+    req_prop = []
 
-  def exhaust_off(self):
+    for g in req_gfx:
+      if not conf['gfx'][g]:
+        raise Exception("Required gfx resource '%s' not defined" % g);
+
+    for p in req_prop:
+      if not conf['props'][p]:
+        raise Exception("Required property '%s' not defined" % p);
+
+    return conf
+
+  def exhaust(self, on):
     """
-    Changes the image of the ship by removing the engine exhaust.
+    Changes the image of the ship by adding or removing an engine exhaust at the bottom.
     """
-    self.image = pygame.Surface((self.gfxman['ship'].get_width(),
-                                 self.gfxman['ship'].get_height() +
-                                 self.gfxman['exhaust2'].get_height()))
+    
+    self.image = pygame.Surface((self.gfx['ship']['w'],
+                                 self.gfx['ship']['h'] + self.gfx['exhaust']['h']))
+
     self.image.fill((50, 250, 0))
     self.image.set_colorkey((50, 250, 0))
-    self.image.blit(self.gfxman['ship'], (0, 0))
-    self.image.blit(self.gfxman['exhaust2'], (14, self.gfxman['ship'].get_height()))
+
+    state = 'on' if on else 'off'
+
+    self.blit_state('ship', 'def')
+    self.blit_state('exhaust', state, (self.gfx['ship']['w']/2 - self.gfx['exhaust']['w']/2, self.gfx['ship']['h']))
 
   # moving
   def fly_up_start(self):
     """
-    Turns on engine exhaust by calling C{L{exhaust_on}} and
+    Turns on engine exhaust by calling C{L{exhaust(True)}} and
     moves the ship up.
     """
-    self.exhaust_on()
+    self.exhaust(True)
     if self.rect.top >= self.speed:
       self.rect.move_ip(0, -self.speed)
   def fly_up_stop(self):
     """
-    Turns off the engine exhaust (by calling C{L{exhaust_off}}) when ship stops moving up.
+    Turns off the engine exhaust (by calling C{L{exhaust(False)}}) when ship stops moving up.
     """
-    self.exhaust_off()
+    self.exhaust(False)
   def fly_down(self, boundary):
     """
     Moves the ship down.
@@ -155,18 +173,6 @@ class Spaceship(pygame.sprite.Sprite):
     if self.rect.left <= boundary - (self.rect.width + self.speed):
       self.rect.move_ip(self.speed, 0)
 
-  # shooting
-  #def shoot(self, g_projectiles):
-  #  if not self.cooldown:
-  #    if   self.weapon == 'bullets':
-  #      self.cooldown = 3
-  #      g_projectiles.add( Bullet(self.g_coll, self.g_expl, self.gfxman, (self.rect.left + 12, self.rect.top)) )
-  #      g_projectiles.add( Bullet(self.g_coll, self.g_expl, self.gfxman, (self.rect.left + 25, self.rect.top)) )
-  #    elif self.weapon == 'energy':
-  #      self.cooldown = 7
-  #      g_projectiles.add( EnergyProjectile(self.g_coll, self.g_expl, self.gfxman, (self.rect.left + 16, self.rect.top)) )
-  #  else:
-  #    self.cooldown -= 1
   def shoot(self, g_projectiles):
     """
     Shoots the currently selected weapon. Appropriately
@@ -179,18 +185,10 @@ class Spaceship(pygame.sprite.Sprite):
       self.cooldown = self.weapons[self.cw].shoot(g_projectiles,
                                                   self.g_coll,
                                                   self.g_expl,
-                                                  self.gfxman,
                                                   (self.rect.centerx + 1, self.rect.top))
     else:
       self.cooldown -= 1
 
-  #def next_weapon(self):
-  #  if self.weapon == 'bullets':
-  #    self.weapon = 'energy'
-  #    self.cooldown = 5
-  #  else:
-  #    self.weapon = 'bullets'
-  #    self.cooldown = 3
   def next_weapon(self):
     """
     Select next weapon.
@@ -200,8 +198,6 @@ class Spaceship(pygame.sprite.Sprite):
     else:
       self.cw += 1
 
-  #def previous_weapon(self):
-  #  self.next_weapon()
   def previous_weapon(self):
     """
     Select previous weapon.
@@ -211,20 +207,128 @@ class Spaceship(pygame.sprite.Sprite):
     else:
       self.cw -= 1
 
-class Projectile(pygame.sprite.Sprite):
-  class Explosion(pygame.sprite.Sprite):
-    pass
+class Explosion(AGSprite):
+  def __init__(self, *groups):
+    AGSprite.__init__(self, *groups)
 
+class BulletExplosion(Explosion):
+  def __init__(self, pos, *groups):
+    Explosion.__init__(self, *groups)
+
+    self.image = pygame.Surface((19, 19))
+    self.blit_state('expl_small', 'def')
+    self.image.set_colorkey((0, 138, 118))
+    self.rect = pygame.Rect((0, 0), (19, 19))
+    self.rect.center = pos[0] + 1, pos[1]
+
+    self.time = 14
+
+  def update(self):
+    if   self.time == 12:
+      self.time -= 1
+      self.blit_state('expl_small', '12')
+    elif self.time == 10:
+      self.time -= 1
+      self.blit_state('expl_small', '10')
+    elif self.time == 8:
+      self.time -= 1
+      self.blit_state('expl_small', '8')
+    elif self.time == 6:
+      self.time -= 1
+      self.blit_state('expl_small', '6')
+    elif self.time == 4:
+      self.time -= 1
+      self.blit_state('expl_small', '4')
+    elif self.time == 2:
+      self.time -= 1
+      self.blit_state('expl_small', '2')
+    elif self.time == 0:
+      self.kill()
+      del self
+    else:
+      self.time -= 1
+
+class ShellExplosion(Explosion):
+  def __init__(self, pos, *groups):
+    Explosion.__init__(self, *groups)
+
+    self.image = pygame.Surface((10, 8))
+    self.blit_state('ricochet', 'def')
+    self.image.set_colorkey((191, 220, 191))
+    self.rect = pygame.Rect((0, 0), (10, 8))
+    self.rect.center = pos
+
+    self.time = 12
+
+  def update(self):
+    if   self.time == 9:
+      self.time -= 1
+      self.blit_state('ricochet', '9')
+    elif   self.time == 6:
+      self.time -= 1
+      self.blit_state('ricochet', '6')
+    elif   self.time == 3:
+      self.time -= 1
+      self.blit_state('ricochet', '3')
+    elif self.time == 0:
+      self.kill()
+      del self
+    else:
+      self.time -= 1
+
+class EnergyProjectileExplosion(Explosion):
+  def __init__(self, pos, *groups):
+    Explosion.__init__(self, *groups)
+
+    self.image = pygame.Surface((19, 19))
+    self.blit_state('expl_med', 'def')
+    self.image.set_colorkey((0, 138, 118))
+    self.rect = pygame.Rect((0, 0), (19, 19))
+    self.rect.center = pos
+
+    self.time = 18
+
+  def update(self):
+    if   self.time == 16:
+      self.time -= 1
+      self.blit_state('expl_med', '16')
+    elif self.time == 14:
+      self.time -= 1
+      self.blit_state('expl_med', '14')
+    elif self.time == 12:
+      self.time -= 1
+      self.blit_state('expl_med', '12')
+    elif self.time == 10:
+      self.time -= 1
+      self.blit_state('expl_med', '10')
+    elif self.time == 8:
+      self.time -= 1
+      self.blit_state('expl_med', '8')
+    elif self.time == 6:
+      self.time -= 1
+      self.blit_state('expl_med', '6')
+    elif self.time == 4:
+      self.time -= 1
+      self.blit_state('expl_med', '4')
+    elif self.time == 2:
+      self.time -= 1
+      self.blit_state('expl_med', '2')
+    elif self.time == 0:
+      self.kill()
+      del self
+    else:
+      self.time -= 1
+
+class Projectile(AGSprite):
   damage = 0
   cooldown = 3
   offset = 0
 
-  def __init__(self, g_coll, g_expl, gfxman, *groups):
-    pygame.sprite.Sprite.__init__(self, *groups)
+  def __init__(self, g_coll, g_expl, *groups):
+    AGSprite.__init__(self, *groups)
 
     self.g_coll = g_coll
     self.g_expl = g_expl
-    self.gfxman = gfxman
 
   def update(self, speed):
     self.rect.move_ip(0, speed)
@@ -249,58 +353,21 @@ class Projectile(pygame.sprite.Sprite):
       #                            self.gfxman,
       #                            (self.centerx, self.top))
   #      g_projectiles.add( Bullet(self.g_coll, self.g_expl, self.gfxman, (self.rect.left + 12, self.rect.top)) )
-  def shoot(cls, g_proj, g_coll, g_expl, gfxman, pos):
+  def shoot(cls, g_proj, g_coll, g_expl, pos):
     if cls == Bullet or cls == Shell:
-      g_proj.add( cls(g_coll, g_expl, gfxman, (pos[0] - cls.offset, pos[1])) )
-      g_proj.add( cls(g_coll, g_expl, gfxman, (pos[0] + cls.offset, pos[1])) )
+      g_proj.add( cls(g_coll, g_expl, (pos[0] - cls.offset, pos[1])) )
+      g_proj.add( cls(g_coll, g_expl, (pos[0] + cls.offset, pos[1])) )
     else:
-      g_proj.add( cls(g_coll, g_expl, gfxman, pos) )
+      g_proj.add( cls(g_coll, g_expl, pos) )
     return cls.cooldown
   shoot = classmethod(shoot)
 
 class Bullet(Projectile):
-  class Explosion(pygame.sprite.Sprite):
-    def __init__(self, gfxman, pos, *groups):
-      pygame.sprite.Sprite.__init__(self, *groups)
-      self.gfxman = gfxman
-      self.image = pygame.Surface((19, 19))
-      self.image.blit(self.gfxman['expl_small'], (0, 0), (1, 1, 20, 20))
-      self.image.set_colorkey((0, 138, 118))
-      self.rect = pygame.Rect((0, 0), (19, 19))
-      self.rect.center = pos[0] + 1, pos[1]
-
-      self.time = 14
-
-    def update(self):
-      if   self.time == 12:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_small'], (0, 0), (21, 1, 20, 20))
-      elif self.time == 10:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_small'], (0, 0), (41, 1, 20, 20))
-      elif self.time == 8:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_small'], (0, 0), (61, 1, 20, 20))
-      elif self.time == 6:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_small'], (0, 0), (81, 1, 20, 20))
-      elif self.time == 4:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_small'], (0, 0), (101, 1, 20, 20))
-      elif self.time == 2:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_small'], (0, 0), (121, 1, 20, 20))
-      elif self.time == 0:
-        self.kill()
-        del self
-      else:
-        self.time -= 1
-
   cooldown = 3
   offset = 6
 
-  def __init__(self, g_coll, g_expl, gfxman, pos, *groups):
-    Projectile.__init__(self, g_coll, g_expl, gfxman, *groups)
+  def __init__(self, g_coll, g_expl, pos, *groups):
+    Projectile.__init__(self, g_coll, g_expl, *groups)
     
     self.image = pygame.Surface((1, 2))
     self.image.set_colorkey((0, 0, 0))
@@ -311,39 +378,11 @@ class Bullet(Projectile):
     Projectile.update(self, -11)
 
   def explode(self):
-    self.g_expl.add( Bullet.Explosion(self.gfxman, self.rect.center) )
+    self.g_expl.add( BulletExplosion(self.rect.center) )
     self.kill()
     del self
 
 class Shell(Projectile):
-  class Explosion(pygame.sprite.Sprite):
-    def __init__(self, gfxman, pos, *groups):
-      pygame.sprite.Sprite.__init__(self, *groups)
-      self.gfxman = gfxman
-      self.image = pygame.Surface((10, 8))
-      self.image.blit(self.gfxman['ricochet'], (0, 0), (10, 0, 10, 8))
-      self.image.set_colorkey((191, 220, 191))
-      self.rect = pygame.Rect((0, 0), (10, 8))
-      self.rect.center = pos
-
-      self.time = 12
-
-    def update(self):
-      if   self.time == 9:
-        self.time -= 1
-        self.image.blit(self.gfxman['ricochet'], (0, 0), (10, 0, 10, 8))
-      elif   self.time == 6:
-        self.time -= 1
-        self.image.blit(self.gfxman['ricochet'], (0, 0), (20, 0, 10, 8))
-      elif   self.time == 3:
-        self.time -= 1
-        self.image.blit(self.gfxman['ricochet'], (0, 0), (30, 0, 10, 8))
-      elif self.time == 0:
-        self.kill()
-        del self
-      else:
-        self.time -= 1
-
   cooldown = 1
   offset = 6
 
@@ -356,8 +395,8 @@ class Shell(Projectile):
       return 1
   comp = staticmethod(comp)
 
-  def __init__(self, g_coll, g_expl, gfxman, pos, *groups):
-    Projectile.__init__(self, g_coll, g_expl, gfxman, *groups)
+  def __init__(self, g_coll, g_expl, pos, *groups):
+    Projectile.__init__(self, g_coll, g_expl, *groups)
     
     self.image = pygame.Surface((1, 1))
     self.image.fill((110, 110, 110))
@@ -385,104 +424,52 @@ class Shell(Projectile):
           #l_gc[ind].damage()
 
   def explode(self, pos):
-    self.g_expl.add( Shell.Explosion(self.gfxman, pos) )
+    self.g_expl.add( ShellExplosion(pos) )
     self.kill()
     del self
 
 class EnergyProjectile(Projectile):
-  class Explosion(pygame.sprite.Sprite):
-    def __init__(self, gfxman, pos, *groups):
-      pygame.sprite.Sprite.__init__(self, *groups)
-      self.gfxman = gfxman
-      self.image = pygame.Surface((19, 19))
-      self.image.blit(self.gfxman['expl_med'], (0, 0), (1, 1, 20, 20))
-      self.image.set_colorkey((0, 138, 118))
-      self.rect = pygame.Rect((0, 0), (19, 19))
-      self.rect.center = pos
-
-      self.time = 18
-
-    def update(self):
-      if   self.time == 16:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_med'], (0, 0), (21, 1, 20, 20))
-      elif self.time == 14:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_med'], (0, 0), (41, 1, 20, 20))
-      elif self.time == 12:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_med'], (0, 0), (61, 1, 20, 20))
-      elif self.time == 10:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_med'], (0, 0), (81, 1, 20, 20))
-      elif self.time == 8:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_med'], (0, 0), (101, 1, 20, 20))
-      elif self.time == 6:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_med'], (0, 0), (121, 1, 20, 20))
-      elif self.time == 4:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_med'], (0, 0), (141, 1, 20, 20))
-      elif self.time == 2:
-        self.time -= 1
-        self.image.blit(self.gfxman['expl_med'], (0, 0), (161, 1, 20, 20))
-      elif self.time == 0:
-        self.kill()
-        del self
-      else:
-        self.time -= 1
-
   cooldown = 5
 
-  def __init__(self, g_coll, g_expl, gfxman, pos, *groups):
-    Projectile.__init__(self, g_coll, g_expl, gfxman, *groups)
+  def __init__(self, g_coll, g_expl, pos, *groups):
+    Projectile.__init__(self, g_coll, g_expl, *groups)
 
-    self.image = self.gfxman['energy1_c']
+    self.image = pygame.Surface((10, 10))
+    self.image.set_colorkey((255, 255, 255))
+    self.blit_state('energy', 'a')
     self.rect = pygame.Rect((0, 0), (1, 1))
     self.rect.centerx, self.rect.top = pos[0] - 3, pos[1]
-    self.rect.size = self.gfxman['energy1_c'].get_width(), \
-                     self.gfxman['energy1_c'].get_height()
+    self.rect.size = 10, 10
 
     self.stage = 0
-    self.wait = 3
+    self.wait = 5
 
   def update(self):
-    center = self.rect.center
-    if   self.stage == 0 and not self.wait:
-      self.wait = 3
-      self.stage = 1
-      self.image = self.gfxman['energy1_d']
-      self.rect.size = self.gfxman['energy1_d'].get_width(), \
-                       self.gfxman['energy1_d'].get_height()
-      self.rect.center = center
-    elif self.stage == 1 and not self.wait:
-      self.wait = 3
-      self.stage = 2
-      self.image = self.gfxman['energy1_e']
-      self.rect.size = self.gfxman['energy1_e'].get_width(), \
-                       self.gfxman['energy1_e'].get_height()
-      self.rect.center = center
-    elif self.stage == 2 and not self.wait:
-      self.wait = 3
-      self.stage = 3
-      self.image = self.gfxman['energy1_b']
-      self.rect.size = self.gfxman['energy1_b'].get_width(), \
-                       self.gfxman['energy1_b'].get_height()
-      self.rect.center = center
-    elif self.stage == 3 and not self.wait:
-      self.wait = 3
-      self.stage = 0
-      self.image = self.gfxman['energy1_c']
-      self.rect.size = self.gfxman['energy1_c'].get_width(), \
-                       self.gfxman['energy1_c'].get_height()
-      self.rect.center = center
+    self.stage += 1
+    self.stage %= 20
+
+    if   self.stage in range(1, 5) and not self.wait:
+      self.wait = 5
+      self.image.fill((255, 255, 255))
+      self.blit_state('energy', 'a')
+    elif self.stage in range(6, 10) and not self.wait:
+      self.wait = 5
+      self.image.fill((255, 255, 255))
+      self.blit_state('energy', 'b')
+    elif self.stage in range(11, 15) and not self.wait:
+      self.wait = 5
+      self.image.fill((255, 255, 255))
+      self.blit_state('energy', 'c')
+    elif self.stage in range(16, 20) and not self.wait:
+      self.wait = 5
+      self.image.fill((255, 255, 255))
+      self.blit_state('energy', 'd')
     else:
       self.wait -= 1
     
-    Projectile.update(self, -9)
+    Projectile.update(self, -self.conf['props']['speed'])
 
   def explode(self):
-    self.g_expl.add( EnergyProjectile.Explosion(self.gfxman, self.rect.center) )
+    self.g_expl.add( EnergyProjectileExplosion(self.rect.center) )
     self.kill()
     del self

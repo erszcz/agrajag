@@ -30,16 +30,20 @@ def run():
 
   clock = pygame.time.Clock()
 
-  gfxman = GfxManager('./gfx')
-  
+  dbman = DBManager()
+  dbman.import_db('./db')
+
+  gfxman = GfxManager()
+  gfxman.import_gfx(dbman.get(), './gfx')
+
   g_enemies = pygame.sprite.Group()
-  g_enemies.add(Obstacle(gfxman, (60, 30)))
-  g_enemies.add(Obstacle(gfxman, (160, 80)))
+  g_enemies.add(Obstacle((60, 30)))
+  g_enemies.add(Obstacle((160, 80)))
 
   g_explosions = pygame.sprite.Group()
 
   g_ship = pygame.sprite.Group()
-  ship = Spaceship(g_enemies, g_explosions, gfxman, (175, display_size[1] - 60), 8, g_ship)
+  ship = Spaceship(g_enemies, g_explosions, (175, display_size[1] - 60), 8, g_ship)
 
   g_bullets = pygame.sprite.Group()
 

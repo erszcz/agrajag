@@ -2,15 +2,17 @@
 #coding: utf-8
 
 import pygame
+from spaceship import AGSprite
 
-class Obstacle(pygame.sprite.Sprite):
-  def __init__(self, gfxman, pos, *groups):
-    pygame.sprite.Sprite.__init__(self, *groups)
+class Obstacle(AGSprite):
+  def __init__(self, pos, *groups):
+    AGSprite.__init__(self, *groups)
     
-    self.gfxman = gfxman
-    self.image = self.gfxman['obstacle']
-    self.rect = pygame.Rect(pos, (self.image.get_width(),
-                                  self.image.get_height()))
+    size = self.gfx['obstacle']['w'], self.gfx['obstacle']['h']
+    
+    self.rect = pygame.Rect(pos, size)
+    self.image = pygame.Surface(size)
+    self.blit_state('obstacle', 'def')
 
   def update(self):
     pass

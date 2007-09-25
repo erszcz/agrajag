@@ -1,0 +1,8 @@
+<content>
+  <gfx>
+    <resource name='expl_small' file='expl_small.png' state_w='1' state_h='2'>
+    </resource>
+  </gfx>
+  <properties>
+  </properties>
+</content>

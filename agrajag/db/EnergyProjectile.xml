@@ -1,0 +1,21 @@
+<content>
+  <gfx>
+    <resource name='energy' file='energy.png' state_w='10' state_h='10'>
+      <state name='a' x_off='0'    y_off='0' />
+      <state name='b' x_off='10'   y_off='0' />
+      <state name='c' x_off='20'   y_off='0' />
+      <state name='d' x_off='30'   y_off='0' />
+    </resource>
+    <resource name='energy1_b' file='energy1_b.png' state_w='8' state_h='9'>
+    </resource>
+    <resource name='energy1_c' file='energy1_c.png' state_w='6' state_h='10'>
+    </resource>
+    <resource name='energy1_d' file='energy1_d.png' state_w='8' state_h='9'>
+    </resource>
+    <resource name='energy1_e' file='energy1_e.png' state_w='10' state_h='6'>
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='speed' type='int' value='3' />
+  </properties>
+</content>

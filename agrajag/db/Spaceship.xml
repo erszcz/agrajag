@@ -1,14 +1,11 @@
-<?xml version='1.0' encoding='UTF-8'?>
 <content>
   <gfx>
-    <resource name='ship' file='sdfsdf.png'>
-      <state name='default' />
+    <resource name='ship' file='ship.png' state_w='37' state_h='44'>
+      <state name='def'  x_off='0'  y_off='0' />
     </resource>
-    <resource name='exhaust' file='exhaust.png'>
-      <state name='default' />
-    </resource>
-    <resource name='exhaust1' file='exhaust1.png'>
-      <state name='default' />
+    <resource name='exhaust' file='exhaust.png' state_w='12' state_h='17'>
+      <state name='on'  x_off='0'  y_off='0' />
+      <state name='off' x_off='12' y_off='0' />
     </resource>
   </gfx>
   <properties>
