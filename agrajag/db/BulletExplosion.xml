@@ -1,6 +1,6 @@
 <content>
   <gfx>
-    <resource name='expl' file='expl_small.png' state_w='20' state_h='20'>
+    <resource name='expl' file='expl_small.png' state_w='19' state_h='19'>
       <state name='frame0' x_off='1'   y_off='1' />
       <state name='frame1' x_off='21'  y_off='1' />
       <state name='frame2' x_off='41'  y_off='1' />
