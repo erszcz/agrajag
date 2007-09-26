@@ -5,22 +5,37 @@ import pygame, math
 from dbmanager import DBManager
 from gfxmanager import GfxManager
 
+from functions import deg2rad
 
 class AGSprite(pygame.sprite.Sprite):
   '''
   Abstract sprite class used as a parent class for more specific classes like Spaceship, Enemy, Projectile or Obstacle
   
-  @type gfxman: L{GFXManager}
-  @ivar gfxman: The graphics manager, which takes care of different images
-     used by in-game objects.
+  @type gfx: dict
+  @ivar gfx: The graphics resources provided by L{GfxManager}.
 
+  @type speed: integer
+  @ivar speed: Value of speed (current) of game object in px.
+
+  @type dir: float
+  @ivar dir: Angle determining movement direction in degrees.
   '''
 
-  def __init__(self, *groups):
+  def __init__(self, pos, *groups):
+    '''
+    @type  pos: pair of integers
+    @param pos: Initial position of the object. This pair defines the top-left corner of the object's rectangle C{rect}.
+    '''
+
     pygame.sprite.Sprite.__init__(self, *groups)
 
     self.cfg = self.check_cfg(DBManager().get(self.__class__.__name__))['props']
     self.gfx = GfxManager().get(self.__class__.__name__)
+
+    self.rect = pygame.Rect(pos, (0, 0))
+
+    self.speed = self.cfg['speed'] if self.cfg.has_key('speed') else 0
+    self.dir = 0
 
   def check_cfg(self, cfg):
     '''Checks whether provided config object contains all required information and whether this information is valid'''
@@ -32,6 +47,9 @@ class AGSprite(pygame.sprite.Sprite):
     area = self.gfx[image]['states'][state]['x_off'], self.gfx[image]['states'][state]['y_off'], self.gfx[image]['w'], self.gfx[image]['h']
     self.image.blit(self.gfx[image]['image'], pos, area)
 
+  def update_position(self):
+    self.rect.move_ip(self.speed*math.sin(deg2rad(self.dir)), self.speed*math.cos(deg2rad(self.dir)))
+  
 class Spaceship(AGSprite):
   """
   Represents the player's ship (not necessarily a spaceship).
@@ -86,7 +104,8 @@ class Spaceship(AGSprite):
     @type  groups: pygame.sprite.Group
     @param groups: A sequence of groups the object will be added to.
     """
-    AGSprite.__init__(self, *groups)
+
+    AGSprite.__init__(self, pos, *groups)
     
     
     self.g_coll = g_coll
@@ -208,8 +227,8 @@ class Spaceship(AGSprite):
       self.cw -= 1
 
 class Explosion(AGSprite):
-  def __init__(self, *groups):
-    AGSprite.__init__(self, *groups)
+  def __init__(self, pos, *groups):
+    AGSprite.__init__(self, pos, *groups)
 
     self.full_time = self.time = float(self.cfg['animation_length'])
     self.frame = 0
@@ -229,7 +248,7 @@ class Explosion(AGSprite):
 
 class BulletExplosion(Explosion):
   def __init__(self, pos, *groups):
-    Explosion.__init__(self, *groups)
+    Explosion.__init__(self, pos, *groups)
 
     self.image = pygame.Surface((19, 19))
     self.image.set_colorkey((0, 138, 118))
@@ -239,7 +258,7 @@ class BulletExplosion(Explosion):
 
 class ShellExplosion(Explosion):
   def __init__(self, pos, *groups):
-    Explosion.__init__(self, *groups)
+    Explosion.__init__(self, pos, *groups)
 
     self.image = pygame.Surface((10, 8))
     self.image.set_colorkey((191, 220, 191))
@@ -249,7 +268,7 @@ class ShellExplosion(Explosion):
 
 class EnergyProjectileExplosion(Explosion):
   def __init__(self, pos, *groups):
-    Explosion.__init__(self, *groups)
+    Explosion.__init__(self, pos, *groups)
 
     self.image = pygame.Surface((19, 19))
     self.blit_state('expl', 'frame0')
@@ -262,14 +281,18 @@ class Projectile(AGSprite):
   cooldown = 3
   offset = 0
 
-  def __init__(self, g_coll, g_expl, *groups):
-    AGSprite.__init__(self, *groups)
+  def __init__(self, g_coll, g_expl, pos, *groups):
+    AGSprite.__init__(self, pos, *groups)
 
     self.g_coll = g_coll
     self.g_expl = g_expl
 
-  def update(self, speed):
-    self.rect.move_ip(0, speed)
+  def update(self, speed, dir_angle = None):
+    if not dir_angle:
+      self.rect.move_ip(0, speed)
+    else:
+      self.rect.move_ip(speed*math.sin(deg2rad(dir_angle)), speed*math.cos(deg2rad(dir_angle)))
+
     self.detect_collisions()
     if self.rect.top < 0:
       self.kill()
@@ -305,7 +328,7 @@ class Bullet(Projectile):
   offset = 6
 
   def __init__(self, g_coll, g_expl, pos, *groups):
-    Projectile.__init__(self, g_coll, g_expl, *groups)
+    Projectile.__init__(self, g_coll, g_expl, pos, *groups)
     
     self.image = pygame.Surface((1, 2))
     self.image.set_colorkey((0, 0, 0))
@@ -334,7 +357,7 @@ class Shell(Projectile):
   comp = staticmethod(comp)
 
   def __init__(self, g_coll, g_expl, pos, *groups):
-    Projectile.__init__(self, g_coll, g_expl, *groups)
+    Projectile.__init__(self, g_coll, g_expl, pos, *groups)
     
     self.image = pygame.Surface((1, 1))
     self.image.fill((110, 110, 110))
@@ -370,7 +393,7 @@ class EnergyProjectile(Projectile):
   cooldown = 5
 
   def __init__(self, g_coll, g_expl, pos, *groups):
-    Projectile.__init__(self, g_coll, g_expl, *groups)
+    Projectile.__init__(self, g_coll, g_expl, pos, *groups)
 
     self.image = pygame.Surface((10, 10))
     self.image.set_colorkey((255, 255, 255))
