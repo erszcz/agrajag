@@ -1,0 +1,9 @@
+<content>
+  <gfx>
+    <resource name='obstacle' file='obstacle.png' state_w='130' state_h='23'>
+      <state name='def' x_off='0'   y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+  </properties>
+</content>

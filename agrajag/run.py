@@ -8,7 +8,7 @@ from dbmanager import DBManager
 from gfxmanager import GfxManager
 from spaceship import Spaceship
 from background import SpaceBackground
-from obstacle import Obstacle
+from obstacle import Obstacle, MovingObstacle
 
 import psyco
 
@@ -31,16 +31,14 @@ def run():
   clock = pygame.time.Clock()
 
   dbman = DBManager()
-  db_path = os.path.split(sys.argv[0])[0] + os.sep + 'db'
-  dbman.import_db(db_path)
+  dbman.import_db('./db')
 
   gfxman = GfxManager()
-  gfx_path = os.path.split(sys.argv[0])[0] + os.sep + 'gfx'
-  gfxman.import_gfx(dbman.get(), gfx_path)
+  gfxman.import_gfx(dbman.get(), './gfx')
 
   g_enemies = pygame.sprite.Group()
   g_enemies.add(Obstacle((60, 30)))
-  g_enemies.add(Obstacle((160, 80)))
+  g_enemies.add(MovingObstacle((160, 80)))
 
   g_explosions = pygame.sprite.Group()
 
