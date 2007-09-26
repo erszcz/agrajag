@@ -217,7 +217,6 @@ class Explosion(AGSprite):
     self.frame_span = self.time / self.frame_count
 
   def update(self):
-    print self.time, self.frame
     if self.time == self.full_time - math.floor(self.frame * self.frame_span) and self.time != 0:
       self.blit_state('expl', 'frame' + str(self.frame))
       self.time -= 1
