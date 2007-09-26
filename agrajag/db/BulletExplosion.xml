@@ -1,0 +1,17 @@
+<content>
+  <gfx>
+    <resource name='expl' file='expl_small.png' state_w='20' state_h='20'>
+      <state name='frame0' x_off='1'   y_off='1' />
+      <state name='frame1' x_off='21'  y_off='1' />
+      <state name='frame2' x_off='41'  y_off='1' />
+      <state name='frame3' x_off='61'  y_off='1' />
+      <state name='frame4' x_off='81'  y_off='1' />
+      <state name='frame5' x_off='101' y_off='1' />
+      <state name='frame6' x_off='121' y_off='1' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='animation_length' value='14' />
+    <prop name='frame_count' value='7' />
+  </properties>
+</content>

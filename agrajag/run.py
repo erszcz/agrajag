@@ -31,10 +31,12 @@ def run():
   clock = pygame.time.Clock()
 
   dbman = DBManager()
-  dbman.import_db('./db')
+  db_path = os.path.split(sys.argv[0])[0] + os.sep + 'db'
+  dbman.import_db(db_path)
 
   gfxman = GfxManager()
-  gfxman.import_gfx(dbman.get(), './gfx')
+  gfx_path = os.path.split(sys.argv[0])[0] + os.sep + 'gfx'
+  gfxman.import_gfx(dbman.get(), gfx_path)
 
   g_enemies = pygame.sprite.Group()
   g_enemies.add(Obstacle((60, 30)))

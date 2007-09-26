@@ -1,0 +1,15 @@
+<content>
+  <gfx>
+    <resource name='expl' file='ricochet2.png' state_w='10' state_h='8'>
+      <state name='frame0' x_off='0'   y_off='0' />
+      <state name='frame1' x_off='10'  y_off='0' />
+      <state name='frame2' x_off='20'  y_off='0' />
+      <state name='frame3' x_off='30'  y_off='0' />
+      <state name='frame4' x_off='40'  y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='animation_length' value='15' />
+    <prop name='frame_count' value='5' />
+  </properties>
+</content>

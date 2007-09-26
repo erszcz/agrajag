@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding: utf-8
 
-import pygame
+import pygame, math
 from dbmanager import DBManager
 from gfxmanager import GfxManager
 
@@ -19,12 +19,12 @@ class AGSprite(pygame.sprite.Sprite):
   def __init__(self, *groups):
     pygame.sprite.Sprite.__init__(self, *groups)
 
-    self.conf = self.check_conf(DBManager().get(self.__class__.__name__))
+    self.cfg = self.check_cfg(DBManager().get(self.__class__.__name__))['props']
     self.gfx = GfxManager().get(self.__class__.__name__)
 
-  def check_conf(self, conf):
+  def check_cfg(self, cfg):
     '''Checks whether provided config object contains all required information and whether this information is valid'''
-    return conf
+    return cfg
  
   def blit_state(self, image, state, pos = (0, 0)):
     '''Blits selected image state aquired from GfxManager on image representing current instance'''
@@ -102,19 +102,19 @@ class Spaceship(AGSprite):
     self.cw = 0 # current weapon list index
     self.cooldown = 0
 
-  def check_conf(self, conf):
+  def check_cfg(self, cfg):
     req_gfx = ['ship', 'exhaust']
     req_prop = []
 
     for g in req_gfx:
-      if not conf['gfx'][g]:
+      if not cfg['gfx'][g]:
         raise Exception("Required gfx resource '%s' not defined" % g);
 
     for p in req_prop:
-      if not conf['props'][p]:
+      if not cfg[p]:
         raise Exception("Required property '%s' not defined" % p);
 
-    return conf
+    return cfg
 
   def exhaust(self, on):
     """
@@ -211,113 +211,50 @@ class Explosion(AGSprite):
   def __init__(self, *groups):
     AGSprite.__init__(self, *groups)
 
+    self.time = float(self.cfg['animation_length'])
+    self.frame = 1
+    self.frm_cnt = float(self.cfg['frame_count'])
+
+  def update(self):
+    if self.time == self.time - math.floor(self.frame * self.time / self.frm_cnt):
+      self.blit_state('expl', 'frame' + str(self.frame))
+      self.time -= 1
+      self.frame += 1
+    elif self.time <= 0:
+      self.kill()
+      del self
+    else:
+      self.time -= 1
+
 class BulletExplosion(Explosion):
   def __init__(self, pos, *groups):
     Explosion.__init__(self, *groups)
 
     self.image = pygame.Surface((19, 19))
-    self.blit_state('expl_small', 'def')
     self.image.set_colorkey((0, 138, 118))
+    self.blit_state('expl', 'frame0')
     self.rect = pygame.Rect((0, 0), (19, 19))
     self.rect.center = pos[0] + 1, pos[1]
-
-    self.time = 14
-
-  def update(self):
-    if   self.time == 12:
-      self.time -= 1
-      self.blit_state('expl_small', '12')
-    elif self.time == 10:
-      self.time -= 1
-      self.blit_state('expl_small', '10')
-    elif self.time == 8:
-      self.time -= 1
-      self.blit_state('expl_small', '8')
-    elif self.time == 6:
-      self.time -= 1
-      self.blit_state('expl_small', '6')
-    elif self.time == 4:
-      self.time -= 1
-      self.blit_state('expl_small', '4')
-    elif self.time == 2:
-      self.time -= 1
-      self.blit_state('expl_small', '2')
-    elif self.time == 0:
-      self.kill()
-      del self
-    else:
-      self.time -= 1
 
 class ShellExplosion(Explosion):
   def __init__(self, pos, *groups):
     Explosion.__init__(self, *groups)
 
     self.image = pygame.Surface((10, 8))
-    self.blit_state('ricochet', 'def')
     self.image.set_colorkey((191, 220, 191))
+    self.blit_state('expl', 'frame0')
     self.rect = pygame.Rect((0, 0), (10, 8))
     self.rect.center = pos
-
-    self.time = 12
-
-  def update(self):
-    if   self.time == 9:
-      self.time -= 1
-      self.blit_state('ricochet', '9')
-    elif   self.time == 6:
-      self.time -= 1
-      self.blit_state('ricochet', '6')
-    elif   self.time == 3:
-      self.time -= 1
-      self.blit_state('ricochet', '3')
-    elif self.time == 0:
-      self.kill()
-      del self
-    else:
-      self.time -= 1
 
 class EnergyProjectileExplosion(Explosion):
   def __init__(self, pos, *groups):
     Explosion.__init__(self, *groups)
 
     self.image = pygame.Surface((19, 19))
-    self.blit_state('expl_med', 'def')
+    self.blit_state('expl', 'frame0')
     self.image.set_colorkey((0, 138, 118))
     self.rect = pygame.Rect((0, 0), (19, 19))
     self.rect.center = pos
-
-    self.time = 18
-
-  def update(self):
-    if   self.time == 16:
-      self.time -= 1
-      self.blit_state('expl_med', '16')
-    elif self.time == 14:
-      self.time -= 1
-      self.blit_state('expl_med', '14')
-    elif self.time == 12:
-      self.time -= 1
-      self.blit_state('expl_med', '12')
-    elif self.time == 10:
-      self.time -= 1
-      self.blit_state('expl_med', '10')
-    elif self.time == 8:
-      self.time -= 1
-      self.blit_state('expl_med', '8')
-    elif self.time == 6:
-      self.time -= 1
-      self.blit_state('expl_med', '6')
-    elif self.time == 4:
-      self.time -= 1
-      self.blit_state('expl_med', '4')
-    elif self.time == 2:
-      self.time -= 1
-      self.blit_state('expl_med', '2')
-    elif self.time == 0:
-      self.kill()
-      del self
-    else:
-      self.time -= 1
 
 class Projectile(AGSprite):
   damage = 0
@@ -467,7 +404,7 @@ class EnergyProjectile(Projectile):
     else:
       self.wait -= 1
     
-    Projectile.update(self, -self.conf['props']['speed'])
+    Projectile.update(self, -self.cfg['speed'])
 
   def explode(self):
     self.g_expl.add( EnergyProjectileExplosion(self.rect.center) )
