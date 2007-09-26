@@ -211,12 +211,14 @@ class Explosion(AGSprite):
   def __init__(self, *groups):
     AGSprite.__init__(self, *groups)
 
-    self.time = float(self.cfg['animation_length'])
-    self.frame = 1
-    self.frm_cnt = float(self.cfg['frame_count'])
+    self.full_time = self.time = float(self.cfg['animation_length'])
+    self.frame = 0
+    self.frame_count = float(self.cfg['frame_count'])
+    self.frame_span = self.time / self.frame_count
 
   def update(self):
-    if self.time == self.time - math.floor(self.frame * self.time / self.frm_cnt):
+    print self.time, self.frame
+    if self.time == self.full_time - math.floor(self.frame * self.frame_span) and self.time != 0:
       self.blit_state('expl', 'frame' + str(self.frame))
       self.time -= 1
       self.frame += 1
