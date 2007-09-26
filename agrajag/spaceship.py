@@ -84,7 +84,7 @@ class Spaceship(AGSprite):
      can be fired again.
   """
 
-  def __init__(self, g_coll, g_expl, pos, speed, *groups):
+  def __init__(self, g_coll, g_expl, pos, *groups):
     """
     @type  g_coll: C{pygame.sprite.Group}
     @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship
@@ -98,9 +98,6 @@ class Spaceship(AGSprite):
     @param pos: Initial position of the ship. This pair defines the top-left
         corner of the ship's rectangle C{rect}.
 
-    @type  speed: integer
-    @param speed: Speed of the ship (in both x and y axes).
-
     @type  groups: pygame.sprite.Group
     @param groups: A sequence of groups the object will be added to.
     """
@@ -113,9 +110,7 @@ class Spaceship(AGSprite):
     self.exhaust(False) # inits the image
     self.rect = pygame.Rect(pos, (self.image.get_width(),
                                   self.image.get_height()))
-    self.speed = speed
-
-    #self.weapon = 'bullets'
+    self.speed = 6
 
     self.weapons = (Bullet, EnergyProjectile, Shell)
     self.cw = 0 # current weapon list index
@@ -270,10 +265,10 @@ class EnergyProjectileExplosion(Explosion):
   def __init__(self, pos, *groups):
     Explosion.__init__(self, pos, *groups)
 
-    self.image = pygame.Surface((19, 19))
-    self.blit_state('expl', 'frame0')
-    self.image.set_colorkey((0, 138, 118))
-    self.rect = pygame.Rect((0, 0), (19, 19))
+    self.image = pygame.Surface((47, 47))
+    self.blit_state('expl', 'frame4')
+    self.image.set_colorkey((225, 255, 119))
+    self.rect = pygame.Rect((0, 0), (47, 47))
     self.rect.center = pos
 
 class Projectile(AGSprite):
@@ -308,12 +303,6 @@ class Projectile(AGSprite):
         self.explode()
         #sprite.damage(self.damage)
 
-      #self.weapons[self.cw].shoot(g_projectiles,
-      #                            self.g_coll,
-      #                            self.g_expl,
-      #                            self.gfxman,
-      #                            (self.centerx, self.top))
-  #      g_projectiles.add( Bullet(self.g_coll, self.g_expl, self.gfxman, (self.rect.left + 12, self.rect.top)) )
   def shoot(cls, g_proj, g_coll, g_expl, pos):
     if cls == Bullet or cls == Shell:
       g_proj.add( cls(g_coll, g_expl, (pos[0] - cls.offset, pos[1])) )
@@ -324,7 +313,7 @@ class Projectile(AGSprite):
   shoot = classmethod(shoot)
 
 class Bullet(Projectile):
-  cooldown = 3
+  cooldown = 7
   offset = 6
 
   def __init__(self, g_coll, g_expl, pos, *groups):
@@ -336,7 +325,7 @@ class Bullet(Projectile):
     self.rect = pygame.Rect(pos, (1, 2))
     
   def update(self):
-    Projectile.update(self, -11)
+    Projectile.update(self, -6)
 
   def explode(self):
     self.g_expl.add( BulletExplosion(self.rect.center) )
@@ -344,7 +333,7 @@ class Bullet(Projectile):
     del self
 
 class Shell(Projectile):
-  cooldown = 1
+  cooldown = 2
   offset = 6
 
   def comp(x, y):
@@ -362,7 +351,6 @@ class Shell(Projectile):
     self.image = pygame.Surface((1, 1))
     self.image.fill((110, 110, 110))
     self.image.set_colorkey((110, 110, 110))
-    #self.rect = pygame.Rect(pos, (1, 1))
     self.rect = pygame.Rect((pos[0], 0), (1, pos[1]))
     self.ship_top = pos[1]
 
@@ -390,7 +378,7 @@ class Shell(Projectile):
     del self
 
 class EnergyProjectile(Projectile):
-  cooldown = 5
+  cooldown = 15
 
   def __init__(self, g_coll, g_expl, pos, *groups):
     Projectile.__init__(self, g_coll, g_expl, pos, *groups)

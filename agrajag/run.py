@@ -43,7 +43,7 @@ def run():
   g_explosions = pygame.sprite.Group()
 
   g_ship = pygame.sprite.Group()
-  ship = Spaceship(g_enemies, g_explosions, (175, display_size[1] - 60), 8, g_ship)
+  ship = Spaceship(g_enemies, g_explosions, (175, display_size[1] - 60), g_ship)
 
   g_bullets = pygame.sprite.Group()
 
