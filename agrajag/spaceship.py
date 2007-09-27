@@ -9,7 +9,7 @@ from functions import deg2rad
 
 class AGSprite(pygame.sprite.Sprite):
   '''
-  Abstract sprite class used as a parent class for more specific classes like Spaceship, Enemy, Projectile or Obstacle
+  Abstract sprite class used as a parent class for more specific classes like Ship, Projectile or Obstacle
   
   @type gfx: dict
   @ivar gfx: The graphics resources provided by L{GfxManager}.
@@ -50,17 +50,13 @@ class AGSprite(pygame.sprite.Sprite):
   def update_position(self):
     self.rect.move_ip(self.speed*math.sin(deg2rad(self.dir)), self.speed*math.cos(deg2rad(self.dir)))
   
-class Spaceship(AGSprite):
-  """
-  Represents the player's ship (not necessarily a spaceship).
 
-  In near future this class should probably be split into a base class
-  (e.g. C{Ship}) and a subclass (C{PlayerShip}).
-  C{Ship} could be a parent class for both player and enemy ships.
-
+class Ship(AGSprite):
+  '''
+  Base class for player's ship and enemy ships.
+  
   @type g_coll: C{pygame.sprite.Group}
-  @ivar g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship can
-      collide with.
+  @ivar g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship can collide with.
 
   @type g_expl: C{pygame.sprite.Group}
   @ivar g_expl: Group of independent objects (C{pygame.sprite.Sprite})
@@ -68,6 +64,35 @@ class Spaceship(AGSprite):
 
   @type rect: C{pygame.Rect}
   @ivar rect: Rectangle describing position and size of the ship.
+  '''
+
+  def __init__(self, g_coll, g_expl, pos, *groups):
+    '''
+    @type  g_coll: C{pygame.sprite.Group}
+    @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship
+       can collide with.
+
+    @type  g_expl: C{pygame.sprite.Group}
+    @param g_expl: Group of independent (which perish in time) objects
+        (C{pygame.sprite.Sprite}) such as explosions, salvage, etc.
+
+    @type  pos: pair of integers
+    @param pos: Initial position of the ship. This pair defines the top-left
+        corner of the ship's rectangle C{rect}.
+
+    @type  groups: pygame.sprite.Group
+    @param groups: A sequence of groups the object will be added to.
+    '''
+
+    AGSprite.__init__(self, pos, *groups)
+    
+    self.g_coll = g_coll
+    self.g_expl = g_expl
+
+
+class PlayerShip(Ship):
+  """
+  Represents the player's ship (not necessarily a spaceship).
 
   @type speed: integer
   @ivar speed: Speed of the ship (in both x and y axes).
@@ -103,10 +128,8 @@ class Spaceship(AGSprite):
     """
 
     AGSprite.__init__(self, pos, *groups)
+    Ship.__init__(self, g_coll, g_expl, pos, *groups)
     
-    
-    self.g_coll = g_coll
-    self.g_expl = g_expl
     self.exhaust(False) # inits the image
     self.rect = pygame.Rect(pos, (self.image.get_width(),
                                   self.image.get_height()))
@@ -152,14 +175,18 @@ class Spaceship(AGSprite):
     Turns on engine exhaust by calling C{L{exhaust(True)}} and
     moves the ship up.
     """
+
     self.exhaust(True)
     if self.rect.top >= self.speed:
       self.rect.move_ip(0, -self.speed)
+
   def fly_up_stop(self):
     """
     Turns off the engine exhaust (by calling C{L{exhaust(False)}}) when ship stops moving up.
     """
+
     self.exhaust(False)
+
   def fly_down(self, boundary):
     """
     Moves the ship down.
@@ -168,8 +195,10 @@ class Spaceship(AGSprite):
     @param boundary: Height of the viewport. Needed in order to check
        whether the ship may fly farther downwards.
     """
+
     if self.rect.top <= boundary - (self.rect.height + self.speed):
       self.rect.move_ip(0, self.speed)
+      
   def fly_left(self):
     """
     Moves the ship left.
@@ -220,6 +249,36 @@ class Spaceship(AGSprite):
       self.cw = self.weapons.__len__() - 1
     else:
       self.cw -= 1
+
+class EnemyShip(Ship):
+  def __init__(self, g_coll, g_expl, pos, *groups):
+    """
+    @type  g_coll: C{pygame.sprite.Group}
+    @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship
+       can collide with.
+
+    @type  g_expl: C{pygame.sprite.Group}
+    @param g_expl: Group of independent (which perish in time) objects
+        (C{pygame.sprite.Sprite}) such as explosions, salvage, etc.
+
+    @type  pos: pair of integers
+    @param pos: Initial position of the ship. This pair defines the top-left
+        corner of the ship's rectangle C{rect}.
+
+    @type  groups: pygame.sprite.Group
+    @param groups: A sequence of groups the object will be added to.
+    """
+
+    AGSprite.__init__(self, pos, *groups)
+    Ship.__init__(self, g_coll, g_expl, pos, *groups)
+    
+    self.image = pygame.Surface((self.gfx['ship']['w'], self.gfx['ship']['h']))
+    self.image.set_colorkey((255, 137, 210))
+    self.blit_state('ship', 'def')
+
+    self.rect = pygame.Rect(pos, (self.gfx['ship']['w'], self.gfx['ship']['h']))
+  pass
+
 
 class Explosion(AGSprite):
   def __init__(self, pos, *groups):

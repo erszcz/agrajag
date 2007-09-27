@@ -6,7 +6,7 @@ import pygame
 
 from dbmanager import DBManager
 from gfxmanager import GfxManager
-from spaceship import Spaceship
+from spaceship import PlayerShip, EnemyShip
 from background import SpaceBackground
 from obstacle import Obstacle, MovingObstacle
 
@@ -36,16 +36,16 @@ def run():
   gfxman = GfxManager()
   gfxman.import_gfx(dbman.get(), './gfx')
 
+  g_ship = pygame.sprite.Group()
   g_enemies = pygame.sprite.Group()
-  g_enemies.add(Obstacle((60, 30)))
-  g_enemies.add(MovingObstacle((160, 80)))
-
+  g_bullets = pygame.sprite.Group()
   g_explosions = pygame.sprite.Group()
 
-  g_ship = pygame.sprite.Group()
-  ship = Spaceship(g_enemies, g_explosions, (175, display_size[1] - 60), g_ship)
+  g_enemies.add(Obstacle((60, 30)))
+  g_enemies.add(MovingObstacle((160, 80)))
+  g_enemies.add(EnemyShip(g_bullets, g_explosions, (160, 160)))
 
-  g_bullets = pygame.sprite.Group()
+  ship = PlayerShip(g_enemies, g_explosions, (175, display_size[1] - 60), g_ship)
 
   back = SpaceBackground(display_size)
 
