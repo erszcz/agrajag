@@ -1,0 +1,10 @@
+<content>
+  <gfx>
+    <resource name='ship' file='enemy.png' state_w='28' state_h='32'>
+      <state name='def'  x_off='0'  y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='speed' value='2' type='int' />
+  </properties>
+</content>
