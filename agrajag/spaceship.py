@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding: utf-8
 
-import pygame, math
+import pygame, math, random
 from dbmanager import DBManager
 from gfxmanager import GfxManager
 
@@ -9,7 +9,8 @@ from functions import deg2rad
 
 class AGSprite(pygame.sprite.Sprite):
   '''
-  Abstract sprite class used as a parent class for more specific classes like Ship, Projectile or Obstacle
+  Abstract sprite class used as a parent class for more specific classes
+  like Ship, Projectile or Obstacle
   
   @type gfx: dict
   @ivar gfx: The graphics resources provided by L{GfxManager}.
@@ -24,7 +25,8 @@ class AGSprite(pygame.sprite.Sprite):
   def __init__(self, pos, *groups):
     '''
     @type  pos: pair of integers
-    @param pos: Initial position of the object. This pair defines the top-left corner of the object's rectangle C{rect}.
+    @param pos: Initial position of the object. This pair defines
+    the top-left corner of the object's rectangle C{rect}.
     '''
 
     pygame.sprite.Sprite.__init__(self, *groups)
@@ -38,29 +40,35 @@ class AGSprite(pygame.sprite.Sprite):
     self.dir = 0
 
   def check_cfg(self, cfg):
-    '''Checks whether provided config object contains all required information and whether this information is valid'''
+    '''Checks whether provided config object contains all required
+    information and whether this information is valid'''
     return cfg
  
   def blit_state(self, image, state, pos = (0, 0)):
-    '''Blits selected image state aquired from GfxManager on image representing current instance'''
+    '''Blits selected image state aquired from GfxManager on image
+    representing current instance'''
 
-    area = self.gfx[image]['states'][state]['x_off'], self.gfx[image]['states'][state]['y_off'], self.gfx[image]['w'], self.gfx[image]['h']
+    area = self.gfx[image]['states'][state]['x_off'], \
+           self.gfx[image]['states'][state]['y_off'], \
+           self.gfx[image]['w'], \
+           self.gfx[image]['h']
     self.image.blit(self.gfx[image]['image'], pos, area)
 
   def update_position(self):
-    self.rect.move_ip(self.speed*math.sin(deg2rad(self.dir)), self.speed*math.cos(deg2rad(self.dir)))
-  
+    self.rect.move_ip(self.speed*math.sin(deg2rad(self.dir)),
+                      self.speed*math.cos(deg2rad(self.dir)))
 
 class Ship(AGSprite):
   '''
   Base class for player's ship and enemy ships.
   
   @type g_coll: C{pygame.sprite.Group}
-  @ivar g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship can collide with.
+  @ivar g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship can
+      collide with.
 
   @type g_expl: C{pygame.sprite.Group}
   @ivar g_expl: Group of independent objects (C{pygame.sprite.Sprite})
-     such as explosions, salvage, etc.
+      such as explosions, salvage, etc.
 
   @type rect: C{pygame.Rect}
   @ivar rect: Rectangle describing position and size of the ship.
@@ -70,7 +78,7 @@ class Ship(AGSprite):
     '''
     @type  g_coll: C{pygame.sprite.Group}
     @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship
-       can collide with.
+        can collide with.
 
     @type  g_expl: C{pygame.sprite.Group}
     @param g_expl: Group of independent (which perish in time) objects
@@ -102,18 +110,18 @@ class PlayerShip(Ship):
 
   @type cw: integer
   @ivar cw: Index of the sequence C{L{weapons}} which designates the
-     currently used weapon.
+      currently used weapon.
 
   @type cooldown: unsigned integer
   @ivar cooldown: Number of rounds that have to pass before the weapon/s
-     can be fired again.
+      can be fired again.
   """
 
   def __init__(self, g_coll, g_expl, pos, *groups):
     """
     @type  g_coll: C{pygame.sprite.Group}
     @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship
-       can collide with.
+        can collide with.
 
     @type  g_expl: C{pygame.sprite.Group}
     @param g_expl: Group of independent (which perish in time) objects
@@ -127,7 +135,6 @@ class PlayerShip(Ship):
     @param groups: A sequence of groups the object will be added to.
     """
 
-    AGSprite.__init__(self, pos, *groups)
     Ship.__init__(self, g_coll, g_expl, pos, *groups)
     
     self.exhaust(False) # inits the image
@@ -155,7 +162,8 @@ class PlayerShip(Ship):
 
   def exhaust(self, on):
     """
-    Changes the image of the ship by adding or removing an engine exhaust at the bottom.
+    Changes the image of the ship by adding or removing an engine
+    exhaust at the bottom.
     """
     
     self.image = pygame.Surface((self.gfx['ship']['w'],
@@ -167,7 +175,10 @@ class PlayerShip(Ship):
     state = 'on' if on else 'off'
 
     self.blit_state('ship', 'def')
-    self.blit_state('exhaust', state, (self.gfx['ship']['w']/2 - self.gfx['exhaust']['w']/2, self.gfx['ship']['h']))
+    self.blit_state('exhaust',
+                    state,
+                    (self.gfx['ship']['w']/2 - self.gfx['exhaust']['w']/2,
+                     self.gfx['ship']['h']))
 
   # moving
   def fly_up_start(self):
@@ -182,7 +193,8 @@ class PlayerShip(Ship):
 
   def fly_up_stop(self):
     """
-    Turns off the engine exhaust (by calling C{L{exhaust(False)}}) when ship stops moving up.
+    Turns off the engine exhaust (by calling C{L{exhaust(False)}})
+    when ship stops moving up.
     """
 
     self.exhaust(False)
@@ -193,7 +205,7 @@ class PlayerShip(Ship):
 
     @type  boundary: unsigned integer
     @param boundary: Height of the viewport. Needed in order to check
-       whether the ship may fly farther downwards.
+        whether the ship may fly farther downwards.
     """
 
     if self.rect.top <= boundary - (self.rect.height + self.speed):
@@ -211,7 +223,7 @@ class PlayerShip(Ship):
 
     @type  boundary: unsigned integer
     @param boundary: Width of the viewport. Needed in order to check
-       whether the ship may fly farther towards the right edge of the screen.
+        whether the ship may fly farther towards the right edge of the screen.
     """
     if self.rect.left <= boundary - (self.rect.width + self.speed):
       self.rect.move_ip(self.speed, 0)
@@ -255,7 +267,7 @@ class EnemyShip(Ship):
     """
     @type  g_coll: C{pygame.sprite.Group}
     @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship
-       can collide with.
+        can collide with.
 
     @type  g_expl: C{pygame.sprite.Group}
     @param g_expl: Group of independent (which perish in time) objects
@@ -269,7 +281,6 @@ class EnemyShip(Ship):
     @param groups: A sequence of groups the object will be added to.
     """
 
-    AGSprite.__init__(self, pos, *groups)
     Ship.__init__(self, g_coll, g_expl, pos, *groups)
     
     self.image = pygame.Surface((self.gfx['ship']['w'], self.gfx['ship']['h']))
@@ -345,7 +356,8 @@ class Projectile(AGSprite):
     if not dir_angle:
       self.rect.move_ip(0, speed)
     else:
-      self.rect.move_ip(speed*math.sin(deg2rad(dir_angle)), speed*math.cos(deg2rad(dir_angle)))
+      self.rect.move_ip(speed*math.sin(deg2rad(dir_angle)),
+                        speed*math.cos(deg2rad(dir_angle)))
 
     self.detect_collisions()
     if self.rect.top < 0:
@@ -443,37 +455,25 @@ class EnergyProjectile(Projectile):
     Projectile.__init__(self, g_coll, g_expl, pos, *groups)
 
     self.image = pygame.Surface((10, 10))
-    self.image.set_colorkey((255, 255, 255))
-    self.blit_state('energy', 'a')
-    self.rect = pygame.Rect((0, 0), (1, 1))
-    self.rect.centerx, self.rect.top = pos[0] - 3, pos[1]
-    self.rect.size = 10, 10
+    self.image.set_colorkey((255, 0, 0))
+    self.blit_state('energy', 'frame2')
+    self.rect = pygame.Rect((0, 0), (10, 10))
+    self.rect.centerx, self.rect.top = pos
 
-    self.stage = 0
-    self.wait = 5
+    self.period = self.time = 16
+    self.frame = 0
+    self.frame_span = 4
 
   def update(self):
-    self.stage += 1
-    self.stage %= 20
-
-    if   self.stage in range(1, 5) and not self.wait:
-      self.wait = 5
-      self.image.fill((255, 255, 255))
-      self.blit_state('energy', 'a')
-    elif self.stage in range(6, 10) and not self.wait:
-      self.wait = 5
-      self.image.fill((255, 255, 255))
-      self.blit_state('energy', 'b')
-    elif self.stage in range(11, 15) and not self.wait:
-      self.wait = 5
-      self.image.fill((255, 255, 255))
-      self.blit_state('energy', 'c')
-    elif self.stage in range(16, 20) and not self.wait:
-      self.wait = 5
-      self.image.fill((255, 255, 255))
-      self.blit_state('energy', 'd')
+    if self.time == self.period - self.frame * self.frame_span and self.time != 0:
+      self.blit_state('energy', 'frame' + str(self.frame))
+      self.time -= 1
+      self.frame += 1
+    elif self.time == 0:
+      self.time = self.period
+      self.frame = 0
     else:
-      self.wait -= 1
+      self.time -= 1
     
     Projectile.update(self, -self.cfg['speed'])
 

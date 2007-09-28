@@ -1,6 +1,6 @@
 <content>
   <gfx>
-    <resource name='ship' file='ship.png' state_w='37' state_h='44'>
+    <resource name='ship' file='ship.png' state_w='38' state_h='44'>
       <state name='def'  x_off='0'  y_off='0' />
     </resource>
     <resource name='exhaust' file='exhaust.png' state_w='12' state_h='17'>
