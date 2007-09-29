@@ -4,5 +4,8 @@
     </resource>
   </gfx>
   <properties>
+    <prop name='speed'    type='int' value='6' />
+    <prop name='damage'   type='int' value='2' />
+    <prop name='cooldown' type='int' value='7' />
   </properties>
 </content>

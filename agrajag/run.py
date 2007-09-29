@@ -41,8 +41,8 @@ def run():
   g_bullets = pygame.sprite.Group()
   g_explosions = pygame.sprite.Group()
 
-  g_enemies.add(Obstacle((60, 30)))
-  g_enemies.add(MovingObstacle((160, 80)))
+  g_enemies.add(Obstacle(g_explosions, (60, 30)))
+  g_enemies.add(MovingObstacle(g_explosions, (160, 80)))
   g_enemies.add(EnemyShip(g_bullets, g_explosions, (160, 160)))
 
   ship = PlayerShip(g_enemies, g_explosions, (175, display_size[1] - 60), g_ship)
@@ -58,10 +58,10 @@ def run():
         elif event.key == pygame.K_s: ship.next_weapon()
         elif event.key == pygame.K_a: ship.previous_weapon()
       elif event.type == pygame.KEYUP:
-        if   event.key == pygame.K_UP: ship.fly_up_stop()
+        if   event.key == pygame.K_UP: ship.fly_up(False)
     
     pressed_keys = pygame.key.get_pressed()
-    if pressed_keys[pygame.K_UP]: ship.fly_up_start()
+    if pressed_keys[pygame.K_UP]: ship.fly_up(True)
     if pressed_keys[pygame.K_DOWN]: ship.fly_down(display_size[1])
     if pressed_keys[pygame.K_LEFT]: ship.fly_left()
     if pressed_keys[pygame.K_RIGHT]: ship.fly_right(display_size[0])

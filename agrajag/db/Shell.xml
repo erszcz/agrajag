@@ -2,5 +2,7 @@
   <gfx>
   </gfx>
   <properties>
+    <prop name='damage'   type='int' value='1' />
+    <prop name='cooldown' type='int' value='1' />
   </properties>
 </content>
