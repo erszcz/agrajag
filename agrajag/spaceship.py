@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding: utf-8
 
-import pygame, math, random
+import pygame, math
 from dbmanager import DBManager
 from gfxmanager import GfxManager
 
@@ -10,7 +10,7 @@ from functions import deg2rad
 class AGSprite(pygame.sprite.Sprite):
   '''
   Abstract sprite class used as a parent class for more specific classes
-  like Ship, Projectile or Obstacle
+  like Ship, Projectile or Obstacle.
   
   @type gfx: dict
   @ivar gfx: The graphics resources provided by L{GfxManager}.
@@ -40,12 +40,12 @@ class AGSprite(pygame.sprite.Sprite):
     self.dir = 0
 
   def check_cfg(self, cfg):
-    '''Checks whether provided config object contains all required
+    '''Check whether provided config object contains all required
     information and whether this information is valid'''
     return cfg
  
   def blit_state(self, image, state, pos = (0, 0)):
-    '''Blits selected image state aquired from GfxManager on image
+    '''Blit selected image state aquired from GfxManager on image
     representing current instance'''
 
     area = self.gfx[image]['states'][state]['x_off'], \
@@ -81,8 +81,8 @@ class Ship(AGSprite):
         can collide with.
 
     @type  g_expl: C{pygame.sprite.Group}
-    @param g_expl: Group of independent (which perish in time) objects
-        (C{pygame.sprite.Sprite}) such as explosions, salvage, etc.
+    @param g_expl: Group of independent objects (C{pygame.sprite.Sprite})
+        (which perish in time) such as explosions, salvage, etc.
 
     @type  pos: pair of integers
     @param pos: Initial position of the ship. This pair defines the top-left
@@ -162,7 +162,7 @@ class PlayerShip(Ship):
 
   def exhaust(self, on):
     """
-    Changes the image of the ship by adding or removing an engine
+    Change the image of the ship by adding or removing an engine
     exhaust at the bottom.
     """
     
@@ -181,27 +181,21 @@ class PlayerShip(Ship):
                      self.gfx['ship']['h']))
 
   # moving
-  def fly_up_start(self):
+  def fly_up(self, on):
     """
-    Turns on engine exhaust by calling C{L{exhaust(True)}} and
-    moves the ship up.
+    Either turn on the engine exhaust and move the ship up or turn it off.
+    Both cases use C{L{exhaust}}.
     """
-
-    self.exhaust(True)
-    if self.rect.top >= self.speed:
-      self.rect.move_ip(0, -self.speed)
-
-  def fly_up_stop(self):
-    """
-    Turns off the engine exhaust (by calling C{L{exhaust(False)}})
-    when ship stops moving up.
-    """
-
-    self.exhaust(False)
+    if on:
+      self.exhaust(True)
+      if self.rect.top >= self.speed:
+        self.rect.move_ip(0, -self.speed)
+    else:
+      self.exhaust(False)
 
   def fly_down(self, boundary):
     """
-    Moves the ship down.
+    Move the ship down.
 
     @type  boundary: unsigned integer
     @param boundary: Height of the viewport. Needed in order to check
@@ -213,13 +207,13 @@ class PlayerShip(Ship):
       
   def fly_left(self):
     """
-    Moves the ship left.
+    Move the ship left.
     """
     if self.rect.left >= self.speed:
       self.rect.move_ip(-self.speed, 0)
   def fly_right(self, boundary):
     """
-    Moves the ship right.
+    Move the ship right.
 
     @type  boundary: unsigned integer
     @param boundary: Width of the viewport. Needed in order to check
@@ -230,8 +224,8 @@ class PlayerShip(Ship):
 
   def shoot(self, g_projectiles):
     """
-    Shoots the currently selected weapon. Appropriately
-    increases C{L{cooldown}}.
+    Shoot the currently selected weapon. Appropriately
+    increase C{L{cooldown}}.
 
     @type  g_projectiles: pygame.sprite.Group
     @param g_projectiles: Group to add the newly created projectiles to.
@@ -342,19 +336,30 @@ class EnergyProjectileExplosion(Explosion):
     self.rect.center = pos
 
 class Projectile(AGSprite):
+  configured = False
   damage = 0
-  cooldown = 3
+  cooldown = 0
   offset = 0
 
   def __init__(self, g_coll, g_expl, pos, *groups):
     AGSprite.__init__(self, pos, *groups)
+    
+    self.__configure(self)
 
     self.g_coll = g_coll
     self.g_expl = g_expl
 
-  def update(self, speed, dir_angle = None):
+  def __configure(cls, self):
+    if not cls.configured:
+      cls.damage   = self.cfg['damage'] if self.cfg.has_key('damage') else 0
+      cls.cooldown = self.cfg['cooldown'] if self.cfg.has_key('cooldown') else 0
+      cls.configured = True
+  __configure = classmethod(__configure)
+
+  def update(self, dir_angle = None):
+    speed = self.cfg['speed']
     if not dir_angle:
-      self.rect.move_ip(0, speed)
+      self.rect.move_ip(0, -speed)
     else:
       self.rect.move_ip(speed*math.sin(deg2rad(dir_angle)),
                         speed*math.cos(deg2rad(dir_angle)))
@@ -372,7 +377,7 @@ class Projectile(AGSprite):
     for sprite in self.g_coll.sprites():
       if sprite.rect.collidepoint(self.rect.centerx, self.rect.top):
         self.explode()
-        #sprite.damage(self.damage)
+        sprite.damage(self.__class__.damage)
 
   def shoot(cls, g_proj, g_coll, g_expl, pos):
     if cls == Bullet or cls == Shell:
@@ -384,7 +389,6 @@ class Projectile(AGSprite):
   shoot = classmethod(shoot)
 
 class Bullet(Projectile):
-  cooldown = 7
   offset = 6
 
   def __init__(self, g_coll, g_expl, pos, *groups):
@@ -394,9 +398,6 @@ class Bullet(Projectile):
     self.image.set_colorkey((0, 0, 0))
     self.image.fill((255, 210, 0))
     self.rect = pygame.Rect(pos, (1, 2))
-    
-  def update(self):
-    Projectile.update(self, -6)
 
   def explode(self):
     self.g_expl.add( BulletExplosion(self.rect.center) )
@@ -404,7 +405,6 @@ class Bullet(Projectile):
     del self
 
 class Shell(Projectile):
-  cooldown = 2
   offset = 6
 
   def comp(x, y):
@@ -435,13 +435,13 @@ class Shell(Projectile):
     if ind != -1:
       if l_gc[ind].rect.bottom < self.ship_top:
         self.explode((self.rect.centerx, l_gc[ind].rect.bottom))
-        #l_gc[ind].damage()
+        l_gc[ind].damage(Shell.damage)
       else:
         l_gc = l_gc[(ind + 1):]
         ind = self.rect.collidelist(l_gc)
         if ind != -1:
           self.explode((self.rect.centerx, l_gc[ind].rect.bottom))
-          #l_gc[ind].damage()
+          l_gc[ind].damage(Shell.damage)
 
   def explode(self, pos):
     self.g_expl.add( ShellExplosion(pos) )
@@ -449,7 +449,6 @@ class Shell(Projectile):
     del self
 
 class EnergyProjectile(Projectile):
-  cooldown = 15
 
   def __init__(self, g_coll, g_expl, pos, *groups):
     Projectile.__init__(self, g_coll, g_expl, pos, *groups)
@@ -475,7 +474,7 @@ class EnergyProjectile(Projectile):
     else:
       self.time -= 1
     
-    Projectile.update(self, -self.cfg['speed'])
+    Projectile.update(self)
 
   def explode(self):
     self.g_expl.add( EnergyProjectileExplosion(self.rect.center) )
