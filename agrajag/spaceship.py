@@ -15,6 +15,9 @@ class AGSprite(pygame.sprite.Sprite):
   @type gfx: dict
   @ivar gfx: The graphics resources provided by L{GfxManager}.
 
+  @type mover: None or class derived from C{Mover}
+  @ivar mover: Object responsible for controlling sprite movement.
+
   @type speed: integer
   @ivar speed: Value of speed (current) of game object in px.
 
@@ -36,6 +39,7 @@ class AGSprite(pygame.sprite.Sprite):
 
     self.rect = pygame.Rect(pos, (0, 0))
 
+    self.mover = None
     self.speed = self.cfg['speed'] if self.cfg.has_key('speed') else 0
     self.dir = 0
 
@@ -55,8 +59,9 @@ class AGSprite(pygame.sprite.Sprite):
     self.image.blit(self.gfx[image]['image'], pos, area)
 
   def update_position(self):
-    self.rect.move_ip(self.speed*math.sin(deg2rad(self.dir)),
-                      self.speed*math.cos(deg2rad(self.dir)))
+    if self.mover is not None:
+      self.rect.topleft = self.mover.update()
+
 
 class Ship(AGSprite):
   '''
