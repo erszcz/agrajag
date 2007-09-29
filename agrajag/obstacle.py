@@ -4,6 +4,7 @@
 import pygame
 import random
 from spaceship import AGSprite
+from mover import RandomMover, ZigZagMover, CircularMover
 # temp
 from spaceship import EnergyProjectileExplosion
 
@@ -71,18 +72,12 @@ class Obstacle(Destructible):
     pass
 
 class MovingObstacle(Obstacle):
-  period = 50      # czas, przez ktory kierunek sie nie zmienia
-  it     = 0       # licznik czasu    
+  def __init__(self, g_expl, pos, *groups):
+    Obstacle.__init__(self, g_expl, pos, *groups)
 
-  def __init__(self, pos, *groups):
-    Obstacle.__init__(self, pos, *groups)
-
-    self.speed  = 2
-    self.dir    = random.randint(0, 359)
+   # self.mover = RandomMover([pos[0], pos[1]], 1)
+    self.mover = ZigZagMover([pos[0], pos[1]], 2, 30)
+   # self.mover = CircularMover([pos[0], pos[1]], 2, 60)
 
   def update(self):
-    self.it += 1
-    if self.it % self.period == 0:
-      self.dir = random.randint(0, 359)
-
     self.update_position()
