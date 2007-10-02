@@ -76,8 +76,8 @@ class MovingObstacle(Obstacle):
     Obstacle.__init__(self, g_expl, pos, *groups)
 
    # self.mover = RandomMover([pos[0], pos[1]], 1)
-    self.mover = ZigZagMover([pos[0], pos[1]], 2, 30)
-   # self.mover = CircularMover([pos[0], pos[1]], 2, 60)
+   # self.mover = ZigZagMover([pos[0], pos[1]], 1, 10)
+    self.mover = CircularMover([pos[0], pos[1]], 1, 60)
 
   def update(self):
     self.update_position()
