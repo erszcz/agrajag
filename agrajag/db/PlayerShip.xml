@@ -9,6 +9,7 @@
     </resource>
   </gfx>
   <properties>
+    <prop name='max_speed'       value='3' type='int' />
     <prop name='explosion_class' value='SpaceshipExplosion' />
   </properties>
 </content>

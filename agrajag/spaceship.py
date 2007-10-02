@@ -25,6 +25,8 @@ class AGSprite(pygame.sprite.Sprite):
   @ivar dir: Angle determining movement direction in degrees.
   '''
 
+  max_speed = 0
+
   def __init__(self, pos, *groups):
     '''
     @type  pos: pair of integers
@@ -36,12 +38,15 @@ class AGSprite(pygame.sprite.Sprite):
 
     self.cfg = self.check_cfg(DBManager().get(self.__class__.__name__))['props']
     self.gfx = GfxManager().get(self.__class__.__name__)
+    self.__configure()
 
     self.rect = pygame.Rect(pos, (0, 0))
 
     self.mover = None
-    self.speed = self.cfg['speed'] if self.cfg.has_key('speed') else 0
-    self.dir = 0
+
+  def __configure(self):
+    if self.cfg.has_key('max_speed'):
+      self.max_speed = self.cfg['max_speed']
 
   def check_cfg(self, cfg):
     '''Check whether provided config object contains all required
@@ -145,7 +150,7 @@ class PlayerShip(Ship):
     self.exhaust(False) # inits the image
     self.rect = pygame.Rect(pos, (self.image.get_width(),
                                   self.image.get_height()))
-    self.speed = 6
+    self.speed = PlayerShip.max_speed
 
     self.weapons = (Bullet, EnergyProjectile, Shell)
     self.cw = 0 # current weapon list index
@@ -193,8 +198,8 @@ class PlayerShip(Ship):
     """
     if on:
       self.exhaust(True)
-      if self.rect.top >= self.speed:
-        self.rect.move_ip(0, -self.speed)
+      if self.rect.top >= self.max_speed:
+        self.rect.move_ip(0, -self.max_speed)
     else:
       self.exhaust(False)
 
@@ -207,15 +212,15 @@ class PlayerShip(Ship):
         whether the ship may fly farther downwards.
     """
 
-    if self.rect.top <= boundary - (self.rect.height + self.speed):
-      self.rect.move_ip(0, self.speed)
+    if self.rect.top <= boundary - (self.rect.height + self.max_speed):
+      self.rect.move_ip(0, self.max_speed)
       
   def fly_left(self):
     """
     Move the ship left.
     """
-    if self.rect.left >= self.speed:
-      self.rect.move_ip(-self.speed, 0)
+    if self.rect.left >= self.max_speed:
+      self.rect.move_ip(-self.max_speed, 0)
   def fly_right(self, boundary):
     """
     Move the ship right.
@@ -224,8 +229,8 @@ class PlayerShip(Ship):
     @param boundary: Width of the viewport. Needed in order to check
         whether the ship may fly farther towards the right edge of the screen.
     """
-    if self.rect.left <= boundary - (self.rect.width + self.speed):
-      self.rect.move_ip(self.speed, 0)
+    if self.rect.left <= boundary - (self.rect.width + self.max_speed):
+      self.rect.move_ip(self.max_speed, 0)
 
   def shoot(self, g_projectiles):
     """
@@ -236,10 +241,21 @@ class PlayerShip(Ship):
     @param g_projectiles: Group to add the newly created projectiles to.
     """
     if not self.cooldown:
-      self.cooldown = self.weapons[self.cw].shoot(g_projectiles,
-                                                  self.g_coll,
-                                                  self.g_expl,
-                                                  (self.rect.centerx + 1, self.rect.top))
+      cls = self.weapons[self.cw]
+      if cls in (Bullet, Shell):
+        p1 = cls(self.g_coll, self.g_expl,
+                 (self.rect.centerx + 1 - cls.offset, self.rect.top)) 
+        p2 = cls(self.g_coll, self.g_expl,
+                 (self.rect.centerx + 1 + cls.offset, self.rect.top)) 
+
+        g_projectiles.add(p1, p2)
+
+        self.cooldown = p1.cooldown
+      else:
+        p = cls(self.g_coll, self.g_expl, (self.rect.centerx, self.rect.top))
+        g_projectiles.add(p)
+
+        self.cooldown = p.cooldown
     else:
       self.cooldown -= 1
 
@@ -341,33 +357,33 @@ class EnergyProjectileExplosion(Explosion):
     self.rect.center = pos
 
 class Projectile(AGSprite):
-  configured = False
   damage = 0
   cooldown = 0
   offset = 0
 
   def __init__(self, g_coll, g_expl, pos, *groups):
     AGSprite.__init__(self, pos, *groups)
-    
-    self.__configure(self)
+ 
+    self.__configure()
 
     self.g_coll = g_coll
     self.g_expl = g_expl
 
-  def __configure(cls, self):
-    if not cls.configured:
-      cls.damage   = self.cfg['damage'] if self.cfg.has_key('damage') else 0
-      cls.cooldown = self.cfg['cooldown'] if self.cfg.has_key('cooldown') else 0
-      cls.configured = True
-  __configure = classmethod(__configure)
+    self.speed = self.max_speed
+
+  def __configure(self):
+    if self.cfg.has_key('damage'):
+      self.damage = self.cfg['damage']
+
+    if self.cfg.has_key('cooldown'):
+      self.cooldown = self.cfg['cooldown']
 
   def update(self, dir_angle = None):
-    speed = self.cfg['speed']
     if not dir_angle:
-      self.rect.move_ip(0, -speed)
+      self.rect.move_ip(0, -self.speed)
     else:
-      self.rect.move_ip(speed*math.sin(deg2rad(dir_angle)),
-                        speed*math.cos(deg2rad(dir_angle)))
+      self.rect.move_ip(self.speed * math.sin(deg2rad(dir_angle)),
+                        self.speed * math.cos(deg2rad(dir_angle)))
 
     self.detect_collisions()
     if self.rect.top < 0:
@@ -382,16 +398,8 @@ class Projectile(AGSprite):
     for sprite in self.g_coll.sprites():
       if sprite.rect.collidepoint(self.rect.centerx, self.rect.top):
         self.explode()
-        sprite.damage(self.__class__.damage)
+        sprite.damage(self.damage)
 
-  def shoot(cls, g_proj, g_coll, g_expl, pos):
-    if cls == Bullet or cls == Shell:
-      g_proj.add( cls(g_coll, g_expl, (pos[0] - cls.offset, pos[1])) )
-      g_proj.add( cls(g_coll, g_expl, (pos[0] + cls.offset, pos[1])) )
-    else:
-      g_proj.add( cls(g_coll, g_expl, pos) )
-    return cls.cooldown
-  shoot = classmethod(shoot)
 
 class Bullet(Projectile):
   offset = 6
