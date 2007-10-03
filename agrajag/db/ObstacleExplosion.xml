@@ -1,0 +1,20 @@
+<content>
+  <gfx>
+    <resource name='expl' file='obstacle_explosion.png' state_w='176' state_h='69'>
+      <state name='frame0' x_off='0' y_off='0' />
+      <state name='frame1' x_off='0' y_off='69' />
+      <state name='frame2' x_off='0' y_off='138' />
+      <state name='frame3' x_off='0' y_off='207' />
+      <state name='frame4' x_off='0' y_off='276' />
+      <state name='frame5' x_off='0' y_off='345' />
+      <state name='frame6' x_off='0' y_off='414' />
+      <state name='frame7' x_off='0' y_off='483' />
+      <state name='frame8' x_off='0' y_off='552' />
+      <state name='frame9' x_off='0' y_off='621' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='animation_length' value='30' />
+    <prop name='frame_count' value='10' />
+  </properties>
+</content>
