@@ -412,6 +412,18 @@ class ShellExplosion(Explosion):
     self.rect = pygame.Rect((0, 0), (10, 8))
     self.rect.center = pos
 
+class ObstacleExplosion(Explosion):
+  def __init__(self, pos, *groups):
+    Explosion.__init__(self, pos, *groups)
+
+    size = self.gfx['expl']['w'], self.gfx['expl']['h']
+
+    self.image = pygame.Surface(size)
+    self.image.set_colorkey((0, 138, 118))
+    self.blit_state('expl', 'frame0')
+    self.rect = pygame.Rect((0, 0), size)
+    self.rect.center = pos
+
 class EnergyProjectileExplosion(Explosion):
   def __init__(self, pos, *groups):
     Explosion.__init__(self, pos, *groups)
