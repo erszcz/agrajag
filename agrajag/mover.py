@@ -207,3 +207,44 @@ class CircularMover(Mover):
     
     self.pos = self.init_pos[0] + x, self.init_pos[1] + y
     return self.pos
+
+class LinearMover(Mover):
+  """
+  Causes object to move in a straight line with constant speed.
+
+  @type pos: tuple or array of two elements representing x- and y-coordinate
+  @ivar pos: object's initial position
+
+  @type speed: integer
+  @ivar speed: object's linear speed
+
+  @type dir: integer
+  @ivar dir: object's direction expressed in radians
+  """
+
+  def __init__(self, pos, speed, dir):
+    """
+    Create mover instance.
+
+    @type pos: tuple or array of two elements representing x- and y-coordinate
+    @param pos: object's initial position
+
+    @type speed: integer
+    @param speed: object's linear speed
+
+    @type dir: integer
+    @param dir: object's direction expressed in degrees
+    """
+
+    Mover.__init__(self)
+
+    self.pos = pos
+    self.speed = speed
+    self.dir = rad2deg(dir)
+
+  def update(self):
+    self.clock += 1
+
+    return self.pos[0] + self.clock * self.speed * math.sin(self.dir), \
+           self.pos[1] + self.clock * self.speed * math.cos(self.dir)
+

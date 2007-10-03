@@ -67,8 +67,74 @@ class AGSprite(pygame.sprite.Sprite):
     if self.mover is not None:
       self.rect.topleft = self.mover.update()
 
+class Destructible(AGSprite):
+  """
+  Class describing an object that can be destroyed.
 
-class Ship(AGSprite):
+  An object of this class is destructible: it has got a specified
+  durability and C{damage} and C{explode} methods.
+
+  @type g_expl: C{pygame.sprite.Group}
+  @ivar g_expl: Group of independent objects (C{pygame.sprite.Sprite})
+      (which perish in time) such as explosions, salvage, etc.
+  
+  @type durability: integer
+  @ivar durability: Object's durability. It describes how much damage the
+      object can sustain before blowing up.
+
+  @type explosion_cls_name: string
+  @ivar explosion_cls_name: Name of the class that should be instantiated
+      when object blows up. It is assumed that its constructor takes 
+      one standard argument - position of the explosion.
+  """
+
+  durability = 0
+  explosion_cls_name = None
+
+  def __init__(self, g_expl, pos, *groups):
+    """
+    @type  g_expl: C{pygame.sprite.Group}
+    @param g_expl: Group of independent objects (C{pygame.sprite.Sprite})
+        (which perish in time) such as explosions, salvage, etc.
+    """
+
+    AGSprite.__init__(self, pos, *groups)
+    self.__configure()
+
+    self.g_expl = g_expl
+
+  def __configure(self):
+    props = ['durability', 'explosion_cls_name']
+    for p in props:
+      if self.cfg.has_key(p):
+        setattr(self, p, self.cfg[p])
+
+  def damage(self, damage):
+    """
+    Deal damage and check whether the object ceases to exist. If so, call
+    L{C{explode}}.
+
+    @type  damage: integer
+    @param damage: Amount of damage the object takes.
+    """
+
+    self.durability -= damage
+    if self.durability <= 0:
+      self.explode()
+
+  def explode(self):
+    """Blow the object up and cease its existence."""
+
+    if self.explosion_cls_name is not None:
+      explosion_cls = eval(self.explosion_cls_name)
+      explosion = explosion_cls(self.rect.center)
+
+      self.g_expl.add( explosion )
+
+    self.kill()
+    del self
+
+class Ship(Destructible):
   '''
   Base class for player's ship and enemy ships.
   
@@ -102,10 +168,9 @@ class Ship(AGSprite):
     @param groups: A sequence of groups the object will be added to.
     '''
 
-    AGSprite.__init__(self, pos, *groups)
+    Destructible.__init__(self, g_expl, pos, *groups)
     
     self.g_coll = g_coll
-    self.g_expl = g_expl
 
 
 class PlayerShip(Ship):
@@ -177,7 +242,8 @@ class PlayerShip(Ship):
     """
     
     self.image = pygame.Surface((self.gfx['ship']['w'],
-                                 self.gfx['ship']['h'] + self.gfx['exhaust']['h']))
+                                 self.gfx['ship']['h'] + 
+                                 self.gfx['exhaust']['h']))
 
     self.image.fill((50, 250, 0))
     self.image.set_colorkey((50, 250, 0))
