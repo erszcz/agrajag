@@ -4,6 +4,7 @@
 import pygame, math
 from dbmanager import DBManager
 from gfxmanager import GfxManager
+import mover
 
 from functions import deg2rad
 
@@ -177,9 +178,6 @@ class PlayerShip(Ship):
   """
   Represents the player's ship (not necessarily a spaceship).
 
-  @type speed: integer
-  @ivar speed: Speed of the ship (in both x and y axes).
-
   @type weapons: sequence
   @ivar weapons: A sequence of weapons available on the ship.
 
@@ -215,7 +213,6 @@ class PlayerShip(Ship):
     self.exhaust(False) # inits the image
     self.rect = pygame.Rect(pos, (self.image.get_width(),
                                   self.image.get_height()))
-    self.speed = PlayerShip.max_speed
 
     self.weapons = (Bullet, EnergyProjectile, Shell)
     self.cw = 0 # current weapon list index
@@ -447,7 +444,7 @@ class Projectile(AGSprite):
     self.g_coll = g_coll
     self.g_expl = g_expl
 
-    self.speed = self.max_speed
+    self.mover = mover.LinearMover(pos, self.max_speed, 180)
 
   def __configure(self):
     if self.cfg.has_key('damage'):
@@ -456,13 +453,8 @@ class Projectile(AGSprite):
     if self.cfg.has_key('cooldown'):
       self.cooldown = self.cfg['cooldown']
 
-  def update(self, dir_angle = None):
-    if not dir_angle:
-      self.rect.move_ip(0, -self.speed)
-    else:
-      self.rect.move_ip(self.speed * math.sin(deg2rad(dir_angle)),
-                        self.speed * math.cos(deg2rad(dir_angle)))
-
+  def update(self):
+    self.update_position();
     self.detect_collisions()
     if self.rect.top < 0:
       self.kill()
@@ -498,6 +490,7 @@ class Bullet(Projectile):
 class Shell(Projectile):
   offset = 6
 
+  @staticmethod
   def comp(x, y):
     if   x.rect.bottom > y.rect.bottom:
       return -1
@@ -505,7 +498,6 @@ class Shell(Projectile):
       return 0
     else:
       return 1
-  comp = staticmethod(comp)
 
   def __init__(self, g_coll, g_expl, pos, *groups):
     Projectile.__init__(self, g_coll, g_expl, pos, *groups)
