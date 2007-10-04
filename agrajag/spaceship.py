@@ -526,13 +526,15 @@ class Shell(Projectile):
     if ind != -1:
       if l_gc[ind].rect.bottom < self.ship_top:
         self.explode((self.rect.centerx, l_gc[ind].rect.bottom))
-        l_gc[ind].damage(Shell.damage)
+        #l_gc[ind].damage(Shell.damage)
+        l_gc[ind].damage(self.damage)
       else:
         l_gc = l_gc[(ind + 1):]
         ind = self.rect.collidelist(l_gc)
         if ind != -1:
           self.explode((self.rect.centerx, l_gc[ind].rect.bottom))
-          l_gc[ind].damage(Shell.damage)
+          #l_gc[ind].damage(Shell.damage)
+          l_gc[ind].damage(self.damage)
 
   def explode(self, pos):
     self.g_expl.add( ShellExplosion(pos) )
