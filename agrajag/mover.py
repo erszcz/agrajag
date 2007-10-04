@@ -10,7 +10,6 @@ import pygame
 import random
 import math
 
-from spaceship import AGSprite
 from functions import deg2rad, rad2deg
 
 class Mover:
@@ -240,7 +239,7 @@ class LinearMover(Mover):
 
     self.pos = pos
     self.speed = speed
-    self.dir = rad2deg(dir)
+    self.dir = deg2rad(dir)
 
   def update(self):
     self.clock += 1
