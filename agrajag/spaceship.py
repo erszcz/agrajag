@@ -13,17 +13,23 @@ class AGSprite(pygame.sprite.Sprite):
   Abstract sprite class used as a parent class for more specific classes
   like Ship, Projectile or Obstacle.
   
+  @type cfg: dict
+  @ivar cfg: Class configuration provided by L{C{DBManager}}.
+
   @type gfx: dict
-  @ivar gfx: The graphics resources provided by L{GfxManager}.
+  @ivar gfx: The graphics resources provided by L{C{GfxManager}}.
 
   @type mover: None or class derived from C{Mover}
   @ivar mover: Object responsible for controlling sprite movement.
 
-  @type speed: integer
-  @ivar speed: Value of speed (current) of game object in px.
+  @type max_speed: integer
+  @ivar max_speed: Maximal speed object can by moved with expressed in pixels per iteration.
 
-  @type dir: float
-  @ivar dir: Angle determining movement direction in degrees.
+  @type pos: tuple or list
+  @ivar pos: Current position of arbitrary object's point.
+
+  @type align: string or tuple
+  @ivar align: Name or names of properties used to align object's C{rect} attribute.
   '''
 
   max_speed = 0
@@ -37,11 +43,11 @@ class AGSprite(pygame.sprite.Sprite):
 
     pygame.sprite.Sprite.__init__(self, *groups)
 
-    self.cfg = self.check_cfg(DBManager().get(self.__class__.__name__))['props']
+    self.cfg = DBManager().get(self.__class__.__name__)['props']
     self.gfx = GfxManager().get(self.__class__.__name__)
     self.__configure()
 
-    self.rect = pygame.Rect(pos, (0, 0))
+    self._initialize_position(pos, 'center', (0, 0))
 
     self.mover = None
 
@@ -49,12 +55,28 @@ class AGSprite(pygame.sprite.Sprite):
     if self.cfg.has_key('max_speed'):
       self.max_speed = self.cfg['max_speed']
 
-  def check_cfg(self, cfg):
-    '''Check whether provided config object contains all required
-    information and whether this information is valid'''
-    return cfg
- 
-  def blit_state(self, image, state, pos = (0, 0)):
+  def _check_cfg(self, required_props):
+    """
+    Auxiliary function that may be used to check if object's C{cfg} attribute
+    contains information on required properties. Properties with no default
+    values defined on class level should always be checked.
+    """
+
+    for p in required_props:
+      if not self.cfg[p]:
+        raise Exception("Required property '%s' not defined" % p);
+
+  def _check_gfx(self, required_resources):
+    """
+    Auxiliary function that may be used to check if object's C{gfx} attribute
+    contains required graphics resources. Resources' states are not checked!
+    """
+
+    for r in required_resources:
+      if not self.gfx[r]:
+        raise Exception("Required gfx resource '%s' not defined" % g);
+
+  def _blit_state(self, image, state, pos = (0, 0)):
     '''Blit selected image state aquired from GfxManager on image
     representing current instance'''
 
@@ -64,9 +86,49 @@ class AGSprite(pygame.sprite.Sprite):
            self.gfx[image]['h']
     self.image.blit(self.gfx[image]['image'], pos, area)
 
-  def update_position(self):
+  def _initialize_position(self, pos, align, size):
+    """
+    Initializes object's C{rect} attribute which is required by pygame
+    to render object's image. Also sets object's C{pos} and C{align}
+    attributes.
+
+    @type pos: tuple or list of two integers
+    @param pos: position of arbitrary object's point
+
+    @type align: tuple or list of two strings
+    @param align: names of properties used to align object's C{rect}
+
+    @type size: tuple
+    @param size: object's size in pixels
+    """
+
+    self.pos = pos
+    self.align = align
+    self.rect = pygame.Rect((0, 0), size)
+
+    if type(align) is tuple or type(align) is list:
+      setattr(self.rect, align[0], pos[0])
+      setattr(self.rect, align[1], pos[1])
+    elif type(align) is str:
+      setattr(self.rect, align, pos)
+    else:
+      raise Exception("Invalid align value")
+
+  def _update_position(self):
+    """
+    Set new position of the object. New position is determined by
+    object's C{mover} if object has one. If not position is not changed.
+    Object's C{align} attribute is used to properly align object's C{rect}.
+    """
+
     if self.mover is not None:
-      self.rect.topleft = self.mover.update()
+      self.pos = self.mover.update()
+
+      if type(self.align) is tuple:
+        setattr(self.rect, self.align[0], self.pos[0])
+        setattr(self.rect, self.align[1], self.pos[1])
+      elif type(self.align) is str:
+        setattr(self.rect, self.align, self.pos)
 
 class Destructible(AGSprite):
   """
@@ -209,28 +271,21 @@ class PlayerShip(Ship):
     """
 
     Ship.__init__(self, g_coll, g_expl, pos, *groups)
-    
-    self.exhaust(False) # inits the image
-    self.rect = pygame.Rect(pos, (self.image.get_width(),
-                                  self.image.get_height()))
+    self._check_gfx(['ship', 'exhaust'])
+    self._check_cfg(['max_speed'])
 
+    size = self.gfx['ship']['w'], \
+           self.gfx['ship']['h'] + self.gfx['exhaust']['h']
+
+    self.image = pygame.Surface(size)
+    self.image.set_colorkey((50, 250, 0))
+
+    self._initialize_position(pos, ('centerx', 'top'), size)
+
+    self.exhaust(False) # inits the image
     self.weapons = (Bullet, EnergyProjectile, Shell)
     self.cw = 0 # current weapon list index
     self.cooldown = 0
-
-  def check_cfg(self, cfg):
-    req_gfx = ['ship', 'exhaust']
-    req_prop = []
-
-    for g in req_gfx:
-      if not cfg['gfx'][g]:
-        raise Exception("Required gfx resource '%s' not defined" % g);
-
-    for p in req_prop:
-      if not cfg[p]:
-        raise Exception("Required property '%s' not defined" % p);
-
-    return cfg
 
   def exhaust(self, on):
     """
@@ -238,20 +293,14 @@ class PlayerShip(Ship):
     exhaust at the bottom.
     """
     
-    self.image = pygame.Surface((self.gfx['ship']['w'],
-                                 self.gfx['ship']['h'] + 
-                                 self.gfx['exhaust']['h']))
-
-    self.image.fill((50, 250, 0))
-    self.image.set_colorkey((50, 250, 0))
-
     state = 'on' if on else 'off'
 
-    self.blit_state('ship', 'def')
-    self.blit_state('exhaust',
-                    state,
-                    (self.gfx['ship']['w']/2 - self.gfx['exhaust']['w']/2,
-                     self.gfx['ship']['h']))
+    self.image.fill((50, 250, 0))
+    self._blit_state('ship', 'def')
+    self._blit_state('exhaust',
+                     state,
+                     (self.gfx['ship']['w']/2 - self.gfx['exhaust']['w']/2,
+                      self.gfx['ship']['h']))
 
   # moving
   def fly_up(self, on):
@@ -259,10 +308,12 @@ class PlayerShip(Ship):
     Either turn on the engine exhaust and move the ship up or turn it off.
     Both cases use C{L{exhaust}}.
     """
+
     if on:
       self.exhaust(True)
       if self.rect.top >= self.max_speed:
         self.rect.move_ip(0, -self.max_speed)
+        self.pos = self.pos[0], self.pos[1] - self.max_speed
     else:
       self.exhaust(False)
 
@@ -277,13 +328,17 @@ class PlayerShip(Ship):
 
     if self.rect.top <= boundary - (self.rect.height + self.max_speed):
       self.rect.move_ip(0, self.max_speed)
+      self.pos = self.pos[0], self.pos[1] + self.max_speed
       
   def fly_left(self):
     """
     Move the ship left.
     """
+
     if self.rect.left >= self.max_speed:
       self.rect.move_ip(-self.max_speed, 0)
+      self.pos = self.pos[0] - self.max_speed, self.pos[1]
+
   def fly_right(self, boundary):
     """
     Move the ship right.
@@ -292,8 +347,10 @@ class PlayerShip(Ship):
     @param boundary: Width of the viewport. Needed in order to check
         whether the ship may fly farther towards the right edge of the screen.
     """
+
     if self.rect.left <= boundary - (self.rect.width + self.max_speed):
       self.rect.move_ip(self.max_speed, 0)
+      self.pos = self.pos[0] + self.max_speed, self.pos[1]
 
   def shoot(self, g_projectiles):
     """
@@ -303,19 +360,20 @@ class PlayerShip(Ship):
     @type  g_projectiles: pygame.sprite.Group
     @param g_projectiles: Group to add the newly created projectiles to.
     """
+    
     if not self.cooldown:
       cls = self.weapons[self.cw]
       if cls in (Bullet, Shell):
         p1 = cls(self.g_coll, self.g_expl,
-                 (self.rect.centerx + 1 - cls.offset, self.rect.top)) 
+                 (self.pos[0] - cls.offset, self.pos[1])) 
         p2 = cls(self.g_coll, self.g_expl,
-                 (self.rect.centerx + 1 + cls.offset, self.rect.top)) 
+                 (self.pos[0] + cls.offset, self.pos[1])) 
 
         g_projectiles.add(p1, p2)
 
         self.cooldown = p1.cooldown
       else:
-        p = cls(self.g_coll, self.g_expl, (self.rect.centerx, self.rect.top))
+        p = cls(self.g_coll, self.g_expl, self.pos)
         g_projectiles.add(p)
 
         self.cooldown = p.cooldown
@@ -360,12 +418,14 @@ class EnemyShip(Ship):
     """
 
     Ship.__init__(self, g_coll, g_expl, pos, *groups)
-    
-    self.image = pygame.Surface((self.gfx['ship']['w'], self.gfx['ship']['h']))
-    self.image.set_colorkey((255, 137, 210))
-    self.blit_state('ship', 'def')
+ 
+    size = self.gfx['ship']['w'], self.gfx['ship']['h']
 
-    self.rect = pygame.Rect(pos, (self.gfx['ship']['w'], self.gfx['ship']['h']))
+    self.image = pygame.Surface(size)
+    self.image.set_colorkey((255, 137, 210))
+    self._blit_state('ship', 'def')
+
+    self._initialize_position(pos, ('centerx', 'bottom'), size)
   pass
 
 
@@ -380,7 +440,7 @@ class Explosion(AGSprite):
 
   def update(self):
     if self.time == self.full_time - math.floor(self.frame * self.frame_span) and self.time != 0:
-      self.blit_state('expl', 'frame' + str(self.frame))
+      self._blit_state('expl', 'frame' + str(self.frame))
       self.time -= 1
       self.frame += 1
     elif self.time <= 0:
@@ -393,21 +453,25 @@ class BulletExplosion(Explosion):
   def __init__(self, pos, *groups):
     Explosion.__init__(self, pos, *groups)
 
-    self.image = pygame.Surface((19, 19))
+    size = self.gfx['expl']['w'], self.gfx['expl']['h']
+
+    self.image = pygame.Surface(size)
     self.image.set_colorkey((0, 138, 118))
-    self.blit_state('expl', 'frame0')
-    self.rect = pygame.Rect((0, 0), (19, 19))
-    self.rect.center = pos[0] + 1, pos[1]
+    self._blit_state('expl', 'frame0')
+
+    self._initialize_position(pos, ('centerx', 'centery'), size)
 
 class ShellExplosion(Explosion):
   def __init__(self, pos, *groups):
     Explosion.__init__(self, pos, *groups)
 
-    self.image = pygame.Surface((10, 8))
+    size = self.gfx['expl']['w'], self.gfx['expl']['h']
+
+    self.image = pygame.Surface(size)
     self.image.set_colorkey((191, 220, 191))
-    self.blit_state('expl', 'frame0')
-    self.rect = pygame.Rect((0, 0), (10, 8))
-    self.rect.center = pos
+    self._blit_state('expl', 'frame0')
+
+    self._initialize_position(pos, 'center', size)
 
 class ObstacleExplosion(Explosion):
   def __init__(self, pos, *groups):
@@ -417,19 +481,21 @@ class ObstacleExplosion(Explosion):
 
     self.image = pygame.Surface(size)
     self.image.set_colorkey((0, 138, 118))
-    self.blit_state('expl', 'frame0')
-    self.rect = pygame.Rect((0, 0), size)
-    self.rect.center = pos
+    self._blit_state('expl', 'frame0')
+
+    self._initialize_position(pos, ('centerx', 'centery'), size)
 
 class EnergyProjectileExplosion(Explosion):
   def __init__(self, pos, *groups):
     Explosion.__init__(self, pos, *groups)
 
-    self.image = pygame.Surface((47, 47))
-    self.blit_state('expl', 'frame4')
+    size = self.gfx['expl']['w'], self.gfx['expl']['h']
+
+    self.image = pygame.Surface(size)
+    self._blit_state('expl', 'frame4')
     self.image.set_colorkey((225, 255, 119))
-    self.rect = pygame.Rect((0, 0), (47, 47))
-    self.rect.center = pos
+
+    self._initialize_position(pos, ('centerx', 'centery'), size)
 
 class Projectile(AGSprite):
   damage = 0
@@ -454,8 +520,8 @@ class Projectile(AGSprite):
       self.cooldown = self.cfg['cooldown']
 
   def update(self):
-    self.update_position();
-    self.detect_collisions()
+    self._update_position();
+    self._detect_collisions()
     if self.rect.top < 0:
       self.kill()
       del self
@@ -464,7 +530,7 @@ class Projectile(AGSprite):
     self.kill()
     del self
 
-  def detect_collisions(self):
+  def _detect_collisions(self):
     for sprite in self.g_coll.sprites():
       if sprite.rect.collidepoint(self.rect.centerx, self.rect.top):
         self.explode()
@@ -477,13 +543,16 @@ class Bullet(Projectile):
   def __init__(self, g_coll, g_expl, pos, *groups):
     Projectile.__init__(self, g_coll, g_expl, pos, *groups)
     
-    self.image = pygame.Surface((1, 2))
+    size = 1, 2
+
+    self.image = pygame.Surface(size)
     self.image.set_colorkey((0, 0, 0))
     self.image.fill((255, 210, 0))
-    self.rect = pygame.Rect(pos, (1, 2))
+
+    self._initialize_position(pos, 'center', size)
 
   def explode(self):
-    self.g_expl.add( BulletExplosion(self.rect.center) )
+    self.g_expl.add( BulletExplosion(self.pos) )
     self.kill()
     del self
 
@@ -505,13 +574,15 @@ class Shell(Projectile):
     self.image = pygame.Surface((1, 1))
     self.image.fill((110, 110, 110))
     self.image.set_colorkey((110, 110, 110))
-    self.rect = pygame.Rect((pos[0], 0), (1, pos[1]))
+
+    self._initialize_position((pos[0], 0), ('left', 'top'), (1, pos[1]))
+
     self.ship_top = pos[1]
 
   def update(self):
-    self.detect_collisions()
+    self._detect_collisions()
 
-  def detect_collisions(self):
+  def _detect_collisions(self):
     l_gc = self.g_coll.sprites()
     l_gc.sort(cmp = Shell.comp)
     ind = self.rect.collidelist(l_gc)
@@ -534,15 +605,16 @@ class Shell(Projectile):
     del self
 
 class EnergyProjectile(Projectile):
-
   def __init__(self, g_coll, g_expl, pos, *groups):
     Projectile.__init__(self, g_coll, g_expl, pos, *groups)
 
-    self.image = pygame.Surface((10, 10))
+    size = self.gfx['energy']['w'], self.gfx['energy']['h']
+
+    self.image = pygame.Surface(size)
     self.image.set_colorkey((255, 0, 0))
-    self.blit_state('energy', 'frame2')
-    self.rect = pygame.Rect((0, 0), (10, 10))
-    self.rect.centerx, self.rect.top = pos
+    self._blit_state('energy', 'frame2')
+
+    self._initialize_position(pos, ('centerx', 'top'), size)
 
     self.period = self.time = 16
     self.frame = 0
@@ -550,7 +622,7 @@ class EnergyProjectile(Projectile):
 
   def update(self):
     if self.time == self.period - self.frame * self.frame_span and self.time != 0:
-      self.blit_state('energy', 'frame' + str(self.frame))
+      self._blit_state('energy', 'frame' + str(self.frame))
       self.time -= 1
       self.frame += 1
     elif self.time == 0:
