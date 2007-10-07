@@ -426,8 +426,9 @@ class EnemyShip(Ship):
     self._blit_state('ship', 'def')
 
     self._initialize_position(pos, ('centerx', 'bottom'), size)
-  pass
 
+  def update(self):
+    self._update_position();
 
 class Explosion(AGSprite):
   def __init__(self, pos, *groups):
