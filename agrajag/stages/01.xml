@@ -1,0 +1,14 @@
+<events>
+  <spawn time='1000' x='200' y='0' object_cls_name='EnemyShip'
+    mover_cls_name='LinearMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='zxc' value='zxc' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='2500' x='300' y='0' object_cls_name='EnemyShip'
+    mover_cls_name='LinearMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='zxc' value='zxc' />
+    <group name='enemies' />
+  </spawn>
+</events>

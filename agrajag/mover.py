@@ -57,7 +57,7 @@ class RandomMover(Mover):
   @ivar dir: object's direction
   """
 
-  def __init__(self, pos, speed, period = 25):
+  def __init__(self, pos, speed = 1, period = 25):
     """
     Create instance of RandomMover.
     
@@ -109,7 +109,7 @@ class ZigZagMover(Mover):
   @ivar ang_speed: object's angular speed measured in radians per iteration
   """
 
-  def __init__(self, pos, speed, radius):
+  def __init__(self, pos, speed = 1, radius = 25):
     """
     Create mover instance.
 
@@ -173,7 +173,7 @@ class CircularMover(Mover):
   expressed in radians
   """
 
-  def __init__(self, pos, speed, radius = 20):
+  def __init__(self, pos, speed = 1, radius = 20):
     """
     Create CircularMover instance.
 
@@ -221,7 +221,7 @@ class LinearMover(Mover):
   @ivar dir: object's direction expressed in radians
   """
 
-  def __init__(self, pos, speed, dir):
+  def __init__(self, pos, speed = 1, dir = 0):
     """
     Create mover instance.
 
