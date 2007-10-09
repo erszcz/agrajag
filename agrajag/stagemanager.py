@@ -5,11 +5,14 @@ import os
 import pygame
 import xml.dom.minidom
 
-'''
-This class is responsible for importing game stages schedule.
-'''
+from xmlmanager import XMLManager
 
-class StageManager:
+
+class StageManager(XMLManager):
+  """
+  This class is responsible for importing game stages schedule.
+  """
+
   content = {}
 
   def import_stages(self, dir):
@@ -60,15 +63,8 @@ class StageManager:
         dom_mover_params = dom_event.getElementsByTagName('mover_param')
         dom_groups = dom_event.getElementsByTagName('group')
 
-        s['object_params'] = {}
-        for dom_op in dom_object_params:
-          s['object_params'][dom_op.getAttribute('name')] = \
-              dom_op.getAttribute('value')
-
-        s['mover_params'] = {}
-        for dom_mp in dom_mover_params:
-          s['object_params'][dom_mp.getAttribute('name')] = \
-              dom_mp.getAttribute('value')
+        s['object_params'] = self.get_props(dom_event, 'object_param')
+        s['mover_params'] = self.get_props(dom_event, 'mover_param')
 
         s['groups'] = {}
         for dom_g in dom_groups:
