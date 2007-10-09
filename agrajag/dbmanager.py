@@ -5,11 +5,13 @@ import os
 import pygame
 import xml.dom.minidom
 
-'''
-This class is responsible for importing game content configuration.
-'''
+from xmlmanager import XMLManager
 
-class DBManager:
+class DBManager(XMLManager):
+  """
+  This class is responsible for importing game content configuration.
+  """
+
   content = {}
 
   def import_db(self, dir):
@@ -32,10 +34,6 @@ class DBManager:
                   getElementsByTagName('gfx')[0]. \
                   getElementsByTagName('resource');
 
-    dom_properties = dom.getElementsByTagName('content')[0]. \
-                         getElementsByTagName('properties')[0]. \
-                         getElementsByTagName('prop');
-
     gfx = {}
     for dom_resource in dom_gfx:
       name = dom_resource.getAttribute('name')
@@ -55,16 +53,11 @@ class DBManager:
         gfx[name]['states'][state_name] = off
 
 
-    props = {}
-    for p in dom_properties:
-      name = p.getAttribute('name')
-      type = p.getAttribute('type')
+    dom_props_container = dom.getElementsByTagName('content')[0]. \
+                              getElementsByTagName('properties')[0]
 
-      props[name] = p.getAttribute('value')
+    props = self.get_props(dom_props_container, 'prop')
 
-      if (type and type == 'int'):
-        props[name] = (int)(props[name])
-    
     return { 'gfx' : gfx, 'props' : props }
 
   def get(self, class_name = None):
