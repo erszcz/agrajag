@@ -4,6 +4,14 @@
 """
 Module contain definitions of different types of movers (objects thay control
 movement of other objects).
+
+All non abstract movers must have the same constructor signature. This
+allows to dynamically create movers for objects generated according to 
+stage schemas.
+
+Mover constructor takes exactly three parameters. First one is object's
+current position, second one is object's maximal speed and third one is a 
+dictionary containing parameters specific for different classes.
 """
 
 import pygame
@@ -29,6 +37,42 @@ class Mover:
 
     self.clock = 0
 
+  def _setattrs(self, params, values):
+    """
+    Setup instance attributes. 
+    
+    This is auxiliary method that will set value of instance attribute if its
+    name exists in C{params} and C{values} (as a key). If key from C{value}
+    does not exist in C{params} an exception is raised. All attributes
+    whose names exist in C{params} should have default values.
+
+    @type params: string, list or tuple
+    @param params: Names of allowed parameters - if string, names should be 
+    comma-separated
+
+    @type values: dict
+    @param values: Dictionary containing instance attribute values
+    """
+
+    if type(params) not in (str, list, tuple):
+      raise TypeError("attribute 'params' must be a string, a list or a tuple")
+
+    if type(values) is not dict:
+      raise TypeError("attribute 'values' must be a dict")
+
+    if type(params) is str:
+      params = params.split(',')
+      params = map(lambda s: s.strip(), params)
+
+    for name in values:
+      if name not in params:
+        v = "param named '%s' is not allowed for %s, allowed params: %s" % \
+            (name, self.__class__.__name__, ', '.join(params))
+        raise ValueError(v)
+
+      setattr(self, name, values[name])
+
+
   def update(self):
     """
     Return updated object's coordinates in a tuple. Needs to be overriden
@@ -44,7 +88,7 @@ class RandomMover(Mover):
   Randomly changes direction of an object but not its speed. May allow object
   to float out of the viewport.
   
-  @type pos: tuple
+  @type pos: list
   @ivar pos: object's current position
 
   @type period: integer
@@ -57,24 +101,26 @@ class RandomMover(Mover):
   @ivar dir: object's direction
   """
 
-  def __init__(self, pos, speed = 1, period = 25):
+  period = 120
+
+  def __init__(self, pos, speed, params):
     """
     Create instance of RandomMover.
     
     @type pos: tuple
     @param pos: object's initial position as tuple of two integers
 
-    @type period: integer
-    @param period: object's speed
+    @type speed: integer
+    @param speed: object's maximal linear speed
 
-    @type period: integer
-    @param period: amount of time between changes of direction 
+    @type params: dict
+    @param params: Custom parametrisation
     """
 
     Mover.__init__(self)
-    self.pos = pos
-    self.period = period
+    self.pos = list(pos)
     self.speed = speed
+    self._setattrs(('period'), params)
 
   def update(self):
     if self.clock % self.period == 0:
@@ -109,7 +155,9 @@ class ZigZagMover(Mover):
   @ivar ang_speed: object's angular speed measured in radians per iteration
   """
 
-  def __init__(self, pos, speed = 1, radius = 25):
+  radius = 25
+
+  def __init__(self, pos, speed, params):
     """
     Create mover instance.
 
@@ -117,19 +165,19 @@ class ZigZagMover(Mover):
     @param pos: object's current position
 
     @type speed: integer
-    @param speed: object's linear speed in pixels per iteration
+    @param speed: object's maximal linear speed
 
-    @type radius: integer
-    @param radius: zigzag radius
+    @type params: dict
+    @param params: Custom parametrisation
     """
 
     Mover.__init__(self)
 
     self.init_pos = [pos[0], pos[1]]
     self.speed = speed
-    self.radius = radius
-    self.period = math.pi * radius / float(speed)
-    self.ang_speed = self.speed / float(radius)
+    self._setattrs(('radius'), params)
+    self.period = math.pi * self.radius / float(self.speed)
+    self.ang_speed = self.speed / float(self.radius)
 
   def update(self):
     self.clock += 1
@@ -173,25 +221,32 @@ class CircularMover(Mover):
   expressed in radians
   """
 
-  def __init__(self, pos, speed = 1, radius = 20):
+  radius = 20
+
+  def __init__(self, pos, speed, params):
     """
     Create CircularMover instance.
 
-    @type speed: integer
-    @param speed: object's linear speed on circular trajectory
+    @type pos: array or tuple
+    @param pos: object's current position
 
-    @type radius: integer
-    @param radius: circle radius
+    @type speed: integer
+    @param speed: object's maximal linear speed
+
+    @type params: dict
+    @param params: Custom parametrisation
     """
 
     Mover.__init__(self)
 
     self.init_pos = [pos[0], pos[1]]
     self.speed = speed
-    self.radius = radius
-    self.ang_speed = speed / float(radius)
-    self.init_speed = speed / float(math.ceil(speed / float(radius)))
-    self.init_time = radius / float(self.init_speed)
+    self._setattrs(('radius'), params)
+    self.ang_speed = self.speed / float(self.radius)
+    self.init_speed = self.speed / \
+        float(math.ceil(self.speed / float(self.radius)))
+
+    self.init_time = self.radius / float(self.init_speed)
     self.init_dir = 2 * math.pi * random.random()
 
   def update(self):
@@ -221,7 +276,9 @@ class LinearMover(Mover):
   @ivar dir: object's direction expressed in radians
   """
 
-  def __init__(self, pos, speed = 1, dir = 0):
+  dir = 0
+
+  def __init__(self, pos, speed, params):
     """
     Create mover instance.
 
@@ -229,21 +286,26 @@ class LinearMover(Mover):
     @param pos: object's initial position
 
     @type speed: integer
-    @param speed: object's linear speed
+    @param speed: object's maximal linear speed
 
-    @type dir: integer
-    @param dir: object's direction expressed in degrees
+    @type params: dict
+    @param params: 'speed' - max speed in pixels per iteration;
+                   'dir' - direction in degrees
     """
 
     Mover.__init__(self)
 
     self.pos = pos
     self.speed = speed
-    self.dir = deg2rad(dir)
+    self._setattrs(('dir'), params)
+    self.dir = deg2rad(self.dir)
 
   def update(self):
     self.clock += 1
 
-    return self.pos[0] + self.clock * self.speed * math.sin(self.dir), \
-           self.pos[1] + self.clock * self.speed * math.cos(self.dir)
+    try:
+      return self.pos[0] + self.clock * self.speed * math.sin(self.dir), \
+             self.pos[1] + self.clock * self.speed * math.cos(self.dir)
+    except ValueError, value:
+      print "Warning: unhandled ValueError: %s" % value
 

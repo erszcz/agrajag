@@ -440,15 +440,18 @@ class Explosion(AGSprite):
     self.frame_span = self.time / self.frame_count
 
   def update(self):
-    if self.time == self.full_time - math.floor(self.frame * self.frame_span) and self.time != 0:
-      self._blit_state('expl', 'frame' + str(self.frame))
-      self.time -= 1
-      self.frame += 1
-    elif self.time <= 0:
-      self.kill()
-      del self
-    else:
-      self.time -= 1
+    try:
+      if self.time == self.full_time - math.floor(self.frame * self.frame_span) and self.time != 0:
+        self._blit_state('expl', 'frame' + str(self.frame))
+        self.time -= 1
+        self.frame += 1
+      elif self.time <= 0:
+        self.kill()
+        del self
+      else:
+        self.time -= 1
+    except ValueError, value:
+      print "Warning: unhandled ValueError: %s" % value
 
 class BulletExplosion(Explosion):
   def __init__(self, pos, *groups):
@@ -511,7 +514,7 @@ class Projectile(AGSprite):
     self.g_coll = g_coll
     self.g_expl = g_expl
 
-    self.mover = mover.LinearMover(pos, self.max_speed, 180)
+    self.mover = mover.LinearMover(pos, self.max_speed, {'dir' : 180})
 
   def __configure(self):
     if self.cfg.has_key('damage'):

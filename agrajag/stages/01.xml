@@ -2,13 +2,31 @@
   <spawn time='1000' x='200' y='0' object_cls_name='EnemyShip'
     mover_cls_name='LinearMover'>
     <object_param name='zxc' value='zxc' />
-    <mover_param name='zxc' value='zxc' />
+    <mover_param name='dir' value='-10' type='int' />
     <group name='enemies' />
   </spawn>
   <spawn time='2500' x='300' y='0' object_cls_name='EnemyShip'
     mover_cls_name='LinearMover'>
     <object_param name='zxc' value='zxc' />
-    <mover_param name='zxc' value='zxc' />
+    <mover_param name='dir' value='10' type='int' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='1500' x='250' y='0' object_cls_name='EnemyShip'
+    mover_cls_name='ZigZagMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='radius' value='30' type='int' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='0' x='200' y='200' object_cls_name='EnemyShip'
+    mover_cls_name='CircularMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='radius' value='130' type='int' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='0' x='200' y='100' object_cls_name='EnemyShip'
+    mover_cls_name='RandomMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='period' value='130' type='int' />
     <group name='enemies' />
   </spawn>
 </events>

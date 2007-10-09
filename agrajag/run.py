@@ -69,7 +69,7 @@ def run():
 
             if spawn['mover_cls_name']:
               mover_cls = eval("mover.%s" % spawn['mover_cls_name'])
-              m = mover_cls(pos, object.max_speed)
+              m = mover_cls(pos, object.max_speed, spawn['mover_params'])
               object.mover = m
 
             for g in spawn['groups']:
