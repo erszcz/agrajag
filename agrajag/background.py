@@ -22,6 +22,18 @@ class BackgroundObject(pygame.sprite.Sprite):
   def top(self):    return self.rect.top
   def bottom(self): return self.rect.bottom
 
+# temp
+class BackgroundImage(BackgroundObject):
+  def __init__(self, speed, boundary, *groups):
+    BackgroundObject.__init__(self, (0, 0), speed, boundary, *groups)
+
+    self.image = pygame.image.load('gfx/terrain/TEST7B.bmp').convert_alpha()
+    self.rect = pygame.Rect((0, abs(self.image.get_height() - self.boundary)), (0, 0))
+
+  def update(self):
+    self.rect.move_ip(0, self.speed)
+# end of temp
+
 class DistantStar(BackgroundObject):
   def __init__(self, pos, boundary, *groups):
     BackgroundObject.__init__(self, pos, 2, boundary, *groups)
