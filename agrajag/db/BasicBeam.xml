@@ -1,0 +1,10 @@
+<content>
+  <gfx>
+    <resource name='beam_slice' file='basic_beam_slice.png' state_w='3' state_h='1'>
+      <state name='def' x_off='0'   y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='vanish_speed' value='25' type='int' />
+  </properties>
+</content>

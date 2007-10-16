@@ -7,7 +7,7 @@ import pygame
 from dbmanager import DBManager
 from gfxmanager import GfxManager
 from stagemanager import StageManager
-from spaceship import PlayerShip, EnemyShip
+from spaceship import PlayerShip, AdvancedPlayerShip, EnemyShip
 from background import SpaceBackground
 from obstacle import Obstacle, MovingObstacle
 import mover
@@ -51,7 +51,7 @@ def run():
   g_enemies.add(MovingObstacle(g_explosions, (160, 80)))
   g_enemies.add(EnemyShip(g_bullets, g_explosions, (160, 160)))
 
-  ship = PlayerShip(g_enemies, g_explosions, (175, display_size[1] - 60), g_ship)
+  ship = AdvancedPlayerShip(g_enemies, g_explosions, (175, display_size[1] - 60), g_ship)
 
   back = SpaceBackground(display_size)
 
