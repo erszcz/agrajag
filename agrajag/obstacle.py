@@ -18,7 +18,7 @@ class Obstacle(Destructible):
 
     self._initialize_position(pos, ('left', 'top'), size)
 
-  def update(self, passed_time):
+  def update(self):
     pass
 
 class MovingObstacle(Obstacle):
@@ -32,5 +32,5 @@ class MovingObstacle(Obstacle):
       # without speed adjustment to use pixels per second
     self.mover = LinearMover([pos[0], pos[1]], 60, {})
 
-  def update(self, passed_time):
-    self._update_position(passed_time)
+  def update(self):
+    self._update_position()
