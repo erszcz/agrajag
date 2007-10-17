@@ -24,7 +24,7 @@ class AGSprite(pygame.sprite.Sprite):
   @ivar mover: Object responsible for controlling sprite movement.
 
   @type max_speed: integer
-  @ivar max_speed: Maximal speed object can by moved with expressed in pixels per iteration.
+  @ivar max_speed: Maximal speed object can by moved with expressed in pixels per second.
 
   @type pos: tuple or list
   @ivar pos: Current position of arbitrary object's point.
@@ -122,8 +122,7 @@ class AGSprite(pygame.sprite.Sprite):
       print size
       raise
 
-
-  def _update_position(self):
+  def _update_position(self, passed_time):
     """
     Set new position of the object. New position is determined by
     object's C{mover} if object has one. If not position is not changed.
@@ -131,7 +130,7 @@ class AGSprite(pygame.sprite.Sprite):
     """
 
     if self.mover is not None:
-      self.pos = self.mover.update()
+      self.pos = self.mover.update(passed_time)
 
       if type(self.align) is tuple:
         setattr(self.rect, self.align[0], self.pos[0])
@@ -313,54 +312,77 @@ class PlayerShip(Ship):
                       self.gfx['ship']['h']))
 
   # moving
-  def fly_up(self, on):
+  def fly_up(self, on, passed_time = None):
     """
     Either turn on the engine exhaust and move the ship up or turn it off.
     Both cases use C{L{exhaust}}.
+
+    @type  on: boolean
+    @param on: Tells whether the ship is to start or to stop movement.
+    @type  passed_time: unsigned integer
+    @param passed_time: Number of miliseconds since the previous frame.
+        Used to calculate the updated position of the object.
     """
 
     if on:
+      if not passed_time:
+        raise Exception('No passed_time supplied')
       self.exhaust(True)
-      if self.rect.top >= self.max_speed:
-        self.rect.move_ip(0, -self.max_speed)
-        self.pos = self.pos[0], self.pos[1] - self.max_speed
+      delta_y = -round(passed_time * self.max_speed / 1000.)
+      if self.rect.top >= -delta_y:  # '-' because: delta_y < 0
+        self.rect.move_ip(0, delta_y)
+        self.pos = self.pos[0], self.pos[1] + delta_y
     else:
       self.exhaust(False)
 
-  def fly_down(self, boundary):
+  def fly_down(self, boundary, passed_time):
     """
     Move the ship down.
 
     @type  boundary: unsigned integer
     @param boundary: Height of the viewport. Needed in order to check
         whether the ship may fly farther downwards.
+    @type  passed_time: unsigned integer
+    @param passed_time: Number of miliseconds since the previous frame.
+        Used to calculate the updated position of the object.
     """
 
-    if self.rect.top <= boundary - (self.rect.height + self.max_speed):
-      self.rect.move_ip(0, self.max_speed)
-      self.pos = self.pos[0], self.pos[1] + self.max_speed
+    delta_y = round(passed_time * self.max_speed / 1000.)
+    if self.rect.bottom <= boundary + delta_y:
+      self.rect.move_ip(0, delta_y)
+      self.pos = self.pos[0], self.pos[1] + delta_y
       
-  def fly_left(self):
+      
+  def fly_left(self, passed_time):
     """
     Move the ship left.
+
+    @type  passed_time: unsigned integer
+    @param passed_time: Number of miliseconds since the previous frame.
+        Used to calculate the updated position of the object.
     """
 
-    if self.rect.left >= self.max_speed:
-      self.rect.move_ip(-self.max_speed, 0)
-      self.pos = self.pos[0] - self.max_speed, self.pos[1]
+    delta_x = -round(passed_time * self.max_speed / 1000.)
+    if self.rect.left >= -delta_x:  # '-' because: delta_x < 0
+      self.rect.move_ip(delta_x, 0)
+      self.pos = self.pos[0] + delta_x, self.pos[1]
 
-  def fly_right(self, boundary):
+  def fly_right(self, boundary, passed_time):
     """
     Move the ship right.
 
     @type  boundary: unsigned integer
     @param boundary: Width of the viewport. Needed in order to check
         whether the ship may fly farther towards the right edge of the screen.
+    @type  passed_time: unsigned integer
+    @param passed_time: Number of miliseconds since the previous frame.
+        Used to calculate the updated position of the object.
     """
 
-    if self.rect.left <= boundary - (self.rect.width + self.max_speed):
-      self.rect.move_ip(self.max_speed, 0)
-      self.pos = self.pos[0] + self.max_speed, self.pos[1]
+    delta_x = round(passed_time * self.max_speed / 1000.)
+    if self.rect.right <= boundary - delta_x:
+      self.rect.move_ip(delta_x, 0)
+      self.pos = self.pos[0] + delta_x, self.pos[1]
 
   def shoot(self, g_projectiles):
     """
@@ -391,18 +413,14 @@ class PlayerShip(Ship):
       self.cooldown -= 1
 
   def next_weapon(self):
-    """
-    Select next weapon.
-    """
+    """Select next weapon."""
     if self.current_weapon == self.weapons.__len__() - 1:
       self.current_weapon = 0
     else:
       self.current_weapon += 1
 
   def previous_weapon(self):
-    """
-    Select previous weapon.
-    """
+    """Select previous weapon."""
     if self.current_weapon == 0:
       self.current_weapon = self.weapons.__len__() - 1
     else:
@@ -437,8 +455,8 @@ class EnemyShip(Ship):
 
     self._initialize_position(pos, ('centerx', 'bottom'), size)
 
-  def update(self):
-    self._update_position();
+  def update(self, passed_time):
+    self._update_position(passed_time);
 
 
 class AdvancedPlayerShip(PlayerShip):
@@ -506,7 +524,7 @@ class AdvancedPlayerShip(PlayerShip):
     if self.shield is not None:
       self.shield.activate(True)
 
-  def update(self):
+  def update(self, passed_time):
     for w in self.weapons:
       w.update()
       
@@ -549,7 +567,7 @@ class Weapon:
 
 class EnergyWeapon(Weapon):
   """
-  Base class for all weapons that consume energy to shot.
+  Base class for all weapons that consume energy to shoot.
 
   @type maximum: float
   @ivar maximum: Maximum amount of energy that weapon can store at a time
@@ -731,7 +749,7 @@ class InstantEnergyBeam(AGSprite):
     for i in xrange(0, self.rect.height - 1):
       self._blit_state('beam_slice', 'def', (0, i))
 
-  def update(self):
+  def update(self, passed_time):
     if self.init:
       self.init = False
       return
@@ -963,8 +981,8 @@ class Projectile(AGSprite):
     if self.cfg.has_key('cooldown'):
       self.cooldown = self.cfg['cooldown']
 
-  def update(self):
-    self._update_position();
+  def update(self, passed_time):
+    self._update_position(passed_time)
     self._detect_collisions()
     if self.rect.top < 0:
       self.kill()
@@ -1023,7 +1041,7 @@ class Shell(Projectile):
 
     self.ship_top = pos[1]
 
-  def update(self):
+  def update(self, passed_time):
     self._detect_collisions()
 
   def _detect_collisions(self):
@@ -1064,7 +1082,7 @@ class EnergyProjectile(Projectile):
     self.frame = 0
     self.frame_span = 4
 
-  def update(self):
+  def update(self, passed_time):
     if self.time == self.period - self.frame * self.frame_span and self.time != 0:
       self._blit_state('energy', 'frame' + str(self.frame))
       self.time -= 1
@@ -1075,7 +1093,7 @@ class EnergyProjectile(Projectile):
     else:
       self.time -= 1
     
-    Projectile.update(self)
+    Projectile.update(self, passed_time)
 
   def explode(self):
     self.g_expl.add( EnergyProjectileExplosion(self.rect.center) )

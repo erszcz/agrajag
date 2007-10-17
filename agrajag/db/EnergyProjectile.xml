@@ -8,8 +8,8 @@
     </resource>
   </gfx>
   <properties>
-    <prop name='max_speed'    type='int' value='3' />
+    <prop name='max_speed'    type='int' value='320' />
     <prop name='damage'       type='int' value='12' />
-    <prop name='cooldown'     type='int' value='15' />
+    <prop name='cooldown'     type='int' value='20' />
   </properties>
 </content>

@@ -5,6 +5,6 @@
     </resource>
   </gfx>
   <properties>
-    <prop name='max_speed' value='2' type='int' />
+    <prop name='max_speed' value='80' type='int' />
   </properties>
 </content>
