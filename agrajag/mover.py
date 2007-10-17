@@ -42,7 +42,7 @@ class Mover:
     Setup instance attributes. 
     
     This is auxiliary method that will set value of instance attribute if its
-    name exists in C{params} and C{values} (as a key). If key from C{value}
+    name exists in C{params} and C{values} (as a key). If a key from C{values}
     does not exist in C{params} an exception is raised. All attributes
     whose names exist in C{params} should have default values.
 
@@ -73,7 +73,7 @@ class Mover:
       setattr(self, name, values[name])
 
 
-  def update(self):
+  def update(self, passed_time):
     """
     Return updated object's coordinates in a tuple. Needs to be overriden
     by child classes.
@@ -122,14 +122,15 @@ class RandomMover(Mover):
     self.speed = speed
     self._setattrs(('period'), params)
 
-  def update(self):
+  def update(self, passed_time):
     if self.clock % self.period == 0:
       self.dir = random.randint(0, 359)
 
     self.clock += 1
 
-    self.pos[0] += round(self.speed * math.sin(deg2rad(self.dir)))
-    self.pos[1] += round(self.speed * math.cos(deg2rad(self.dir)))
+    delta_pos = passed_time * self.speed / 1000.
+    self.pos[0] += round(delta_pos * math.sin(deg2rad(self.dir)))
+    self.pos[1] += round(delta_pos * math.cos(deg2rad(self.dir)))
 
     return self.pos
 
@@ -179,7 +180,7 @@ class ZigZagMover(Mover):
     self.period = math.pi * self.radius / float(self.speed)
     self.ang_speed = self.speed / float(self.radius)
 
-  def update(self):
+  def update(self, passed_time):
     self.clock += 1
 
     k = math.floor(self.clock / self.period)
@@ -249,7 +250,7 @@ class CircularMover(Mover):
     self.init_time = self.radius / float(self.init_speed)
     self.init_dir = 2 * math.pi * random.random()
 
-  def update(self):
+  def update(self, passed_time):
     self.clock += 1
     if self.clock <= self.init_time:
       x = self.clock * self.init_speed * math.sin(self.init_dir)
@@ -289,7 +290,7 @@ class LinearMover(Mover):
     @param speed: object's maximal linear speed
 
     @type params: dict
-    @param params: 'speed' - max speed in pixels per iteration;
+    @param params: 'speed' - max speed in pixels per second;
                    'dir' - direction in degrees
     """
 
@@ -300,12 +301,13 @@ class LinearMover(Mover):
     self._setattrs(('dir'), params)
     self.dir = deg2rad(self.dir)
 
-  def update(self):
+  def update(self, passed_time):
     self.clock += 1
 
     try:
-      return self.pos[0] + self.clock * self.speed * math.sin(self.dir), \
-             self.pos[1] + self.clock * self.speed * math.cos(self.dir)
+      delta_pos = passed_time * self.speed / 1000.
+      return self.pos[0] + round(self.clock * delta_pos * math.sin(self.dir) ), \
+             self.pos[1] + round(self.clock * delta_pos * math.cos(self.dir) )
     except ValueError, value:
       print "Warning: unhandled ValueError: %s" % value
 
