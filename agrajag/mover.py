@@ -18,6 +18,8 @@ import pygame
 import random
 import math
 
+from clock import Clock
+
 from functions import deg2rad, rad2deg
 
 class Mover:
@@ -30,12 +32,15 @@ class Mover:
 
   def __init__(self):
     """
-    Crate mover instance and initialize its clock. Should not be used as this
-    class is designed as abstract class and does not provide useful
-    functionality on its own.
+    Crate mover instance and initialize its clock. Should not be used
+    as this class is designed as an abstract class and does not provide
+    any useful functionality on its own.
     """
 
     self.clock = 0
+    self.clock_ = Clock()
+      # This needs to be taken care of somehow. Maybe the former won't
+      # be necessary after transition to time-based calculations?
 
   def _setattrs(self, params, values):
     """
@@ -73,7 +78,7 @@ class Mover:
       setattr(self, name, values[name])
 
 
-  def update(self, passed_time):
+  def update(self):
     """
     Return updated object's coordinates in a tuple. Needs to be overriden
     by child classes.
@@ -122,13 +127,13 @@ class RandomMover(Mover):
     self.speed = speed
     self._setattrs(('period'), params)
 
-  def update(self, passed_time):
+  def update(self):
     if self.clock % self.period == 0:
       self.dir = random.randint(0, 359)
 
     self.clock += 1
 
-    delta_pos = passed_time * self.speed / 1000.
+    delta_pos = self.clock_.frame_span() * self.speed / 1000.
     self.pos[0] += round(delta_pos * math.sin(deg2rad(self.dir)))
     self.pos[1] += round(delta_pos * math.cos(deg2rad(self.dir)))
 
@@ -180,7 +185,7 @@ class ZigZagMover(Mover):
     self.period = math.pi * self.radius / float(self.speed)
     self.ang_speed = self.speed / float(self.radius)
 
-  def update(self, passed_time):
+  def update(self):
     self.clock += 1
 
     k = math.floor(self.clock / self.period)
@@ -250,7 +255,7 @@ class CircularMover(Mover):
     self.init_time = self.radius / float(self.init_speed)
     self.init_dir = 2 * math.pi * random.random()
 
-  def update(self, passed_time):
+  def update(self):
     self.clock += 1
     if self.clock <= self.init_time:
       x = self.clock * self.init_speed * math.sin(self.init_dir)
@@ -301,11 +306,11 @@ class LinearMover(Mover):
     self._setattrs(('dir'), params)
     self.dir = deg2rad(self.dir)
 
-  def update(self, passed_time):
+  def update(self):
     self.clock += 1
 
     try:
-      delta_pos = passed_time * self.speed / 1000.
+      delta_pos = self.clock_.frame_span() * self.speed / 1000.
       return self.pos[0] + round(self.clock * delta_pos * math.sin(self.dir) ), \
              self.pos[1] + round(self.clock * delta_pos * math.cos(self.dir) )
     except ValueError, value:

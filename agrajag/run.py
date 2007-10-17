@@ -11,6 +11,7 @@ from spaceship import PlayerShip, AdvancedPlayerShip, EnemyShip
 from background import SpaceBackground
 from obstacle import Obstacle, MovingObstacle
 import mover
+from clock import Clock
 
 import psyco
 
@@ -30,7 +31,7 @@ def run():
   screen = pygame.display.set_mode(display_size)
   screen.fill(black)
 
-  clock = pygame.time.Clock()
+  clock = Clock(readonly = False)
 
   dbman = DBManager()
   dbman.import_db('./db')
@@ -81,8 +82,8 @@ def run():
                 g_bullets.add(object)
 
       # time management
-      passed_time = clock.tick(40)
-      #passed_time = clock.tick( float(sys.argv[1]) )
+      clock.tick(40)
+      #clock.tick( float(sys.argv[1]) )
       stage_clock += clock.get_rawtime()
 
       for event in pygame.event.get():
@@ -95,25 +96,22 @@ def run():
           if   event.key == pygame.K_UP: ship.fly_up(False)
     
       pressed_keys = pygame.key.get_pressed()
-      if pressed_keys[pygame.K_UP]: ship.fly_up(True, passed_time)
-      if pressed_keys[pygame.K_DOWN]: ship.fly_down(display_size[1], passed_time)
-      if pressed_keys[pygame.K_LEFT]: ship.fly_left(passed_time)
-      if pressed_keys[pygame.K_RIGHT]: ship.fly_right(display_size[0], passed_time)
+      if pressed_keys[pygame.K_UP]: ship.fly_up(True)
+      if pressed_keys[pygame.K_DOWN]: ship.fly_down(display_size[1])
+      if pressed_keys[pygame.K_LEFT]: ship.fly_left()
+      if pressed_keys[pygame.K_RIGHT]: ship.fly_right(display_size[0])
       if pressed_keys[pygame.K_z]: ship.shoot(g_bullets)
 
       screen.fill(black)
-      back.update(passed_time)
+      back.update()
       back.draw(screen)
-      #g_enemies.update()
-      g_enemies.update(passed_time)
+      g_enemies.update()
       g_enemies.draw(screen)
       g_explosions.update()
-      #g_explosions.update(passed_time)
       g_explosions.draw(screen)
-      g_ship.update(passed_time)
+      g_ship.update()
       g_ship.draw(screen)
-      #g_bullets.update()
-      g_bullets.update(passed_time)
+      g_bullets.update()
       g_bullets.draw(screen)
       pygame.display.flip()
 
