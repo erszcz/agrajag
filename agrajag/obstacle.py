@@ -26,11 +26,10 @@ class MovingObstacle(Obstacle):
     Obstacle.__init__(self, g_expl, pos, *groups)
 
     #self.mover = RandomMover([pos[0], pos[1]], {})
-    #self.mover = ZigZagMover([pos[0], pos[1]], 1, {})
+    self.mover = ZigZagMover(pos, 100, {})
     #self.mover = CircularMover([pos[0], pos[1]], 1, {})
     #self.mover = LinearMover([pos[0], pos[1]], 1, {})
-      # without speed adjustment to use pixels per second
-    self.mover = LinearMover([pos[0], pos[1]], 60, {})
+    #self.mover = LinearMover([pos[0], pos[1]], 60, {})
 
   def update(self):
     self._update_position()
