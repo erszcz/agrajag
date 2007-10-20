@@ -25,13 +25,15 @@ class AGSprite(pygame.sprite.Sprite):
   @ivar mover: Object responsible for controlling sprite movement.
 
   @type max_speed: integer
-  @ivar max_speed: Maximal speed object can by moved with expressed in pixels per second.
+  @ivar max_speed: Maximal speed object can by moved with expressed in
+  pixels per second.
 
   @type pos: tuple or list
   @ivar pos: Current position of arbitrary object's point.
 
   @type align: string or tuple
-  @ivar align: Name or names of properties used to align object's C{rect} attribute.
+  @ivar align: Name or names of properties used to align object's C{rect}
+  attribute.
   '''
 
   max_speed = 0
@@ -254,8 +256,8 @@ class PlayerShip(Ship):
   @ivar weapons: A sequence of weapons available on the ship.
 
   @type current_weapon: integer
-  @ivar current_weapon: Index of the sequence C{L{weapons}} which designates the
-      currently used weapon.
+  @ivar current_weapon: Index of the sequence C{L{weapons}} which
+  designates the currently used weapon.
 
   @type cooldown: unsigned integer
   @ivar cooldown: Number of rounds that have to pass before the weapon/s
@@ -289,8 +291,8 @@ class PlayerShip(Ship):
     size = self.gfx['ship']['w'], \
            self.gfx['ship']['h'] + self.gfx['exhaust']['h']
 
-    self.image = pygame.Surface(size)
-    self.image.set_colorkey((50, 250, 0))
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['ship']['image'])
 
     self._initialize_position(pos, ('centerx', 'top'), size)
 
@@ -307,7 +309,7 @@ class PlayerShip(Ship):
     
     state = 'on' if on else 'off'
 
-    self.image.fill((50, 250, 0))
+    self.image.fill((0, 0, 0, 0))
     self._blit_state('ship', 'def')
     self._blit_state('exhaust',
                      state,
@@ -437,8 +439,9 @@ class EnemyShip(Ship):
  
     size = self.gfx['ship']['w'], self.gfx['ship']['h']
 
-    self.image = pygame.Surface(size)
-    self.image.set_colorkey((255, 137, 210))
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['ship']['image'])
+
     self._blit_state('ship', 'def')
 
     self._initialize_position(pos, ('centerx', 'bottom'), size)
@@ -905,8 +908,8 @@ class BulletExplosion(Explosion):
 
     size = self.gfx['expl']['w'], self.gfx['expl']['h']
 
-    self.image = pygame.Surface(size)
-    self.image.set_colorkey((0, 138, 118))
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['expl']['image'])
     self._blit_state('expl', 'frame0')
 
     self._initialize_position(pos, ('centerx', 'centery'), size)
@@ -917,8 +920,8 @@ class ShellExplosion(Explosion):
 
     size = self.gfx['expl']['w'], self.gfx['expl']['h']
 
-    self.image = pygame.Surface(size)
-    self.image.set_colorkey((191, 220, 191))
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['expl']['image'])
     self._blit_state('expl', 'frame0')
 
     self._initialize_position(pos, 'center', size)
@@ -929,8 +932,8 @@ class ObstacleExplosion(Explosion):
 
     size = self.gfx['expl']['w'], self.gfx['expl']['h']
 
-    self.image = pygame.Surface(size)
-    self.image.set_colorkey((0, 138, 118))
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['expl']['image'])
     self._blit_state('expl', 'frame0')
 
     self._initialize_position(pos, ('centerx', 'centery'), size)
@@ -941,9 +944,9 @@ class EnergyProjectileExplosion(Explosion):
 
     size = self.gfx['expl']['w'], self.gfx['expl']['h']
 
-    self.image = pygame.Surface(size)
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['expl']['image'])
     self._blit_state('expl', 'frame4')
-    self.image.set_colorkey((225, 255, 119))
 
     self._initialize_position(pos, ('centerx', 'centery'), size)
 
@@ -1060,8 +1063,8 @@ class EnergyProjectile(Projectile):
 
     size = self.gfx['energy']['w'], self.gfx['energy']['h']
 
-    self.image = pygame.Surface(size)
-    self.image.set_colorkey((255, 0, 0))
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['energy']['image'])
     self._blit_state('energy', 'frame2')
 
     self._initialize_position(pos, ('centerx', 'top'), size)
