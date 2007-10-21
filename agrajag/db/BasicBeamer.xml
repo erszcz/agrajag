@@ -2,7 +2,7 @@
   <gfx>
   </gfx>
   <properties>
-    <prop name='explosion_cls_name' value='EnergyExplosion' />
+    <prop name='explosion_cls_name' value='BasicBeamExplosion' />
     <prop name='beam_cls_name' value='BasicBeam' />
     <prop name='damage' value='5' type='int' />
     <prop name='maximum' value='500' type='int' />

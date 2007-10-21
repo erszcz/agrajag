@@ -92,15 +92,17 @@ def run():
           if   event.key == pygame.K_q: sys.exit()
           elif event.key == pygame.K_s: ship.next_weapon()
           elif event.key == pygame.K_a: ship.previous_weapon()
+          elif event.key == pygame.K_x: ship.activate_shield(True)
         elif event.type == pygame.KEYUP:
           if   event.key == pygame.K_UP: ship.fly_up(False)
+          elif event.key == pygame.K_x: ship.activate_shield(False)
     
       pressed_keys = pygame.key.get_pressed()
       if pressed_keys[pygame.K_UP]: ship.fly_up(True)
       if pressed_keys[pygame.K_DOWN]: ship.fly_down(display_size[1])
       if pressed_keys[pygame.K_LEFT]: ship.fly_left()
       if pressed_keys[pygame.K_RIGHT]: ship.fly_right(display_size[0])
-      if pressed_keys[pygame.K_z]: ship.shoot(g_bullets)
+      if pressed_keys[pygame.K_z]: ship.shoot(g_bullets, g_explosions)
 
       screen.fill(black)
       back.update()
