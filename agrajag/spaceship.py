@@ -119,8 +119,6 @@ class AGSprite(pygame.sprite.Sprite):
       else:
         raise ValueError("Invalid align value")
     except Exception:
-      print self.__class__.__name__
-      print pos
       print align
       print size
       raise
@@ -497,23 +495,48 @@ class AdvancedPlayerShip(PlayerShip):
     self.current_weapon = 0
     self.cooldown = None
 
-  def shoot(self, g_projectiles):
+    self.shield = BasicShield(self, g_expl)
+
+  def shoot(self, g_projectiles, g_explosions):
     """
     Shot from currently selected weapon. Do nothing if there is no 
     weapon selected.
 
     @type  g_projectiles: pygame.sprite.Group
     @param g_projectiles: Group to add the newly created projectiles to.
+
+    @type  g_explosions: pygame.sprite.Group
+    @param g_explosions: Group to add the newly created explosions to (if any).
     """
 
     if self.current_weapon is not None:
-      p = self.weapons[self.current_weapon].shoot(self.pos, self.g_coll)
-      if p is not None:
-        g_projectiles.add(p)
+      self.weapons[self.current_weapon].shoot(self.pos,
+                                              self.g_coll,
+                                              g_projectiles,
+                                              g_explosions)
 
-  def shield(self, on):
+  def activate_shield(self, on):
     if self.shield is not None:
-      self.shield.activate(True)
+      self.shield.activate(on)
+
+  def damage(self, damage):
+    """
+    Deal damage and check whether the object ceases to exist. If so, call
+    L{C{explode}}.
+
+    @type  damage: integer
+    @param damage: Amount of raw damage the ship takes.
+    """
+
+    if self.shield is not None:
+      damage = self.shield.absorb(damage, 1)
+
+    if damage == 0:
+      return
+
+    self.durability -= damage
+    if self.durability <= 0:
+      self.explode()
 
   def update(self):
     for w in self.weapons:
@@ -521,6 +544,9 @@ class AdvancedPlayerShip(PlayerShip):
       
       if isinstance(w, EnergyWeapon):
         w.recharge(1)
+
+    if self.shield is not None:
+      self.shield.update()
 
 class Weapon:
   """
@@ -653,11 +679,21 @@ class InstantEnergyWeapon(EnergyWeapon):
     else:
       return 1
 
-  def shoot(self, pos, g_coll):
+  def shoot(self, pos, g_coll, g_proj, g_expl):
     """
     Perform shot if the weapon has cooled. Find closest colliding object
-    and damage it. Create visual representation of the beam. Return reference
-    to newly created beam. If the weapon has not cooled yet return None.
+    and damage it. Create visual representation of the beam.
+
+    @type  g_coll: C{pygame.sprite.Group}
+    @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the projectile
+    can collide with.
+
+    @type  g_proj: C{pygame.sprite.Group}
+    @param g_proj: Group to add created projectiles.
+
+    @type  g_expl: C{pygame.sprite.Group}
+    @param g_expl: Group to add independent objects which perish in time
+    such as explosions.
     """
   
     if self.remaining_cooldown > 0:
@@ -672,6 +708,8 @@ class InstantEnergyWeapon(EnergyWeapon):
     beam_cls = eval(self.beam_cls_name)
     beam = beam_cls()
 
+    g_proj.add(beam)
+
     all_targets = g_coll.sprites()
     targets = []
 
@@ -682,15 +720,21 @@ class InstantEnergyWeapon(EnergyWeapon):
 
     if len(targets) == 0:
       beam.set_position(pos, (pos[0], 0))
-      return beam
+      return 
 
     targets.sort(cmp = self._compare_target_pos)
     t = targets[0]
 
-    beam.set_position(pos, (pos[0], t.rect.bottom))
+    t_pos = pos[0], t.rect.bottom
+
+    beam.set_position(pos, t_pos)
+
+    expl_cls = eval(self.explosion_cls_name)
+    expl = expl_cls(t_pos)
+
+    g_expl.add(expl)
 
     t.damage(self.damage)
-    return beam
 
 
 class BasicBeamer(InstantEnergyWeapon):
@@ -710,7 +754,7 @@ class InstantEnergyBeam(AGSprite):
   @ivar pos: Central point of the farthests part of the beam.
 
   @type vanish_speed: integer
-  @ivar vanish_speed: 
+  @ivar vanish_speed: number of alpha levels per second
 
   @type init: bool
   @ivar init: Inital iteration or not
@@ -736,7 +780,7 @@ class InstantEnergyBeam(AGSprite):
 
     self._initialize_position(end, ('centerx', 'top'), size)
     self.image = pygame.Surface(size)
-    self.image.set_colorkey((0, 0, 0))
+    self.image.set_alpha(255)
     for i in xrange(0, self.rect.height - 1):
       self._blit_state('beam_slice', 'def', (0, i))
 
@@ -745,11 +789,9 @@ class InstantEnergyBeam(AGSprite):
       self.init = False
       return
 
-    if self.rect.height > self.vanish_speed:
-      r = pygame.Rect((0, self.rect.height - self.vanish_speed - 1),
-                      (self.rect.width, self.vanish_speed))
-      self.image.fill((0, 0, 0), r)
-      self.rect.height = self.rect.height - self.vanish_speed
+    current_alpha = self.image.get_alpha()
+    if current_alpha > self.vanish_speed:
+      self.image.set_alpha(current_alpha - self.vanish_speed)
     else:
       self.kill()
       del self
@@ -779,11 +821,14 @@ class Shield(AGSprite):
   working shield may and should be represented by some graphics, but should
   not collide on its own.
 
+  @type owner: C{L{AGSprite}}
+  @ivar owner: Game object that owns the shield.
+
   @type maximum: float
-  @ivar maximum: maximum amount of damage shield can absorb in one hit
+  @ivar maximum: Maximum amount of damage shield can absorb in one hit.
 
   @type current: float
-  @ivar current: amount of damage the shield can absorb at this moment
+  @ivar current: Amount of damage the shield can absorb at this moment.
 
   @type recharge_rate: float
   @ivar recharge_rate: Maximum number of energy points recharged per second.
@@ -796,10 +841,39 @@ class Shield(AGSprite):
   current = 0
   recharge_rate = 0
 
+  owner = None
   active = False
 
-  def __init__(self):
-    pass
+  def __init__(self, owner, group):
+    AGSprite.__init__(self, owner.rect.center)
+    self._check_gfx(['shield'])
+    self._check_cfg(['maximum', 'recharge_rate'])
+
+    self.__configure()
+
+    self.owner = owner
+    self.current = self.maximum
+
+    size = self.gfx['shield']['w'], self.gfx['shield']['h']
+    self.image = pygame.Surface(size, pygame.SRCALPHA, 
+        self.gfx['shield']['image'])
+
+    group.add(self)
+
+  def __configure(self):
+    props = ['maximum', 'recharge_rate']
+    for p in props:
+      if self.cfg.has_key(p):
+        setattr(self, p, self.cfg[p])
+
+  def update(self):
+    if self.active:
+      size = self.gfx['shield']['w'], self.gfx['shield']['h']
+
+      #temporary!
+      #pos = self.owner.rect.center[0] - 1, self.owner.rect.center[1] - 7
+      pos = self.owner.rect.center
+      self._initialize_position(pos, 'center', size)
 
   def activate(self, on):
     """
@@ -807,15 +881,33 @@ class Shield(AGSprite):
     activated.
     """
 
+    self.active = on
+    if on and self.current > 0:
+      self._blit_state('shield', 'def')
+    else:
+      self.image.fill((0, 0, 0, 0))
+
   def absorb(self, damage, efficiency):
     """
-    If shield is active absorb specified amount of C{damage} caused with
-    C{efficiency} and return remaining damage to be absorbed. Turn shield
+    If shield is active absorb specified amount of raw C{damage} caused with
+    C{efficiency} and return remaining raw damage to be absorbed. Turn shield
     off it current energy drops to zero. If shield is not active, return
-    unmodified damage.
+    unmodified raw damage.
     """
 
-    pass
+    if not self.active:
+      return damage
+
+    total = damage * efficiency
+    absorbed = self.current if total > self.current else total
+    remaining = (total - absorbed) / efficiency
+
+    self.current -= absorbed
+
+    if self.current == 0:
+      self.activate(False)
+
+    return remaining
 
   def get_demand(self):
     """
@@ -837,6 +929,11 @@ class Shield(AGSprite):
 
     if self.current > self.maximal:
       self.current = self.maximal
+
+    
+class BasicShield(Shield):
+  def __init__(self, owner, group):
+    Shield.__init__(self, owner, group)
 
     
 class Armour:
@@ -891,6 +988,7 @@ class Explosion(AGSprite):
   def update(self):
     try:
       if self.time == self.full_time - math.floor(self.frame * self.frame_span) and self.time != 0:
+        self.image.fill((0, 0, 0, 0))
         self._blit_state('expl', 'frame' + str(self.frame))
         self.time -= 1
         self.frame += 1
@@ -925,6 +1023,20 @@ class ShellExplosion(Explosion):
     self._blit_state('expl', 'frame0')
 
     self._initialize_position(pos, 'center', size)
+
+
+class BasicBeamExplosion(Explosion):
+  def __init__(self, pos, *groups):
+    Explosion.__init__(self, pos, *groups)
+
+    size = self.gfx['expl']['w'], self.gfx['expl']['h']
+
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['expl']['image'])
+    self._blit_state('expl', 'frame0')
+
+    self._initialize_position(pos, 'center', size)
+
 
 class ObstacleExplosion(Explosion):
   def __init__(self, pos, *groups):

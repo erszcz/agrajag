@@ -1,0 +1,12 @@
+<content>
+  <gfx>
+    <resource name='shield' file='basic_shield.png' state_w='45' state_h='52'>
+      <state name='def' x_off='0'   y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='maximum' value='100' type='int' />
+    <prop name='recharge_rate' value='9' type='int' />
+    <prop name='cost' value='20' type='int' />
+  </properties>
+</content>

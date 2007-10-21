@@ -5,6 +5,8 @@
     </resource>
   </gfx>
   <properties>
+    <prop name='explosion_cls_name' value='EnergyProjectileExplosion' />
+    <prop name='durability' value='30' type='int' />
     <prop name='max_speed' value='80' type='int' />
   </properties>
 </content>
