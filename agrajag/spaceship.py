@@ -454,6 +454,10 @@ class AdvancedPlayerShip(PlayerShip):
   wiki. In later stage some funcionality of this class may be moved to not
   yet existant class Hull.
 
+  @type center: sequence
+  @ivar center: Position of ships center (ship itself, without exhaust
+  and such).
+
   @type weapons: sequence
   @ivar weapons: A sequence of L{C{Weapon}}s available on the ship.
 
@@ -491,7 +495,9 @@ class AdvancedPlayerShip(PlayerShip):
 
     PlayerShip.__init__(self, g_coll, g_expl, pos, *groups)
 
-    self.weapons = [BasicBeamer()] #, PoppingGun()
+    self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
+
+    self.weapons = [BasicBeamer(), BasicProjectileEnergyWeapon()]
     self.current_weapon = 0
     self.cooldown = None
 
@@ -539,6 +545,12 @@ class AdvancedPlayerShip(PlayerShip):
       self.explode()
 
   def update(self):
+    """
+    Update ship state (center, weapons, shield, armour, reactor, etc.)
+    """
+
+    self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
+
     for w in self.weapons:
       w.update()
       
@@ -547,6 +559,7 @@ class AdvancedPlayerShip(PlayerShip):
 
     if self.shield is not None:
       self.shield.update()
+
 
 class Weapon:
   """
@@ -681,8 +694,9 @@ class InstantEnergyWeapon(EnergyWeapon):
 
   def shoot(self, pos, g_coll, g_proj, g_expl):
     """
-    Perform shot if the weapon has cooled. Find closest colliding object
-    and damage it. Create visual representation of the beam.
+    Perform shot if the weapon has cooled and there is enough energy. Find
+    closest colliding object and damage it. Create visual representation of
+    the beam.
 
     @type  g_coll: C{pygame.sprite.Group}
     @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the projectile
@@ -812,7 +826,50 @@ class ProjectileEnergyWeapon(EnergyWeapon):
   projectiles moving with finite speed.
   """
 
-  pass
+  def __init__(self):
+    EnergyWeapon.__init__(self)
+    self.__configure()
+
+  def __configure(self):
+    for p in ['projectile_cls_name']:
+      if self.cfg.has_key(p):
+        setattr(self, p, self.cfg[p])
+
+  def shoot(self, pos, g_coll, g_proj, g_expl):
+    """
+    Perform shot if the weapon has cooled and there is enough energy. Create
+    projectile instance.
+
+    @type  g_coll: C{pygame.sprite.Group}
+    @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the projectile
+    can collide with.
+
+    @type  g_proj: C{pygame.sprite.Group}
+    @param g_proj: Group to add created projectiles.
+    """
+  
+    if self.remaining_cooldown > 0:
+      return
+
+    if self.current < self.cost:
+      return
+
+    self.remaining_cooldown = self.cooldown
+    self.current -= self.cost
+
+    projectile_cls = eval(self.projectile_cls_name)
+    projectile = projectile_cls(g_coll, g_expl, pos)
+
+    g_proj.add(projectile)
+
+
+class BasicProjectileEnergyWeapon(ProjectileEnergyWeapon):
+  """
+  The least powerful, yet energy effective projectile energy weapon.
+  """
+
+  def __init__(self):
+    ProjectileEnergyWeapon.__init__(self)
 
 
 class Shield(AGSprite):
@@ -870,9 +927,7 @@ class Shield(AGSprite):
     if self.active:
       size = self.gfx['shield']['w'], self.gfx['shield']['h']
 
-      #temporary!
-      #pos = self.owner.rect.center[0] - 1, self.owner.rect.center[1] - 7
-      pos = self.owner.rect.center
+      pos = self.owner.center
       self._initialize_position(pos, 'center', size)
 
   def activate(self, on):
