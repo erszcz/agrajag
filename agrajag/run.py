@@ -19,7 +19,8 @@ def run():
   pygame.init()
   random.seed()
   
-  display_size = 400, 600
+  display_size = 800, 600
+  viewport_size = display_size[0], 500
   black = 0, 0, 0
   red = 255, 70, 70
   green = 70, 255, 70
@@ -52,9 +53,9 @@ def run():
   g_enemies.add(MovingObstacle(g_explosions, (160, 80)))
   g_enemies.add(EnemyShip(g_bullets, g_explosions, (160, 160)))
 
-  ship = AdvancedPlayerShip(g_enemies, g_explosions, (175, display_size[1] - 60), g_ship)
+  ship = AdvancedPlayerShip(g_enemies, g_explosions, (175, viewport_size[1] - 60), g_ship)
 
-  back = SpaceBackground(display_size)
+  back = SpaceBackground(viewport_size)
 
   for stage_name in stages:
     stage_clock = 0
@@ -99,12 +100,13 @@ def run():
     
       pressed_keys = pygame.key.get_pressed()
       if pressed_keys[pygame.K_UP]: ship.fly_up(True)
-      if pressed_keys[pygame.K_DOWN]: ship.fly_down(display_size[1])
+      if pressed_keys[pygame.K_DOWN]: ship.fly_down(viewport_size[1])
       if pressed_keys[pygame.K_LEFT]: ship.fly_left()
-      if pressed_keys[pygame.K_RIGHT]: ship.fly_right(display_size[0])
+      if pressed_keys[pygame.K_RIGHT]: ship.fly_right(viewport_size[0])
       if pressed_keys[pygame.K_z]: ship.shoot(g_bullets, g_explosions)
 
-      screen.fill(black)
+      #screen.fill(black)
+      screen.fill(l_green)
       back.update()
       back.draw(screen)
       g_enemies.update()
@@ -115,6 +117,12 @@ def run():
       g_explosions.draw(screen)
       g_ship.draw(screen)
       g_bullets.draw(screen)
+
+      screen.fill(red,
+                  pygame.Rect((0, viewport_size[1]),
+                              (display_size[0],
+                               display_size[1] - viewport_size[1]))
+                 )
       pygame.display.flip()
 
 if __name__ == '__main__':
