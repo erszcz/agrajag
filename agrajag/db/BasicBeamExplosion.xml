@@ -9,7 +9,7 @@
     </resource>
   </gfx>
   <properties>
-    <prop name='animation_length' value='10' />
-    <prop name='frame_count' value='4' />
+    <prop name='frame_length' value='50' type='int' />
+    <prop name='frame_count' value='4' type='int' />
   </properties>
 </content>

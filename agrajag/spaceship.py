@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #coding: utf-8
 
-import pygame, math
+import pygame, math, random
 from dbmanager import DBManager
 from gfxmanager import GfxManager
 import mover
@@ -50,6 +50,7 @@ class AGSprite(pygame.sprite.Sprite):
     self.cfg = DBManager().get(self.__class__.__name__)['props']
     self.gfx = GfxManager().get(self.__class__.__name__)
     self.__configure()
+    self.clock = Clock()
 
     self._initialize_position(pos, 'center', (0, 0))
 
@@ -283,8 +284,6 @@ class PlayerShip(Ship):
     Ship.__init__(self, g_coll, g_expl, pos, *groups)
     self._check_gfx(['ship', 'exhaust'])
     self._check_cfg(['max_speed'])
-
-    self.clock = Clock()
 
     size = self.gfx['ship']['w'], \
            self.gfx['ship']['h'] + self.gfx['exhaust']['h']
@@ -1031,29 +1030,33 @@ class Reactor:
 
     pass
 
+
 class Explosion(AGSprite):
   def __init__(self, pos, *groups):
     AGSprite.__init__(self, pos, *groups)
 
-    self.full_time = self.time = float(self.cfg['animation_length'])
-    self.frame = 0
-    self.frame_count = float(self.cfg['frame_count'])
-    self.frame_span = self.time / self.frame_count
+    self.time = 0
+    self.frame_length = self.cfg['frame_length']
+    self.frame_count = self.cfg['frame_count']
+
 
   def update(self):
-    try:
-      if self.time == self.full_time - math.floor(self.frame * self.frame_span) and self.time != 0:
-        self.image.fill((0, 0, 0, 0))
-        self._blit_state('expl', 'frame' + str(self.frame))
-        self.time -= 1
-        self.frame += 1
-      elif self.time <= 0:
-        self.kill()
-        del self
-      else:
-        self.time -= 1
-    except ValueError, value:
-      print "Warning: unhandled ValueError: %s" % value
+  # improving this method to increase the animation look wouldn't hurt
+    if self.time >= self.frame_count * self.frame_length:
+      self.kill()
+      del self
+    else:
+      try:
+        for frame in range(0, self.frame_count):
+          if self.time in range(frame * self.frame_length,
+                                (frame + 1) * self.frame_length):
+            self.image.fill((0, 0, 0, 0))
+            self._blit_state('expl', 'frame' + str(frame))
+            break
+      except ValueError, value:
+        print "Warning: unhandled ValueError: %s" % value
+      self.time += self.clock.frame_span()
+
 
 class BulletExplosion(Explosion):
   def __init__(self, pos, *groups):
@@ -1066,6 +1069,7 @@ class BulletExplosion(Explosion):
     self._blit_state('expl', 'frame0')
 
     self._initialize_position(pos, ('centerx', 'centery'), size)
+
 
 class ShellExplosion(Explosion):
   def __init__(self, pos, *groups):
@@ -1209,14 +1213,12 @@ class Shell(Projectile):
     if ind != -1:
       if l_gc[ind].rect.bottom < self.ship_top:
         self.explode((self.rect.centerx, l_gc[ind].rect.bottom))
-        #l_gc[ind].damage(Shell.damage)
         l_gc[ind].damage(self.damage)
       else:
         l_gc = l_gc[(ind + 1):]
         ind = self.rect.collidelist(l_gc)
         if ind != -1:
           self.explode((self.rect.centerx, l_gc[ind].rect.bottom))
-          #l_gc[ind].damage(Shell.damage)
           l_gc[ind].damage(self.damage)
 
   def explode(self, pos):
@@ -1236,20 +1238,22 @@ class EnergyProjectile(Projectile):
 
     self._initialize_position(pos, ('centerx', 'top'), size)
 
-    self.period = self.time = 16
-    self.frame = 0
-    self.frame_span = 4
+    #self.period = 400
+    self.period = (100, 200, 300, 400, 800)[random.randint(0, 4)]
+    self.frame_count = 4  # const
+    self.time = random.randint(0, self.period)
+    self.frame_length = self.period / self.frame_count
 
   def update(self):
-    if self.time == self.period - self.frame * self.frame_span and self.time != 0:
-      self._blit_state('energy', 'frame' + str(self.frame))
-      self.time -= 1
-      self.frame += 1
-    elif self.time == 0:
-      self.time = self.period
-      self.frame = 0
-    else:
-      self.time -= 1
+    while self.time >= self.period:
+      self.time -= self.period
+    for frame in range(0, self.frame_count):
+      if self.time in range(frame * self.frame_length,
+                            (frame + 1) * self.frame_length):
+        self.image.fill((0, 0, 0, 0))
+        self._blit_state('energy', 'frame' + str(frame))
+        break
+    self.time += self.clock.frame_span()
     
     Projectile.update(self)
 
