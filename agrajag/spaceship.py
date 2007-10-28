@@ -501,6 +501,7 @@ class AdvancedPlayerShip(PlayerShip):
     self.cooldown = None
 
     self.shield = BasicShield(self, g_expl)
+    self.armour = BasicArmour()
 
   def shoot(self, g_projectiles, g_explosions):
     """
@@ -533,8 +534,11 @@ class AdvancedPlayerShip(PlayerShip):
     @param damage: Amount of raw damage the ship takes.
     """
 
-    if self.shield is not None:
+    if damage > 0 and self.shield is not None:
       damage = self.shield.absorb(damage, 1)
+
+    if damage > 0 and self.armour is not None:
+      damage = self.armour.absorb(damage, 1)
 
     if damage == 0:
       return
@@ -995,25 +999,47 @@ class Armour:
   Base class for all ship armours.
 
   @type maximum: float
-  @ivar maximum: maximal amount of damage armour can absorb in one hit
+  @ivar maximum: maximal amount of damage armour can absorb in one hit (maximal durability)
 
   @type current: float
-  @ivar current: amount of damage the armour can absorb at this moment
+  @ivar current: amount of damage the armour can absorb at this moment (current durability)
   """
 
   maximum = 0
   current = 0
 
   def __init__(self):
-    pass
+    """
+    """
+
+    self.cfg = DBManager().get(self.__class__.__name__)['props']
+
+  def __configure(self):
+    if self.cfg.has_key('durability'):
+      self.current = self.cfg['durability']
 
   def absorb(self, damage, efficiency):
     """
-    Absorb specified amount of C{damage} caused with C{efficiency} and
-    return remaining damage to be absorbed.
+    Absorb specified amount of raw C{damage} caused with C{efficiency} and
+    return remaining raw damage to be absorbed.
     """
 
-    pass
+    total = damage * efficiency
+    absorbed = self.current if total > self.current else total
+    remaining = (total - absorbed) / efficiency
+
+    self.current -= absorbed
+
+    return remaining
+
+
+class BasicArmour(Armour):
+  """
+  The weakes armour type player ship can use.
+  """
+
+  def __init__(self):
+    Armour.__init__(self)
 
 
 class Reactor:
