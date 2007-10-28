@@ -105,8 +105,7 @@ def run():
       if pressed_keys[pygame.K_RIGHT]: ship.fly_right(viewport_size[0])
       if pressed_keys[pygame.K_z]: ship.shoot(g_bullets, g_explosions)
 
-      #screen.fill(black)
-      screen.fill(l_green)
+      screen.fill(black)
       back.update()
       back.draw(screen)
       g_enemies.update()
