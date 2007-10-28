@@ -5,6 +5,7 @@
     </resource>
   </gfx>
   <properties>
+    <prop name='max_speed' type='int' value='100' />
     <prop name='durability' type='int' value='60' />
     <prop name='explosion_cls_name' value='ObstacleExplosion' />
   </properties>

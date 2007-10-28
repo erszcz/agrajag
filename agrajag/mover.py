@@ -18,11 +18,12 @@ import pygame
 import random
 import math
 
+from base import AGObject
 from clock import Clock
 
 from functions import deg2rad, rad2deg
 
-class Mover:
+class Mover(AGObject):
   """
   Base class for all movers.
 
@@ -37,42 +38,9 @@ class Mover:
     any useful functionality on its own.
     """
 
+    AGObject.__init__(self)
+
     self.clock = Clock()
-
-  def _setattrs(self, params, values):
-    """
-    Setup instance attributes. 
-    
-    This is auxiliary method that will set value of instance attribute if its
-    name exists in C{params} and C{values} (as a key). If a key from C{values}
-    does not exist in C{params} an exception is raised. All attributes
-    whose names exist in C{params} should have default values.
-
-    @type params: string, list or tuple
-    @param params: Names of allowed parameters - if string, names should be 
-    comma-separated
-
-    @type values: dict
-    @param values: Dictionary containing instance attribute values
-    """
-
-    if type(params) not in (str, list, tuple):
-      raise TypeError("attribute 'params' must be a string, a list or a tuple")
-
-    if type(values) is not dict:
-      raise TypeError("attribute 'values' must be a dict")
-
-    if type(params) is str:
-      params = params.split(',')
-      params = map(lambda s: s.strip(), params)
-
-    for name in values:
-      if name not in params:
-        v = "param named '%s' is not allowed for %s, allowed params: %s" % \
-            (name, self.__class__.__name__, ', '.join(params))
-        raise ValueError(v)
-
-      setattr(self, name, values[name])
 
 
   def update(self):

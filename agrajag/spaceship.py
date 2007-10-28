@@ -2,6 +2,8 @@
 #coding: utf-8
 
 import pygame, math, random
+
+from base import AGObject
 from dbmanager import DBManager
 from gfxmanager import GfxManager
 import mover
@@ -10,17 +12,17 @@ from clock import Clock
 from functions import deg2rad
 
 
-class AGSprite(pygame.sprite.Sprite):
+class AGSprite(AGObject, pygame.sprite.Sprite):
   '''
   Abstract sprite class used as a parent class for more specific classes
   like Ship, Projectile or Obstacle.
-  
+
   @type cfg: dict
   @ivar cfg: Class configuration provided by L{C{DBManager}}.
 
   @type gfx: dict
   @ivar gfx: The graphics resources provided by L{C{GfxManager}}.
-
+  
   @type mover: None or class derived from C{Mover}
   @ivar mover: Object responsible for controlling sprite movement.
 
@@ -45,20 +47,17 @@ class AGSprite(pygame.sprite.Sprite):
     the top-left corner of the object's rectangle C{rect}.
     '''
 
+    AGObject.__init__(self)
     pygame.sprite.Sprite.__init__(self, *groups)
 
     self.cfg = DBManager().get(self.__class__.__name__)['props']
     self.gfx = GfxManager().get(self.__class__.__name__)
-    self.__configure()
+    self._setattrs('max_speed', self.cfg)
     self.clock = Clock()
 
     self._initialize_position(pos, 'center', (0, 0))
 
     self.mover = None
-
-  def __configure(self):
-    if self.cfg.has_key('max_speed'):
-      self.max_speed = self.cfg['max_speed']
 
   def _check_cfg(self, required_props):
     """
@@ -172,15 +171,9 @@ class Destructible(AGSprite):
     """
 
     AGSprite.__init__(self, pos, *groups)
-    self.__configure()
+    self._setattrs('durability, explosion_cls_name', self.cfg)
 
     self.g_expl = g_expl
-
-  def __configure(self):
-    props = ['durability', 'explosion_cls_name']
-    for p in props:
-      if self.cfg.has_key(p):
-        setattr(self, p, self.cfg[p])
 
   def damage(self, damage):
     """
@@ -496,12 +489,13 @@ class AdvancedPlayerShip(PlayerShip):
 
     self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
 
-    self.weapons = [BasicBeamer(), BasicProjectileEnergyWeapon()]
+    self.weapons = [BasicBeamer(), BasicProjectileEnergyWeapon(), BasicPAW()]
     self.current_weapon = 0
     self.cooldown = None
 
     self.shield = BasicShield(self, g_expl)
     self.armour = BasicArmour()
+    self.reactor = BasicReactor()
 
   def shoot(self, g_projectiles, g_explosions):
     """
@@ -554,17 +548,45 @@ class AdvancedPlayerShip(PlayerShip):
 
     self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
 
+    self._recharge()
+
     for w in self.weapons:
       w.update()
-      
-      if isinstance(w, EnergyWeapon):
-        w.recharge(1)
 
     if self.shield is not None:
       self.shield.update()
+      
+  def _recharge(self):
+    """
+    Recharge energy consuming items if ship is equipped with an reactor.
+
+    Distribution of energy is determined by the reactor based on provided
+    demands.
+    """
+
+    if self.reactor is None:
+      return
+
+    rechargables = []
+    demands = []
+    for w in self.weapons:
+      if isinstance(w, EnergyWeapon):
+        rechargables.append(w)
+        demands.append(w.get_demand())
+
+    if self.shield is not None:
+      rechargables.append(self.shield)
+      demands.append(self.shield.get_demand())
+
+    supplies = self.reactor.supply(demands)
+    if supplies is None:
+      return
+
+    for i in xrange(len(rechargables)):
+      rechargables[i].recharge(supplies[i])
 
 
-class Weapon:
+class Weapon(AGObject):
   """
   Base class for all weapons.
 
@@ -586,12 +608,10 @@ class Weapon:
   remaining_cooldown = 0
 
   def __init__(self):
-    self.cfg = DBManager().get(self.__class__.__name__)['props']
-    self.__configure()
+    AGObject.__init__(self)
 
-  def __configure(self):
-    if self.cfg.has_key('cooldown'):
-      self.cooldown = self.cfg['cooldown']
+    self.cfg = DBManager().get(self.__class__.__name__)['props']
+    self._setattrs('cooldown', self.cfg)
 
   def update(self):
     if self.remaining_cooldown > 0:
@@ -625,14 +645,17 @@ class EnergyWeapon(Weapon):
     """
 
     Weapon.__init__(self)
-    self.__configure()
+    self._setattrs('maximum, recharge_rate, cost', self.cfg)
 
     self.current = self.maximum
 
-  def __configure(self):
-    for p in 'maximum', 'recharge_rate', 'cost':
-      if self.cfg.has_key(p):
-        setattr(self, p, self.cfg[p])
+  def get_demand(self):
+    """
+    Return energy demand, that is difference between maximal and current 
+    energy level.
+    """
+
+    return self.maximum - self.current
 
   def recharge(self, supply):
     """
@@ -651,9 +674,19 @@ class EnergyWeapon(Weapon):
 class AmmoWeapon(Weapon):
   """
   Base class for all weapons that need ammunition to shoot.
+
+  @type maximum: integer
+  @ivar maximum: maximum number of ammo pieces in weapon storage
+
+  @type current: integer
+  @ivar current: current number of ammo pieces in weapon storage
   """
 
-  pass
+  def __init__(self):
+    Weapon.__init__(self)
+    self._setattrs('maximum', self.cfg)
+
+    self.current = self.maximum
 
 class InstantAmmoWeapon(AmmoWeapon):
   """
@@ -663,6 +696,45 @@ class InstantAmmoWeapon(AmmoWeapon):
 
 class ProjectileAmmoWeapon(AmmoWeapon):
   """
+  Base class for all ammo weapons that shoot projectiles moving with finite
+  speed.
+  """
+
+  def __init__(self):
+    AmmoWeapon.__init__(self)
+    self._setattrs('projectile_cls_name', self.cfg)
+
+  def shoot(self, pos, g_coll, g_proj, g_expl):
+    """
+    Perform shot if the weapon has cooled and there is ammo left. Create
+    projectile instance.
+
+    @type  g_coll: C{pygame.sprite.Group}
+    @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the projectile
+    can collide with.
+
+    @type  g_proj: C{pygame.sprite.Group}
+    @param g_proj: Group to add created projectiles.
+    """
+  
+    if self.remaining_cooldown > 0:
+      return
+
+    if self.current < 1:
+      return
+
+    self.remaining_cooldown = self.cooldown
+    self.current -= 1
+
+    projectile_cls = eval(self.projectile_cls_name)
+    projectile = projectile_cls(g_coll, g_expl, pos)
+
+    g_proj.add(projectile)
+
+
+class BasicPAW(ProjectileAmmoWeapon):
+  """
+  Basic type of C{L{ProjectileAmmoWeapon}}.
   """
 
   pass
@@ -679,12 +751,7 @@ class InstantEnergyWeapon(EnergyWeapon):
 
   def __init__(self):
     EnergyWeapon.__init__(self)
-    self.__configure()
-
-  def __configure(self):
-    for p in 'damage', 'explosion_cls_name', 'beam_cls_name':
-      if self.cfg.has_key(p):
-        setattr(self, p, self.cfg[p])
+    self._setattrs('damage, explosion_cls_name, beam_cls_name', self.cfg)
 
   @staticmethod
   def _compare_target_pos(a, b):
@@ -831,12 +898,7 @@ class ProjectileEnergyWeapon(EnergyWeapon):
 
   def __init__(self):
     EnergyWeapon.__init__(self)
-    self.__configure()
-
-  def __configure(self):
-    for p in ['projectile_cls_name']:
-      if self.cfg.has_key(p):
-        setattr(self, p, self.cfg[p])
+    self._setattrs('projectile_cls_name', self.cfg)
 
   def shoot(self, pos, g_coll, g_proj, g_expl):
     """
@@ -909,7 +971,7 @@ class Shield(AGSprite):
     self._check_gfx(['shield'])
     self._check_cfg(['maximum', 'recharge_rate'])
 
-    self.__configure()
+    self._setattrs('maximum, recharge_rate', self.cfg)
 
     self.owner = owner
     self.current = self.maximum
@@ -919,12 +981,6 @@ class Shield(AGSprite):
         self.gfx['shield']['image'])
 
     group.add(self)
-
-  def __configure(self):
-    props = ['maximum', 'recharge_rate']
-    for p in props:
-      if self.cfg.has_key(p):
-        setattr(self, p, self.cfg[p])
 
   def update(self):
     if self.active:
@@ -985,8 +1041,8 @@ class Shield(AGSprite):
     supply = supply if supply <= self.recharge_rate else self.recharge_rate
     self.current += supply
 
-    if self.current > self.maximal:
-      self.current = self.maximal
+    if self.current > self.maximum:
+      self.current = self.maximum
 
     
 class BasicShield(Shield):
@@ -994,7 +1050,7 @@ class BasicShield(Shield):
     Shield.__init__(self, owner, group)
 
     
-class Armour:
+class Armour(AGObject):
   """
   Base class for all ship armours.
 
@@ -1012,11 +1068,10 @@ class Armour:
     """
     """
 
-    self.cfg = DBManager().get(self.__class__.__name__)['props']
+    AGObject.__init__(self)
 
-  def __configure(self):
-    if self.cfg.has_key('durability'):
-      self.current = self.cfg['durability']
+    self.cfg = DBManager().get(self.__class__.__name__)['props']
+    self._setattrs('maximum', self.cfg)
 
   def absorb(self, damage, efficiency):
     """
@@ -1042,19 +1097,45 @@ class BasicArmour(Armour):
     Armour.__init__(self)
 
 
-class Reactor:
+class Reactor(AGObject):
   """
-  Base class for all ship reactors.
+  Base class for all ship reactors. Reactor is responsible for providing
+  energy to all energy consuming components of a ship (i.e. shields, 
+  energy weapons).
   """
 
   def __init__(self):
-    pass
-
-  def supply(self, demand):
     """
     """
 
-    pass
+    self.cfg = DBManager().get(self.__class__.__name__)['props']
+    self._setattrs('power', self.cfg)
+
+  def supply(self, demands):
+    """
+    Return all energy available at this moment distribited in accordance
+    to provided demands.
+    """
+
+    total_demand = float(sum(demands))
+    if math.fabs(total_demand) < 0.1:
+      return None
+
+    power = self.power
+
+    supplies = []
+    for i in xrange(len(demands)):
+      supplies.append(self.power * demands[i] / total_demand)
+
+    return supplies
+
+
+class BasicReactor(Reactor):
+  """
+  """
+
+  def __init__(self):
+    Reactor.__init__(self)
 
 
 class Explosion(AGSprite):
@@ -1155,19 +1236,12 @@ class Projectile(AGSprite):
   def __init__(self, g_coll, g_expl, pos, *groups):
     AGSprite.__init__(self, pos, *groups)
  
-    self.__configure()
+    self._setattrs('damage, cooldown', self.cfg)
 
     self.g_coll = g_coll
     self.g_expl = g_expl
 
     self.mover = mover.LinearMover(pos, self.max_speed, {'dir' : 180})
-
-  def __configure(self):
-    if self.cfg.has_key('damage'):
-      self.damage = self.cfg['damage']
-
-    if self.cfg.has_key('cooldown'):
-      self.cooldown = self.cfg['cooldown']
 
   def update(self):
     self._update_position()
