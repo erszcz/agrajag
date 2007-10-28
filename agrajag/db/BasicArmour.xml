@@ -1,0 +1,7 @@
+<content>
+  <gfx>
+  </gfx>
+  <properties>
+    <prop name='maximum' value='100' type='int' />
+  </properties>
+</content>
