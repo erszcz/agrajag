@@ -1,0 +1,16 @@
+<content>
+  <gfx>
+    <resource name='strip' file='strips.png' state_w='8' state_h='4'>
+      <state name='green'   x_off='0'   y_off='0' />
+      <state name='cyan'    x_off='8'   y_off='0' />
+      <state name='blue'    x_off='16'  y_off='0' />
+      <state name='magenta' x_off='24'  y_off='0' />
+      <state name='red'     x_off='32'  y_off='0' />
+      <state name='yellow'  x_off='40'  y_off='0' />
+      <state name='black'   x_off='48'  y_off='0' />
+      <state name='white'   x_off='56'  y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+  </properties>
+</content>

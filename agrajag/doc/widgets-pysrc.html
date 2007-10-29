@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>widgets</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;widgets
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="widgets-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="widgets-module.html">Module widgets</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/python</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment"></tt><tt class="py-comment">#coding: utf-8</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pygame</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Module gfxmanager=gfxmanager-module.html"><a title="gfxmanager" class="py-name" href="#" onclick="return doclink('link-0', 'gfxmanager', 'link-0');">gfxmanager</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Class gfxmanager.GfxManager=gfxmanager.GfxManager-class.html"><a title="gfxmanager.GfxManager" class="py-name" href="#" onclick="return doclink('link-1', 'GfxManager', 'link-1');">GfxManager</a></tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-string">"""This module supplies a number of widgets used to form the GUI."""</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"> </tt>
+<a name="Widget"></a><div id="Widget-def"><a name="L9"></a><tt class="py-lineno">  9</tt> <a class="py-toggle" href="#" id="Widget-toggle" onclick="return toggle('Widget');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="widgets.Widget-class.html">Widget</a><tt class="py-op">(</tt><tt class="py-base-class">pygame</tt><tt class="py-op">.</tt><tt class="py-base-class">sprite</tt><tt class="py-op">.</tt><tt class="py-base-class">Sprite</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Widget-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Widget-expanded"><a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line">  <tt class="py-docstring">"""A base widget object to be inherited from."""</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"> </tt>
+<a name="Widget.__init__"></a><div id="Widget.__init__-def"><a name="L12"></a><tt class="py-lineno"> 12</tt> <a class="py-toggle" href="#" id="Widget.__init__-toggle" onclick="return toggle('Widget.__init__');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="widgets.Widget-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">pos</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">groups</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Widget.__init__-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="Widget.__init__-expanded"><a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line">    <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">sprite</tt><tt class="py-op">.</tt><tt class="py-name">Sprite</tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Method background.BackgroundImage.__init__()=background.BackgroundImage-class.html#__init__,Method background.BackgroundObject.__init__()=background.BackgroundObject-class.html#__init__,Method background.CloserStar.__init__()=background.CloserStar-class.html#__init__,Method background.CloserStarCluster.__init__()=background.CloserStarCluster-class.html#__init__,Method background.DistantStar.__init__()=background.DistantStar-class.html#__init__,Method background.SpaceBackground.__init__()=background.SpaceBackground-class.html#__init__,Method base.AGObject.__init__()=base.AGObject-class.html#__init__,Method clock.Clock.__init__()=clock.Clock-class.html#__init__,Method hud.Hud.__init__()=hud.Hud-class.html#__init__,Method mover.CircularMover.__init__()=mover.CircularMover-class.html#__init__,Method mover.LinearMover.__init__()=mover.LinearMover-class.html#__init__,Method mover.Mover.__init__()=mover.Mover-class.html#__init__,Method mover.RandomMover.__init__()=mover.RandomMover-class.html#__init__,Method mover.ZigZagMover.__init__()=mover.ZigZagMover-class.html#__init__,Method obstacle.MovingObstacle.__init__()=obstacle.MovingObstacle-class.html#__init__,Method obstacle.Obstacle.__init__()=obstacle.Obstacle-class.html#__init__,Method signals.Signal.__init__()=signals.Signal-class.html#__init__,Method signals.WeakMethod.__init__()=signals.WeakMethod-class.html#__init__,Method signals._WeakMethod_FuncHost.__init__()=signals._WeakMethod_FuncHost-class.html#__init__,Method spaceship.AGSprite.__init__()=spaceship.AGSprite-class.html#__init__,Method spaceship.AdvancedPlayerShip.__init__()=spaceship.AdvancedPlayerShip-class.html#__init__,Method spaceship.AmmoWeapon.__init__()=spaceship.AmmoWeapon-class.html#__init__,Method spaceship.Armour.__init__()=spaceship.Armour-class.html#__init__,Method spaceship.BasicArmour.__init__()=spaceship.BasicArmour-class.html#__init__,Method spaceship.BasicBeam.__init__()=spaceship.BasicBeam-class.html#__init__,Method spaceship.BasicBeamExplosion.__init__()=spaceship.BasicBeamExplosion-class.html#__init__,Method spaceship.BasicBeamer.__init__()=spaceship.BasicBeamer-class.html#__init__,Method spaceship.BasicProjectileEnergyWeapon.__init__()=spaceship.BasicProjectileEnergyWeapon-class.html#__init__,Method spaceship.BasicReactor.__init__()=spaceship.BasicReactor-class.html#__init__,Method spaceship.BasicShield.__init__()=spaceship.BasicShield-class.html#__init__,Method spaceship.Bullet.__init__()=spaceship.Bullet-class.html#__init__,Method spaceship.BulletExplosion.__init__()=spaceship.BulletExplosion-class.html#__init__,Method spaceship.Destructible.__init__()=spaceship.Destructible-class.html#__init__,Method spaceship.EnemyShip.__init__()=spaceship.EnemyShip-class.html#__init__,Method spaceship.EnergyProjectile.__init__()=spaceship.EnergyProjectile-class.html#__init__,Method spaceship.EnergyProjectileExplosion.__init__()=spaceship.EnergyProjectileExplosion-class.html#__init__,Method spaceship.EnergyWeapon.__init__()=spaceship.EnergyWeapon-class.html#__init__,Method spaceship.Explosion.__init__()=spaceship.Explosion-class.html#__init__,Method spaceship.InstantEnergyBeam.__init__()=spaceship.InstantEnergyBeam-class.html#__init__,Method spaceship.InstantEnergyWeapon.__init__()=spaceship.InstantEnergyWeapon-class.html#__init__,Method spaceship.ObstacleExplosion.__init__()=spaceship.ObstacleExplosion-class.html#__init__,Method spaceship.PlayerShip.__init__()=spaceship.PlayerShip-class.html#__init__,Method spaceship.Projectile.__init__()=spaceship.Projectile-class.html#__init__,Method spaceship.ProjectileAmmoWeapon.__init__()=spaceship.ProjectileAmmoWeapon-class.html#__init__,Method spaceship.ProjectileEnergyWeapon.__init__()=spaceship.ProjectileEnergyWeapon-class.html#__init__,Method spaceship.Reactor.__init__()=spaceship.Reactor-class.html#__init__,Method spaceship.Shell.__init__()=spaceship.Shell-class.html#__init__,Method spaceship.ShellExplosion.__init__()=spaceship.ShellExplosion-class.html#__init__,Method spaceship.Shield.__init__()=spaceship.Shield-class.html#__init__,Method spaceship.Ship.__init__()=spaceship.Ship-class.html#__init__,Method spaceship.Weapon.__init__()=spaceship.Weapon-class.html#__init__,Method widgets.VerticalProgressBar.__init__()=widgets.VerticalProgressBar-class.html#__init__,Method widgets.Widget.__init__()=widgets.Widget-class.html#__init__"><a title="background.BackgroundImage.__init__
+background.BackgroundObject.__init__
+background.CloserStar.__init__
+background.CloserStarCluster.__init__
+background.DistantStar.__init__
+background.SpaceBackground.__init__
+base.AGObject.__init__
+clock.Clock.__init__
+hud.Hud.__init__
+mover.CircularMover.__init__
+mover.LinearMover.__init__
+mover.Mover.__init__
+mover.RandomMover.__init__
+mover.ZigZagMover.__init__
+obstacle.MovingObstacle.__init__
+obstacle.Obstacle.__init__
+signals.Signal.__init__
+signals.WeakMethod.__init__
+signals._WeakMethod_FuncHost.__init__
+spaceship.AGSprite.__init__
+spaceship.AdvancedPlayerShip.__init__
+spaceship.AmmoWeapon.__init__
+spaceship.Armour.__init__
+spaceship.BasicArmour.__init__
+spaceship.BasicBeam.__init__
+spaceship.BasicBeamExplosion.__init__
+spaceship.BasicBeamer.__init__
+spaceship.BasicProjectileEnergyWeapon.__init__
+spaceship.BasicReactor.__init__
+spaceship.BasicShield.__init__
+spaceship.Bullet.__init__
+spaceship.BulletExplosion.__init__
+spaceship.Destructible.__init__
+spaceship.EnemyShip.__init__
+spaceship.EnergyProjectile.__init__
+spaceship.EnergyProjectileExplosion.__init__
+spaceship.EnergyWeapon.__init__
+spaceship.Explosion.__init__
+spaceship.InstantEnergyBeam.__init__
+spaceship.InstantEnergyWeapon.__init__
+spaceship.ObstacleExplosion.__init__
+spaceship.PlayerShip.__init__
+spaceship.Projectile.__init__
+spaceship.ProjectileAmmoWeapon.__init__
+spaceship.ProjectileEnergyWeapon.__init__
+spaceship.Reactor.__init__
+spaceship.Shell.__init__
+spaceship.ShellExplosion.__init__
+spaceship.Shield.__init__
+spaceship.Ship.__init__
+spaceship.Weapon.__init__
+widgets.VerticalProgressBar.__init__
+widgets.Widget.__init__" class="py-name" href="#" onclick="return doclink('link-2', '__init__', 'link-2');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-name">groups</tt><tt class="py-op">)</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pos</tt> <tt class="py-op">=</tt> <tt class="py-name">pos</tt> </tt>
+</div></div><a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line">  <tt class="py-comment">#  self.__focus = False</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line">  <tt class="py-comment">#def get_focus(self): return self.__focus</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-comment"></tt>  <tt class="py-comment">#def set_focus(self, val): self.__focus = val</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-comment"></tt>  <tt class="py-comment">#focus = property(get_focus, set_focus)</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
+<a name="VerticalProgressBar"></a><div id="VerticalProgressBar-def"><a name="L23"></a><tt class="py-lineno"> 23</tt> <a class="py-toggle" href="#" id="VerticalProgressBar-toggle" onclick="return toggle('VerticalProgressBar');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="widgets.VerticalProgressBar-class.html">VerticalProgressBar</a><tt class="py-op">(</tt><tt class="py-base-class">Widget</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="VerticalProgressBar-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="VerticalProgressBar-expanded"><a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">  <tt class="py-docstring">"""</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt class="py-docstring">  Vertical progress bar or indicator available in 8 colours.</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-docstring">  @type val: integer</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-docstring">  @ivar val: Property; takes values from C{minimum} to C{maximum}.</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-docstring">      Indicates how much of the bar should be lit.</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-docstring">  @type min: integer</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-docstring">  @ivar min: The minimum value the bar can display. Setting a value</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-docstring">      lower than C{min} will cause an exception to be raised.</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-docstring">  @type max: integer</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-docstring">  @ivar max: The maximum value the bar can display. Setting a value</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"><tt class="py-docstring">      higher than C{max} will cause an exception to be raised.</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"><tt class="py-docstring">  @type color: string</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"><tt class="py-docstring">  @ivar color: Property; allowed values are: 'green', 'cyan', 'blue',</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-docstring">      'magenta', 'red', 'yellow', 'black', 'white'.</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"><tt class="py-docstring">  @type length: unsigned integer</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"><tt class="py-docstring">  @ivar length: The height of the widget.</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"><tt class="py-docstring">  """</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">   </tt>
+<a name="VerticalProgressBar.__init__"></a><div id="VerticalProgressBar.__init__-def"><a name="L47"></a><tt class="py-lineno"> 47</tt> <a class="py-toggle" href="#" id="VerticalProgressBar.__init__-toggle" onclick="return toggle('VerticalProgressBar.__init__');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="widgets.VerticalProgressBar-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">min</tt><tt class="py-op">,</tt> <tt class="py-param">max</tt><tt class="py-op">,</tt> <tt class="py-param">pos</tt><tt class="py-op">,</tt> <tt class="py-param">length</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">groups</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="VerticalProgressBar.__init__-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="VerticalProgressBar.__init__-expanded"><a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">    <tt id="link-3" class="py-name" targets="Class widgets.Widget=widgets.Widget-class.html"><a title="widgets.Widget" class="py-name" href="#" onclick="return doclink('link-3', 'Widget', 'link-3');">Widget</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name"><a title="background.BackgroundImage.__init__
+background.BackgroundObject.__init__
+background.CloserStar.__init__
+background.CloserStarCluster.__init__
+background.DistantStar.__init__
+background.SpaceBackground.__init__
+base.AGObject.__init__
+clock.Clock.__init__
+hud.Hud.__init__
+mover.CircularMover.__init__
+mover.LinearMover.__init__
+mover.Mover.__init__
+mover.RandomMover.__init__
+mover.ZigZagMover.__init__
+obstacle.MovingObstacle.__init__
+obstacle.Obstacle.__init__
+signals.Signal.__init__
+signals.WeakMethod.__init__
+signals._WeakMethod_FuncHost.__init__
+spaceship.AGSprite.__init__
+spaceship.AdvancedPlayerShip.__init__
+spaceship.AmmoWeapon.__init__
+spaceship.Armour.__init__
+spaceship.BasicArmour.__init__
+spaceship.BasicBeam.__init__
+spaceship.BasicBeamExplosion.__init__
+spaceship.BasicBeamer.__init__
+spaceship.BasicProjectileEnergyWeapon.__init__
+spaceship.BasicReactor.__init__
+spaceship.BasicShield.__init__
+spaceship.Bullet.__init__
+spaceship.BulletExplosion.__init__
+spaceship.Destructible.__init__
+spaceship.EnemyShip.__init__
+spaceship.EnergyProjectile.__init__
+spaceship.EnergyProjectileExplosion.__init__
+spaceship.EnergyWeapon.__init__
+spaceship.Explosion.__init__
+spaceship.InstantEnergyBeam.__init__
+spaceship.InstantEnergyWeapon.__init__
+spaceship.ObstacleExplosion.__init__
+spaceship.PlayerShip.__init__
+spaceship.Projectile.__init__
+spaceship.ProjectileAmmoWeapon.__init__
+spaceship.ProjectileEnergyWeapon.__init__
+spaceship.Reactor.__init__
+spaceship.Shell.__init__
+spaceship.ShellExplosion.__init__
+spaceship.Shield.__init__
+spaceship.Ship.__init__
+spaceship.Weapon.__init__
+widgets.VerticalProgressBar.__init__
+widgets.Widget.__init__" class="py-name" href="#" onclick="return doclink('link-4', '__init__', 'link-2');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">pos</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-name">groups</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">     </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt> <tt class="py-op">=</tt> <tt id="link-5" class="py-name"><a title="gfxmanager.GfxManager" class="py-name" href="#" onclick="return doclink('link-5', 'GfxManager', 'link-1');">GfxManager</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method dbmanager.DBManager.get()=dbmanager.DBManager-class.html#get,Method gfxmanager.GfxManager.get()=gfxmanager.GfxManager-class.html#get,Method stagemanager.StageManager.get()=stagemanager.StageManager-class.html#get"><a title="dbmanager.DBManager.get
+gfxmanager.GfxManager.get
+stagemanager.StageManager.get" class="py-name" href="#" onclick="return doclink('link-6', 'get', 'link-6');">get</a></tt><tt class="py-op">(</tt><tt class="py-string">'StripVertical'</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line"> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">min</tt> <tt class="py-op">=</tt> <tt class="py-name">min</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">max</tt> <tt class="py-op">=</tt> <tt class="py-name">max</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__val</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__color</tt> <tt class="py-op">=</tt> <tt class="py-string">'yellow'</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">length</tt> <tt class="py-op">=</tt> <tt class="py-name">length</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Method background.BackgroundImage.update()=background.BackgroundImage-class.html#update,Method background.BackgroundObject.update()=background.BackgroundObject-class.html#update,Method background.SpaceBackground.update()=background.SpaceBackground-class.html#update,Method hud.Hud.update()=hud.Hud-class.html#update,Method mover.CircularMover.update()=mover.CircularMover-class.html#update,Method mover.LinearMover.update()=mover.LinearMover-class.html#update,Method mover.Mover.update()=mover.Mover-class.html#update,Method mover.RandomMover.update()=mover.RandomMover-class.html#update,Method mover.ZigZagMover.update()=mover.ZigZagMover-class.html#update,Method obstacle.MovingObstacle.update()=obstacle.MovingObstacle-class.html#update,Method obstacle.Obstacle.update()=obstacle.Obstacle-class.html#update,Method spaceship.AdvancedPlayerShip.update()=spaceship.AdvancedPlayerShip-class.html#update,Method spaceship.EnemyShip.update()=spaceship.EnemyShip-class.html#update,Method spaceship.EnergyProjectile.update()=spaceship.EnergyProjectile-class.html#update,Method spaceship.Explosion.update()=spaceship.Explosion-class.html#update,Method spaceship.InstantEnergyBeam.update()=spaceship.InstantEnergyBeam-class.html#update,Method spaceship.Projectile.update()=spaceship.Projectile-class.html#update,Method spaceship.Shell.update()=spaceship.Shell-class.html#update,Method spaceship.Shield.update()=spaceship.Shield-class.html#update,Method spaceship.Weapon.update()=spaceship.Weapon-class.html#update,Method widgets.VerticalProgressBar.update()=widgets.VerticalProgressBar-class.html#update"><a title="background.BackgroundImage.update
+background.BackgroundObject.update
+background.SpaceBackground.update
+hud.Hud.update
+mover.CircularMover.update
+mover.LinearMover.update
+mover.Mover.update
+mover.RandomMover.update
+mover.ZigZagMover.update
+obstacle.MovingObstacle.update
+obstacle.Obstacle.update
+spaceship.AdvancedPlayerShip.update
+spaceship.EnemyShip.update
+spaceship.EnergyProjectile.update
+spaceship.Explosion.update
+spaceship.InstantEnergyBeam.update
+spaceship.Projectile.update
+spaceship.Shell.update
+spaceship.Shield.update
+spaceship.Weapon.update
+widgets.VerticalProgressBar.update" class="py-name" href="#" onclick="return doclink('link-7', 'update', 'link-7');">update</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt>  <tt class="py-comment"># initializes self.image and self.rect needed for drawing</tt> </tt>
+</div><a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"> </tt>
+<a name="VerticalProgressBar.get_val"></a><div id="VerticalProgressBar.get_val-def"><a name="L61"></a><tt class="py-lineno"> 61</tt> <a class="py-toggle" href="#" id="VerticalProgressBar.get_val-toggle" onclick="return toggle('VerticalProgressBar.get_val');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="widgets.VerticalProgressBar-class.html#get_val">get_val</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__val</tt> </tt>
+</div><a name="VerticalProgressBar.set_val"></a><div id="VerticalProgressBar.set_val-def"><a name="L62"></a><tt class="py-lineno"> 62</tt> <a class="py-toggle" href="#" id="VerticalProgressBar.set_val-toggle" onclick="return toggle('VerticalProgressBar.set_val');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="widgets.VerticalProgressBar-class.html#set_val">set_val</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">val</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="VerticalProgressBar.set_val-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="VerticalProgressBar.set_val-expanded"><a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-8" class="py-name" targets="Variable widgets.VerticalProgressBar.val=widgets.VerticalProgressBar-class.html#val"><a title="widgets.VerticalProgressBar.val" class="py-name" href="#" onclick="return doclink('link-8', 'val', 'link-8');">val</a></tt> <tt class="py-op">&gt;</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">max</tt> <tt class="py-keyword">or</tt> <tt id="link-9" class="py-name"><a title="widgets.VerticalProgressBar.val" class="py-name" href="#" onclick="return doclink('link-9', 'val', 'link-8');">val</a></tt> <tt class="py-op">&lt;</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">min</tt><tt class="py-op">:</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">      <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt><tt class="py-string">'Value outside range. Supply value between %d and %d.'</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">                       <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">min</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">max</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">      <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__val</tt> <tt class="py-op">=</tt> <tt id="link-10" class="py-name"><a title="widgets.VerticalProgressBar.val" class="py-name" href="#" onclick="return doclink('link-10', 'val', 'link-8');">val</a></tt> </tt>
+</div><a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">      <tt class="py-comment">#self.update()</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"><tt class="py-comment"></tt>  <tt id="link-11" class="py-name"><a title="widgets.VerticalProgressBar.val" class="py-name" href="#" onclick="return doclink('link-11', 'val', 'link-8');">val</a></tt> <tt class="py-op">=</tt> <tt class="py-name">property</tt><tt class="py-op">(</tt><tt id="link-12" class="py-name" targets="Method widgets.VerticalProgressBar.get_val()=widgets.VerticalProgressBar-class.html#get_val"><a title="widgets.VerticalProgressBar.get_val" class="py-name" href="#" onclick="return doclink('link-12', 'get_val', 'link-12');">get_val</a></tt><tt class="py-op">,</tt> <tt id="link-13" class="py-name" targets="Method widgets.VerticalProgressBar.set_val()=widgets.VerticalProgressBar-class.html#set_val"><a title="widgets.VerticalProgressBar.set_val" class="py-name" href="#" onclick="return doclink('link-13', 'set_val', 'link-13');">set_val</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"> </tt>
+<a name="VerticalProgressBar.get_color"></a><div id="VerticalProgressBar.get_color-def"><a name="L71"></a><tt class="py-lineno"> 71</tt> <a class="py-toggle" href="#" id="VerticalProgressBar.get_color-toggle" onclick="return toggle('VerticalProgressBar.get_color');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="widgets.VerticalProgressBar-class.html#get_color">get_color</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__color</tt> </tt>
+</div><a name="VerticalProgressBar.set_color"></a><div id="VerticalProgressBar.set_color-def"><a name="L72"></a><tt class="py-lineno"> 72</tt> <a class="py-toggle" href="#" id="VerticalProgressBar.set_color-toggle" onclick="return toggle('VerticalProgressBar.set_color');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="widgets.VerticalProgressBar-class.html#set_color">set_color</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">color</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="VerticalProgressBar.set_color-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="VerticalProgressBar.set_color-expanded"><a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">    <tt class="py-name">colors</tt> <tt class="py-op">=</tt> <tt class="py-string">'green'</tt><tt class="py-op">,</tt> <tt class="py-string">'cyan'</tt><tt class="py-op">,</tt> <tt class="py-string">'blue'</tt><tt class="py-op">,</tt> <tt class="py-string">'magenta'</tt><tt class="py-op">,</tt> \ </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">             <tt class="py-string">'red'</tt><tt class="py-op">,</tt> <tt class="py-string">'yellow'</tt><tt class="py-op">,</tt> <tt class="py-string">'black'</tt><tt class="py-op">,</tt> <tt class="py-string">'white'</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-14" class="py-name" targets="Variable widgets.VerticalProgressBar.color=widgets.VerticalProgressBar-class.html#color"><a title="widgets.VerticalProgressBar.color" class="py-name" href="#" onclick="return doclink('link-14', 'color', 'link-14');">color</a></tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">colors</tt><tt class="py-op">:</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">      <tt class="py-keyword">raise</tt> <tt class="py-name">Exception</tt><tt class="py-op">(</tt><tt class="py-string">'Unsupported color. Choose between: '</tt> <tt class="py-op">+</tt>  </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">                      <tt class="py-string">', '</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">colors</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">      <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__color</tt> <tt class="py-op">=</tt> <tt id="link-15" class="py-name"><a title="widgets.VerticalProgressBar.color" class="py-name" href="#" onclick="return doclink('link-15', 'color', 'link-14');">color</a></tt> </tt>
+</div><a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">  <tt id="link-16" class="py-name"><a title="widgets.VerticalProgressBar.color" class="py-name" href="#" onclick="return doclink('link-16', 'color', 'link-14');">color</a></tt> <tt class="py-op">=</tt> <tt class="py-name">property</tt><tt class="py-op">(</tt><tt id="link-17" class="py-name" targets="Method widgets.VerticalProgressBar.get_color()=widgets.VerticalProgressBar-class.html#get_color"><a title="widgets.VerticalProgressBar.get_color" class="py-name" href="#" onclick="return doclink('link-17', 'get_color', 'link-17');">get_color</a></tt><tt class="py-op">,</tt> <tt id="link-18" class="py-name" targets="Method widgets.VerticalProgressBar.set_color()=widgets.VerticalProgressBar-class.html#set_color"><a title="widgets.VerticalProgressBar.set_color" class="py-name" href="#" onclick="return doclink('link-18', 'set_color', 'link-18');">set_color</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"> </tt>
+<a name="VerticalProgressBar.get_strip_img"></a><div id="VerticalProgressBar.get_strip_img-def"><a name="L82"></a><tt class="py-lineno"> 82</tt> <a class="py-toggle" href="#" id="VerticalProgressBar.get_strip_img-toggle" onclick="return toggle('VerticalProgressBar.get_strip_img');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="widgets.VerticalProgressBar-class.html#get_strip_img">get_strip_img</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="VerticalProgressBar.get_strip_img-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="VerticalProgressBar.get_strip_img-expanded"><a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">    <tt class="py-docstring">"""Return an image of a single 'light strip' (i.e. state)."""</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">    <tt class="py-name">img</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">Surface</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt><tt class="py-op">[</tt><tt class="py-string">'strip'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'w'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">                          <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt><tt class="py-op">[</tt><tt class="py-string">'strip'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'h'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">                         <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">SRCALPHA</tt><tt class="py-op">,</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">                         <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt><tt class="py-op">[</tt><tt class="py-string">'strip'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'image'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">    <tt class="py-name">area</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt><tt class="py-op">[</tt><tt class="py-string">'strip'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'states'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__color</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'x_off'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> \ </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">           <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt><tt class="py-op">[</tt><tt class="py-string">'strip'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'states'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__color</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'y_off'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> \ </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">           <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt><tt class="py-op">[</tt><tt class="py-string">'strip'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'w'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> \ </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">           <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt><tt class="py-op">[</tt><tt class="py-string">'strip'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'h'</tt><tt class="py-op">]</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">    <tt class="py-name">img</tt><tt class="py-op">.</tt><tt class="py-name">blit</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt><tt class="py-op">[</tt><tt class="py-string">'strip'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'image'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">area</tt><tt class="py-op">)</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">img</tt> </tt>
+</div><a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line"> </tt>
+<a name="VerticalProgressBar.update"></a><div id="VerticalProgressBar.update-def"><a name="L95"></a><tt class="py-lineno"> 95</tt> <a class="py-toggle" href="#" id="VerticalProgressBar.update-toggle" onclick="return toggle('VerticalProgressBar.update');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="widgets.VerticalProgressBar-class.html#update">update</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="VerticalProgressBar.update-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="VerticalProgressBar.update-expanded"><a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">    <tt class="py-docstring">"""Update the C{image} and C{rect} of the widget."""</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">    <tt class="py-comment"># sprowadzenie wartosci do przedzialu &lt;0, 100&gt;:</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"><tt class="py-comment"></tt>    <tt class="py-comment"># self.__val * 100. / abs(self.max - self.min)</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"><tt class="py-comment"></tt>    <tt class="py-name">tmp_val</tt> <tt class="py-op">=</tt> <tt class="py-name">round</tt><tt class="py-op">(</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">__val</tt> <tt class="py-op">*</tt> <tt class="py-number">100.</tt> <tt class="py-op">/</tt> <tt class="py-name">abs</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">max</tt> <tt class="py-op">-</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">min</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">    <tt class="py-comment"># image</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"><tt class="py-comment"></tt>    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">Surface</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt><tt class="py-op">[</tt><tt class="py-string">'strip'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'w'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">length</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">                                <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">SRCALPHA</tt><tt class="py-op">,</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">                                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt><tt class="py-op">[</tt><tt class="py-string">'strip'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'image'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">    <tt class="py-name">strip_img</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Method widgets.VerticalProgressBar.get_strip_img()=widgets.VerticalProgressBar-class.html#get_strip_img"><a title="widgets.VerticalProgressBar.get_strip_img" class="py-name" href="#" onclick="return doclink('link-19', 'get_strip_img', 'link-19');">get_strip_img</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">convert_alpha</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt><tt class="py-op">)</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">strip</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">length</tt> <tt class="py-op">*</tt> <tt class="py-name">tmp_val</tt> <tt class="py-op">/</tt> <tt class="py-number">400</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">      <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt><tt class="py-op">.</tt><tt class="py-name">blit</tt><tt class="py-op">(</tt><tt class="py-name">strip_img</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">length</tt> <tt class="py-op">-</tt> <tt class="py-name">strip</tt> <tt class="py-op">*</tt> <tt class="py-number">4</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">    <tt class="py-comment"># rect</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"><tt class="py-comment"></tt>    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rect</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">Rect</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pos</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt><tt class="py-op">[</tt><tt class="py-string">'strip'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'w'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">length</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0beta1 on Mon Oct 29 20:02:44 2007
+    </td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

@@ -12,6 +12,7 @@ from background import SpaceBackground
 from obstacle import Obstacle, MovingObstacle
 import mover
 from clock import Clock
+from hud import Hud
 
 import psyco
 
@@ -49,11 +50,14 @@ def run():
   g_bullets = pygame.sprite.Group()
   g_explosions = pygame.sprite.Group()
 
+  hud = Hud(viewport_size)
+
   g_enemies.add(Obstacle(g_explosions, (60, 30)))
   g_enemies.add(MovingObstacle(g_explosions, (160, 80)))
   g_enemies.add(EnemyShip(g_bullets, g_explosions, (160, 160)))
 
   ship = AdvancedPlayerShip(g_enemies, g_explosions, (175, viewport_size[1] - 60), g_ship)
+  hud.setup_connections(ship)
 
   back = SpaceBackground(viewport_size)
 
@@ -108,14 +112,22 @@ def run():
       screen.fill(black)
       back.update()
       back.draw(screen)
+
+      # temp
+      ship.damage(1)
+      #
+
       g_enemies.update()
       g_explosions.update()
       g_ship.update()
       g_bullets.update()
+      hud.update()
+
       g_enemies.draw(screen)
       g_explosions.draw(screen)
       g_ship.draw(screen)
       g_bullets.draw(screen)
+      hud.draw(screen)
 
       screen.fill(red,
                   pygame.Rect((0, viewport_size[1]),
