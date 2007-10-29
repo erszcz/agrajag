@@ -23,17 +23,17 @@ class AGObject:
     """
     Setup instance attributes. 
     
-    This is auxiliary method that will set value of instance attribute if its
+    This is an auxiliary method that will set value of instance attribute if its
     name exists in C{params} and C{values} (as a key). All attributes
     whose names exist in C{params} should have default values. If there is
     no default value for attribute which does not have value defined in
     C{values} an exception is raised.
 
-    @type params: string, list or tuple
+    @type  params: string, list or tuple
     @param params: Names of allowed parameters - if string, names should be 
     comma-separated
 
-    @type values: dict
+    @type  values: dict
     @param values: Dictionary containing instance attribute values
     """
 

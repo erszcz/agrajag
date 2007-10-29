@@ -2,12 +2,13 @@
 #coding: utf-8
 
 import pygame, math, random
+import mover
 
 from base import AGObject
 from dbmanager import DBManager
 from gfxmanager import GfxManager
-import mover
 from clock import Clock
+from signals import Signal
 
 from functions import deg2rad
 
@@ -18,10 +19,10 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
   like Ship, Projectile or Obstacle.
 
   @type cfg: dict
-  @ivar cfg: Class configuration provided by L{C{DBManager}}.
+  @ivar cfg: Class configuration provided by C{L{DBManager}}.
 
   @type gfx: dict
-  @ivar gfx: The graphics resources provided by L{C{GfxManager}}.
+  @ivar gfx: The graphics resources provided by C{L{GfxManager}}.
   
   @type mover: None or class derived from C{Mover}
   @ivar mover: Object responsible for controlling sprite movement.
@@ -178,7 +179,7 @@ class Destructible(AGSprite):
   def damage(self, damage):
     """
     Deal damage and check whether the object ceases to exist. If so, call
-    L{C{explode}}.
+    C{L{explode}}.
 
     @type  damage: integer
     @param damage: Amount of damage the object takes.
@@ -451,7 +452,7 @@ class AdvancedPlayerShip(PlayerShip):
   and such).
 
   @type weapons: sequence
-  @ivar weapons: A sequence of L{C{Weapon}}s available on the ship.
+  @ivar weapons: A sequence of C{L{Weapon}}s available on the ship.
 
   @type current_weapon: integer
   @ivar current_weapon: Index of the sequence C{L{weapons}} which designates
@@ -497,6 +498,31 @@ class AdvancedPlayerShip(PlayerShip):
     self.armour = BasicArmour()
     self.reactor = BasicReactor()
 
+    # signals
+    signals = 'shield_updated', \
+              'armour_updated', \
+              'weapon_updated'
+    for s in signals:
+      setattr( self, s, Signal() )
+    #self.shield_updated.connect(self.shield.state_updated)
+    #self.armour_updated.connect(self.armour.state_updated)
+    #self.weapon_updated.connect(self.weapons[self.current_weapon].state_updated)
+    self.shield.state_updated.connect(self.shield_updated)
+    self.armour.state_updated.connect(self.armour_updated)
+    self.weapons[self.current_weapon].state_updated.connect(self.weapon_updated)
+
+  def next_weapon(self):
+    """Select next weapon."""
+    self.weapons[self.current_weapon].state_updated.disconnectAll()
+    PlayerShip.next_weapon(self)
+    self.weapons[self.current_weapon].state_updated.connect(self.weapon_updated)
+
+  def previous_weapon(self):
+    """Select previous weapon."""
+    self.weapons[self.current_weapon].state_updated.disconnectAll()
+    PlayerShip.previous_weapon(self)
+    self.weapons[self.current_weapon].state_updated.connect(self.weapon_updated)
+
   def shoot(self, g_projectiles, g_explosions):
     """
     Shot from currently selected weapon. Do nothing if there is no 
@@ -522,7 +548,7 @@ class AdvancedPlayerShip(PlayerShip):
   def damage(self, damage):
     """
     Deal damage and check whether the object ceases to exist. If so, call
-    L{C{explode}}.
+    C{L{explode}}.
 
     @type  damage: integer
     @param damage: Amount of raw damage the ship takes.
@@ -558,7 +584,7 @@ class AdvancedPlayerShip(PlayerShip):
       
   def _recharge(self):
     """
-    Recharge energy consuming items if ship is equipped with an reactor.
+    Recharge energy consuming items if ship is equipped with a reactor.
 
     Distribution of energy is determined by the reactor based on provided
     demands.
@@ -591,7 +617,7 @@ class Weapon(AGObject):
   Base class for all weapons.
 
   @type cfg: dict
-  @ivar cfg: Class configuration provided by L{C{DBManager}}.
+  @ivar cfg: Class configuration provided by C{L{DBManager}}.
 
   @type cooldown: integer
   @ivar cooldown: Minimal number of iterations between subsequent shots.
@@ -613,9 +639,15 @@ class Weapon(AGObject):
     self.cfg = DBManager().get(self.__class__.__name__)['props']
     self._setattrs('cooldown', self.cfg)
 
+    # signals
+    self.state_updated = Signal()
+
   def update(self):
     if self.remaining_cooldown > 0:
       self.remaining_cooldown -= 1
+
+  def shoot(self):
+    self.state_updated()
 
 
 class EnergyWeapon(Weapon):
@@ -669,6 +701,8 @@ class EnergyWeapon(Weapon):
 
     if self.current > self.maximum:
       self.current = self.maximum
+
+    self.state_updated(self.current)
 
 
 class AmmoWeapon(Weapon):
@@ -731,6 +765,8 @@ class ProjectileAmmoWeapon(AmmoWeapon):
 
     g_proj.add(projectile)
 
+    self.state_updated(self.current)
+
 
 class BasicPAW(ProjectileAmmoWeapon):
   """
@@ -741,7 +777,7 @@ class BasicPAW(ProjectileAmmoWeapon):
 
 class InstantEnergyWeapon(EnergyWeapon):
   """
-  Base class for instantly hitting L{C{EnergyWeapon}}s.
+  Base class for instantly hitting C{L{EnergyWeapon}}s.
 
   @type damage: float
   @ivar damage: Damage caused by single hit.
@@ -820,6 +856,8 @@ class InstantEnergyWeapon(EnergyWeapon):
 
     t.damage(self.damage)
 
+    self.state_updated(self.current)
+
 
 class BasicBeamer(InstantEnergyWeapon):
   """
@@ -892,7 +930,7 @@ class BasicBeam(InstantEnergyBeam):
 
 class ProjectileEnergyWeapon(EnergyWeapon):
   """
-  Base class for L{C{EnergyWeapon}}s that shoot energy in the form of
+  Base class for C{L{EnergyWeapon}}s that shoot energy in the form of
   projectiles moving with finite speed.
   """
 
@@ -926,6 +964,8 @@ class ProjectileEnergyWeapon(EnergyWeapon):
     projectile = projectile_cls(g_coll, g_expl, pos)
 
     g_proj.add(projectile)
+
+    self.state_updated(self.current)
 
 
 class BasicProjectileEnergyWeapon(ProjectileEnergyWeapon):
@@ -982,12 +1022,16 @@ class Shield(AGSprite):
 
     group.add(self)
 
+    # signals
+    self.state_updated = Signal()
+
   def update(self):
     if self.active:
       size = self.gfx['shield']['w'], self.gfx['shield']['h']
 
       pos = self.owner.center
       self._initialize_position(pos, 'center', size)
+      self.state_updated(self.current)
 
   def activate(self, on):
     """
@@ -1021,6 +1065,7 @@ class Shield(AGSprite):
     if self.current == 0:
       self.activate(False)
 
+    self.state_updated(self.current)
     return remaining
 
   def get_demand(self):
@@ -1043,6 +1088,8 @@ class Shield(AGSprite):
 
     if self.current > self.maximum:
       self.current = self.maximum
+
+    self.state_updated(self.current)
 
     
 class BasicShield(Shield):
@@ -1073,6 +1120,9 @@ class Armour(AGObject):
     self.cfg = DBManager().get(self.__class__.__name__)['props']
     self._setattrs('maximum', self.cfg)
 
+    # signals
+    self.state_updated = Signal()
+
   def absorb(self, damage, efficiency):
     """
     Absorb specified amount of raw C{damage} caused with C{efficiency} and
@@ -1085,12 +1135,13 @@ class Armour(AGObject):
 
     self.current -= absorbed
 
+    self.state_updated(self.current)
     return remaining
 
 
 class BasicArmour(Armour):
   """
-  The weakes armour type player ship can use.
+  The weakest armour type player ship can use.
   """
 
   def __init__(self):
@@ -1120,8 +1171,6 @@ class Reactor(AGObject):
     total_demand = float(sum(demands))
     if math.fabs(total_demand) < 0.1:
       return None
-
-    power = self.power
 
     supplies = []
     for i in xrange(len(demands)):

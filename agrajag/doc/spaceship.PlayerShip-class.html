@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>spaceship.PlayerShip</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="spaceship-module.html">Module&nbsp;spaceship</a> ::
+        Class&nbsp;PlayerShip
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="spaceship.PlayerShip-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class PlayerShip</h1><span class="codelink"><a href="spaceship-pysrc.html#PlayerShip">source&nbsp;code</a></span><br /><br />
+<pre class="base-tree">
+       <a href="base.AGObject-class.html">base.AGObject</a> --+            
+                       |            
+          object --+   |            
+                   |   |            
+pygame.sprite.Sprite --+            
+                       |            
+                <a href="spaceship.AGSprite-class.html">AGSprite</a> --+        
+                           |        
+                <a href="spaceship.Destructible-class.html">Destructible</a> --+    
+                               |    
+                            <a href="spaceship.Ship-class.html">Ship</a> --+
+                                   |
+                                  <strong class="uidshort">PlayerShip</strong>
+</pre>
+
+<dl><dt>Known Subclasses:</dt>
+<dd>
+    <a href="spaceship.AdvancedPlayerShip-class.html">AdvancedPlayerShip</a>
+</dd></dl>
+
+<hr />
+Represents the player's ship (not necessarily a spaceship).<br /><br />
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="spaceship.PlayerShip-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">g_coll</span>,
+        <span class="summary-sig-arg">g_expl</span>,
+        <span class="summary-sig-arg">pos</span>,
+        <span class="summary-sig-arg">*groups</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="exhaust"></a><span class="summary-sig-name">exhaust</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">on</span>)</span><br />
+      Change the image of the ship by adding or removing an engine 
+      exhaust at the bottom.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.exhaust">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="spaceship.PlayerShip-class.html#fly_up" class="summary-sig-name">fly_up</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">on</span>)</span><br />
+      Either turn on the engine exhaust and move the ship up or turn it 
+      off.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.fly_up">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="spaceship.PlayerShip-class.html#fly_down" class="summary-sig-name">fly_down</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">boundary</span>)</span><br />
+      Move the ship down.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.fly_down">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="fly_left"></a><span class="summary-sig-name">fly_left</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Move the ship left.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.fly_left">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="spaceship.PlayerShip-class.html#fly_right" class="summary-sig-name">fly_right</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">boundary</span>)</span><br />
+      Move the ship right.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.fly_right">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="spaceship.PlayerShip-class.html#shoot" class="summary-sig-name">shoot</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">g_projectiles</span>)</span><br />
+      Shoot the currently selected weapon.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.shoot">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="next_weapon"></a><span class="summary-sig-name">next_weapon</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Select next weapon.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.next_weapon">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="previous_weapon"></a><span class="summary-sig-name">previous_weapon</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Select previous weapon.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.previous_weapon">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.Destructible-class.html">Destructible</a></code></b>:
+      <code><a href="spaceship.Destructible-class.html#damage">damage</a></code>,
+      <code><a href="spaceship.Destructible-class.html#explode">explode</a></code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.AGSprite-class.html">AGSprite</a></code></b> (private):
+      <code><a href="spaceship.AGSprite-class.html#_blit_state">_blit_state</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#_check_cfg">_check_cfg</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#_check_gfx">_check_gfx</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#_initialize_position">_initialize_position</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#_update_position">_update_position</a></code>
+      </p></div>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="base.AGObject-class.html">base.AGObject</a></code></b> (private):
+      <code><a href="base.AGObject-class.html#_setattrs">_setattrs</a></code>
+      </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>pygame.sprite.Sprite</code></b>:
+      <code>__repr__</code>,
+      <code>add</code>,
+      <code>add_internal</code>,
+      <code>alive</code>,
+      <code>groups</code>,
+      <code>kill</code>,
+      <code>remove</code>,
+      <code>remove_internal</code>,
+      <code>update</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__str__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== INSTANCE VARIABLES ==================== -->
+<a name="section-InstanceVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">unsigned integer</span>
+    </td><td class="summary">
+        <a name="cooldown"></a><span class="summary-name">cooldown</span><br />
+      Number of rounds that have to pass before the weapon/s can be 
+      fired again.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">integer</span>
+    </td><td class="summary">
+        <a name="current_weapon"></a><span class="summary-name">current_weapon</span><br />
+      Index of the sequence <code><a 
+      href="spaceship.AdvancedPlayerShip-class.html#weapons" 
+      class="link">weapons</a></code> which designates the currently used 
+      weapon.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">sequence</span>
+    </td><td class="summary">
+        <a name="weapons"></a><span class="summary-name">weapons</span><br />
+      A sequence of weapons available on the ship.
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.Ship-class.html">Ship</a></code></b>:
+      <code><a href="spaceship.Ship-class.html#g_coll">g_coll</a></code>,
+      <code><a href="spaceship.Ship-class.html#g_expl">g_expl</a></code>,
+      <code><a href="spaceship.Ship-class.html#rect">rect</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.Destructible-class.html">Destructible</a></code></b>:
+      <code><a href="spaceship.Destructible-class.html#durability">durability</a></code>,
+      <code><a href="spaceship.Destructible-class.html#explosion_cls_name">explosion_cls_name</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.AGSprite-class.html">AGSprite</a></code></b>:
+      <code><a href="spaceship.AGSprite-class.html#align">align</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#cfg">cfg</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#gfx">gfx</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#max_speed">max_speed</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#mover">mover</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#pos">pos</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">g_coll</span>,
+        <span class="sig-arg">g_expl</span>,
+        <span class="sig-arg">pos</span>,
+        <span class="sig-arg">*groups</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>g_coll</code></strong> (<code>pygame.sprite.Group</code>) - Group of objects (<code>pygame.sprite.Sprite</code>) the ship 
+          can collide with.</li>
+        <li><strong class="pname"><code>g_expl</code></strong> (<code>pygame.sprite.Group</code>) - Group of independent (which perish in time) objects 
+          (<code>pygame.sprite.Sprite</code>) such as explosions, salvage, 
+          etc.</li>
+        <li><strong class="pname"><code>pos</code></strong> (pair of integers) - Initial position of the ship. This pair defines position of 
+          the ship nose.</li>
+        <li><strong class="pname"><code>groups</code></strong> (pygame.sprite.Group) - A sequence of groups the object will be added to.</li>
+    </ul></dd>
+    <dt>Overrides:
+      <a href="spaceship.Ship-class.html#__init__">Ship.__init__</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="fly_up"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">fly_up</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">on</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.fly_up">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Either turn on the engine exhaust and move the ship up or turn it off.
+  Both cases use <code><a href="spaceship.PlayerShip-class.html#exhaust" 
+  class="link">exhaust</a></code>.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>on</code></strong> (boolean) - Tells whether the ship is to start or to stop movement.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="fly_down"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">fly_down</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">boundary</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.fly_down">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Move the ship down.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>boundary</code></strong> (unsigned integer) - Height of the viewport. Needed in order to check whether the 
+          ship may fly farther downwards.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="fly_right"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">fly_right</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">boundary</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.fly_right">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Move the ship right.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>boundary</code></strong> (unsigned integer) - Width of the viewport. Needed in order to check whether the 
+          ship may fly farther towards the right edge of the screen.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="shoot"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">shoot</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">g_projectiles</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="spaceship-pysrc.html#PlayerShip.shoot">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Shoot the currently selected weapon. Appropriately increase <code><a 
+  href="spaceship.PlayerShip-class.html#cooldown" 
+  class="link">cooldown</a></code>.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>g_projectiles</code></strong> (pygame.sprite.Group) - Group to add the newly created projectiles to.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0beta1 on Mon Oct 29 20:02:43 2007
+    </td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

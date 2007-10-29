@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class Hierarchy</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Trees&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">&nbsp;</td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="class-tree.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<center><b>
+ [ <a href="module-tree.html">Module Hierarchy</a>
+ | <a href="class-tree.html">Class Hierarchy</a> ]
+</b></center><br />
+<h1 class="epydoc">Class Hierarchy</h1>
+<ul class="nomargin-top">
+    <li> <strong class="uidlink"><a href="background.SpaceBackground-class.html">background.SpaceBackground</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="base.AGObject-class.html">base.AGObject</a></strong>:
+      <em class="summary">Base class for all game objects.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.AGSprite-class.html">spaceship.AGSprite</a></strong>:
+      <em class="summary">Abstract sprite class used as a parent class for more specific 
+        classes like Ship, Projectile or Obstacle.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.Projectile-class.html">spaceship.Projectile</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.Shell-class.html">spaceship.Shell</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnergyProjectile-class.html">spaceship.EnergyProjectile</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Bullet-class.html">spaceship.Bullet</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.InstantEnergyBeam-class.html">spaceship.InstantEnergyBeam</a></strong>:
+      <em class="summary">Visual representation of energy fired by <code><a 
+        href="spaceship.InstantEnergyWeapon-class.html" 
+        class="link">InstantEnergyWeapon</a></code>s.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicBeam-class.html">spaceship.BasicBeam</a></strong>:
+      <em class="summary">Beam used by BasicBeamer gun.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Explosion-class.html">spaceship.Explosion</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BulletExplosion-class.html">spaceship.BulletExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.BasicBeamExplosion-class.html">spaceship.BasicBeamExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnergyProjectileExplosion-class.html">spaceship.EnergyProjectileExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ShellExplosion-class.html">spaceship.ShellExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ObstacleExplosion-class.html">spaceship.ObstacleExplosion</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Destructible-class.html">spaceship.Destructible</a></strong>:
+      <em class="summary">Class describing an object that can be destroyed.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.Ship-class.html">spaceship.Ship</a></strong>:
+      <em class="summary">Base class for player's ship and enemy ships.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.EnemyShip-class.html">spaceship.EnemyShip</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.PlayerShip-class.html">spaceship.PlayerShip</a></strong>:
+      <em class="summary">Represents the player's ship (not necessarily a spaceship).</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.AdvancedPlayerShip-class.html">spaceship.AdvancedPlayerShip</a></strong>:
+      <em class="summary">Represents the player's ship in more advanced version described 
+        in project's wiki.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="obstacle.Obstacle-class.html">obstacle.Obstacle</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="obstacle.MovingObstacle-class.html">obstacle.MovingObstacle</a></strong>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Shield-class.html">spaceship.Shield</a></strong>:
+      <em class="summary">Base class for all shield types used both by player ship and 
+        enemies.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicShield-class.html">spaceship.BasicShield</a></strong>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Reactor-class.html">spaceship.Reactor</a></strong>:
+      <em class="summary">Base class for all ship reactors.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicReactor-class.html">spaceship.BasicReactor</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="mover.Mover-class.html">mover.Mover</a></strong>:
+      <em class="summary">Base class for all movers.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="mover.LinearMover-class.html">mover.LinearMover</a></strong>:
+      <em class="summary">Causes object to move in a straight line with constant 
+        speed.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="mover.ZigZagMover-class.html">mover.ZigZagMover</a></strong>:
+      <em class="summary">Couses object to make zigzaging movement from top to the 
+        bottom.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="mover.CircularMover-class.html">mover.CircularMover</a></strong>:
+      <em class="summary">Causes object to make circular movement around its initial 
+        position.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="mover.RandomMover-class.html">mover.RandomMover</a></strong>:
+      <em class="summary">Randomly changes direction of an object but not its speed.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Weapon-class.html">spaceship.Weapon</a></strong>:
+      <em class="summary">Base class for all weapons.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.EnergyWeapon-class.html">spaceship.EnergyWeapon</a></strong>:
+      <em class="summary">Base class for all weapons that consume energy to shoot.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.ProjectileEnergyWeapon-class.html">spaceship.ProjectileEnergyWeapon</a></strong>:
+      <em class="summary">Base class for <code><a href="spaceship.EnergyWeapon-class.html"
+        class="link">EnergyWeapon</a></code>s that shoot energy in the form
+        of projectiles moving with finite speed.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicProjectileEnergyWeapon-class.html">spaceship.BasicProjectileEnergyWeapon</a></strong>:
+      <em class="summary">The least powerful, yet energy effective projectile energy 
+        weapon.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.InstantEnergyWeapon-class.html">spaceship.InstantEnergyWeapon</a></strong>:
+      <em class="summary">Base class for instantly hitting <code><a 
+        href="spaceship.EnergyWeapon-class.html" 
+        class="link">EnergyWeapon</a></code>s.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicBeamer-class.html">spaceship.BasicBeamer</a></strong>:
+      <em class="summary">The least powerful yet energy effective instant energy 
+        weapon.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.AmmoWeapon-class.html">spaceship.AmmoWeapon</a></strong>:
+      <em class="summary">Base class for all weapons that need ammunition to shoot.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.InstantAmmoWeapon-class.html">spaceship.InstantAmmoWeapon</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ProjectileAmmoWeapon-class.html">spaceship.ProjectileAmmoWeapon</a></strong>:
+      <em class="summary">Base class for all ammo weapons that shoot projectiles moving 
+        with finite speed.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicPAW-class.html">spaceship.BasicPAW</a></strong>:
+      <em class="summary">Basic type of <code><a 
+        href="spaceship.ProjectileAmmoWeapon-class.html" 
+        class="link">ProjectileAmmoWeapon</a></code>.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Armour-class.html">spaceship.Armour</a></strong>:
+      <em class="summary">Base class for all ship armours.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicArmour-class.html">spaceship.BasicArmour</a></strong>:
+      <em class="summary">The weakest armour type player ship can use.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="gfxmanager.GfxManager-class.html">gfxmanager.GfxManager</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="hud.Hud-class.html">hud.Hud</a></strong>
+    </li>
+    <li> <strong class="uidlink">object</strong>:
+      <em class="summary">The most base type</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="clock.Clock-class.html">clock.Clock</a></strong>:
+      <em class="summary">This class grants objects information about the flow of 
+        time.</em>
+    </li>
+    <li> <strong class="uidlink">pygame.sprite.Sprite</strong>:
+      <em class="summary">The base class for your visible game objects.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.AGSprite-class.html">spaceship.AGSprite</a></strong>:
+      <em class="summary">Abstract sprite class used as a parent class for more specific 
+        classes like Ship, Projectile or Obstacle.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.Projectile-class.html">spaceship.Projectile</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.Shell-class.html">spaceship.Shell</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnergyProjectile-class.html">spaceship.EnergyProjectile</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Bullet-class.html">spaceship.Bullet</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.InstantEnergyBeam-class.html">spaceship.InstantEnergyBeam</a></strong>:
+      <em class="summary">Visual representation of energy fired by <code><a 
+        href="spaceship.InstantEnergyWeapon-class.html" 
+        class="link">InstantEnergyWeapon</a></code>s.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicBeam-class.html">spaceship.BasicBeam</a></strong>:
+      <em class="summary">Beam used by BasicBeamer gun.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Explosion-class.html">spaceship.Explosion</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BulletExplosion-class.html">spaceship.BulletExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.BasicBeamExplosion-class.html">spaceship.BasicBeamExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnergyProjectileExplosion-class.html">spaceship.EnergyProjectileExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ShellExplosion-class.html">spaceship.ShellExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ObstacleExplosion-class.html">spaceship.ObstacleExplosion</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Destructible-class.html">spaceship.Destructible</a></strong>:
+      <em class="summary">Class describing an object that can be destroyed.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.Ship-class.html">spaceship.Ship</a></strong>:
+      <em class="summary">Base class for player's ship and enemy ships.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.EnemyShip-class.html">spaceship.EnemyShip</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.PlayerShip-class.html">spaceship.PlayerShip</a></strong>:
+      <em class="summary">Represents the player's ship (not necessarily a spaceship).</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.AdvancedPlayerShip-class.html">spaceship.AdvancedPlayerShip</a></strong>:
+      <em class="summary">Represents the player's ship in more advanced version described 
+        in project's wiki.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="obstacle.Obstacle-class.html">obstacle.Obstacle</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="obstacle.MovingObstacle-class.html">obstacle.MovingObstacle</a></strong>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Shield-class.html">spaceship.Shield</a></strong>:
+      <em class="summary">Base class for all shield types used both by player ship and 
+        enemies.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicShield-class.html">spaceship.BasicShield</a></strong>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="background.BackgroundObject-class.html">background.BackgroundObject</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="background.CloserStar-class.html">background.CloserStar</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="background.BackgroundImage-class.html">background.BackgroundImage</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="background.CloserStarCluster-class.html">background.CloserStarCluster</a></strong>:
+      <em class="summary">Cluster of small random numer of CloserStar instances positioned
+        randomly each close to one another</em>
+    </li>
+    <li> <strong class="uidlink"><a href="background.DistantStar-class.html">background.DistantStar</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="widgets.Widget-class.html">widgets.Widget</a></strong>:
+      <em class="summary">A base widget object to be inherited from.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="widgets.VerticalProgressBar-class.html">widgets.VerticalProgressBar</a></strong>:
+      <em class="summary">Vertical progress bar or indicator available in 8 colours.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="signals.Signal-class.html">signals.Signal</a></strong>:
+      <em class="summary">class Signal</em>
+    </li>
+    <li> <strong class="uidlink"><a href="signals.WeakMethod-class.html">signals.WeakMethod</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="signals._WeakMethod_FuncHost-class.html">signals._WeakMethod_FuncHost</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="xmlmanager.XMLManager-class.html">xmlmanager.XMLManager</a></strong>:
+      <em class="summary">This class is intended to be base class for other classes that 
+        do XML processing.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="stagemanager.StageManager-class.html">stagemanager.StageManager</a></strong>:
+      <em class="summary">This class is responsible for importing game stages 
+        schedule.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="dbmanager.DBManager-class.html">dbmanager.DBManager</a></strong>:
+      <em class="summary">This class is responsible for importing game content 
+        configuration.</em>
+    </li>
+    </ul>
+    </li>
+</ul>
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th bgcolor="#70b0f0" class="navbar-select"
+          >&nbsp;&nbsp;&nbsp;Trees&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0beta1 on Mon Oct 29 20:02:43 2007
+    </td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

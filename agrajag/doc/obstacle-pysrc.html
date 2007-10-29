@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>obstacle</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;obstacle
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="obstacle-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="obstacle-module.html">Module obstacle</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/python</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment"></tt><tt class="py-comment">#coding: utf-8</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pygame</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">random</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Module spaceship=spaceship-module.html"><a title="spaceship" class="py-name" href="#" onclick="return doclink('link-0', 'spaceship', 'link-0');">spaceship</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Class spaceship.Destructible=spaceship.Destructible-class.html"><a title="spaceship.Destructible" class="py-name" href="#" onclick="return doclink('link-1', 'Destructible', 'link-1');">Destructible</a></tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-2" class="py-name" targets="Module mover=mover-module.html"><a title="mover" class="py-name" href="#" onclick="return doclink('link-2', 'mover', 'link-2');">mover</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Class mover.RandomMover=mover.RandomMover-class.html"><a title="mover.RandomMover" class="py-name" href="#" onclick="return doclink('link-3', 'RandomMover', 'link-3');">RandomMover</a></tt><tt class="py-op">,</tt> <tt id="link-4" class="py-name" targets="Class mover.ZigZagMover=mover.ZigZagMover-class.html"><a title="mover.ZigZagMover" class="py-name" href="#" onclick="return doclink('link-4', 'ZigZagMover', 'link-4');">ZigZagMover</a></tt><tt class="py-op">,</tt> <tt id="link-5" class="py-name" targets="Class mover.CircularMover=mover.CircularMover-class.html"><a title="mover.CircularMover" class="py-name" href="#" onclick="return doclink('link-5', 'CircularMover', 'link-5');">CircularMover</a></tt><tt class="py-op">,</tt> <tt id="link-6" class="py-name" targets="Class mover.LinearMover=mover.LinearMover-class.html"><a title="mover.LinearMover" class="py-name" href="#" onclick="return doclink('link-6', 'LinearMover', 'link-6');">LinearMover</a></tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"> </tt>
+<a name="Obstacle"></a><div id="Obstacle-def"><a name="L9"></a><tt class="py-lineno"> 9</tt> <a class="py-toggle" href="#" id="Obstacle-toggle" onclick="return toggle('Obstacle');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="obstacle.Obstacle-class.html">Obstacle</a><tt class="py-op">(</tt><tt class="py-base-class">Destructible</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Obstacle-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="Obstacle-expanded"><a name="Obstacle.__init__"></a><div id="Obstacle.__init__-def"><a name="L10"></a><tt class="py-lineno">10</tt> <a class="py-toggle" href="#" id="Obstacle.__init__-toggle" onclick="return toggle('Obstacle.__init__');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="obstacle.Obstacle-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">g_expl</tt><tt class="py-op">,</tt> <tt class="py-param">pos</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">groups</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Obstacle.__init__-collapsed" style="display:none;" pad="++" indent="++++++"></div><div id="Obstacle.__init__-expanded"><a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line">    <tt class="py-comment">#AGSprite.__init__(self, pos, *groups)</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-comment"></tt>    <tt id="link-7" class="py-name"><a title="spaceship.Destructible" class="py-name" href="#" onclick="return doclink('link-7', 'Destructible', 'link-1');">Destructible</a></tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method background.BackgroundImage.__init__()=background.BackgroundImage-class.html#__init__,Method background.BackgroundObject.__init__()=background.BackgroundObject-class.html#__init__,Method background.CloserStar.__init__()=background.CloserStar-class.html#__init__,Method background.CloserStarCluster.__init__()=background.CloserStarCluster-class.html#__init__,Method background.DistantStar.__init__()=background.DistantStar-class.html#__init__,Method background.SpaceBackground.__init__()=background.SpaceBackground-class.html#__init__,Method base.AGObject.__init__()=base.AGObject-class.html#__init__,Method clock.Clock.__init__()=clock.Clock-class.html#__init__,Method hud.Hud.__init__()=hud.Hud-class.html#__init__,Method mover.CircularMover.__init__()=mover.CircularMover-class.html#__init__,Method mover.LinearMover.__init__()=mover.LinearMover-class.html#__init__,Method mover.Mover.__init__()=mover.Mover-class.html#__init__,Method mover.RandomMover.__init__()=mover.RandomMover-class.html#__init__,Method mover.ZigZagMover.__init__()=mover.ZigZagMover-class.html#__init__,Method obstacle.MovingObstacle.__init__()=obstacle.MovingObstacle-class.html#__init__,Method obstacle.Obstacle.__init__()=obstacle.Obstacle-class.html#__init__,Method signals.Signal.__init__()=signals.Signal-class.html#__init__,Method signals.WeakMethod.__init__()=signals.WeakMethod-class.html#__init__,Method signals._WeakMethod_FuncHost.__init__()=signals._WeakMethod_FuncHost-class.html#__init__,Method spaceship.AGSprite.__init__()=spaceship.AGSprite-class.html#__init__,Method spaceship.AdvancedPlayerShip.__init__()=spaceship.AdvancedPlayerShip-class.html#__init__,Method spaceship.AmmoWeapon.__init__()=spaceship.AmmoWeapon-class.html#__init__,Method spaceship.Armour.__init__()=spaceship.Armour-class.html#__init__,Method spaceship.BasicArmour.__init__()=spaceship.BasicArmour-class.html#__init__,Method spaceship.BasicBeam.__init__()=spaceship.BasicBeam-class.html#__init__,Method spaceship.BasicBeamExplosion.__init__()=spaceship.BasicBeamExplosion-class.html#__init__,Method spaceship.BasicBeamer.__init__()=spaceship.BasicBeamer-class.html#__init__,Method spaceship.BasicProjectileEnergyWeapon.__init__()=spaceship.BasicProjectileEnergyWeapon-class.html#__init__,Method spaceship.BasicReactor.__init__()=spaceship.BasicReactor-class.html#__init__,Method spaceship.BasicShield.__init__()=spaceship.BasicShield-class.html#__init__,Method spaceship.Bullet.__init__()=spaceship.Bullet-class.html#__init__,Method spaceship.BulletExplosion.__init__()=spaceship.BulletExplosion-class.html#__init__,Method spaceship.Destructible.__init__()=spaceship.Destructible-class.html#__init__,Method spaceship.EnemyShip.__init__()=spaceship.EnemyShip-class.html#__init__,Method spaceship.EnergyProjectile.__init__()=spaceship.EnergyProjectile-class.html#__init__,Method spaceship.EnergyProjectileExplosion.__init__()=spaceship.EnergyProjectileExplosion-class.html#__init__,Method spaceship.EnergyWeapon.__init__()=spaceship.EnergyWeapon-class.html#__init__,Method spaceship.Explosion.__init__()=spaceship.Explosion-class.html#__init__,Method spaceship.InstantEnergyBeam.__init__()=spaceship.InstantEnergyBeam-class.html#__init__,Method spaceship.InstantEnergyWeapon.__init__()=spaceship.InstantEnergyWeapon-class.html#__init__,Method spaceship.ObstacleExplosion.__init__()=spaceship.ObstacleExplosion-class.html#__init__,Method spaceship.PlayerShip.__init__()=spaceship.PlayerShip-class.html#__init__,Method spaceship.Projectile.__init__()=spaceship.Projectile-class.html#__init__,Method spaceship.ProjectileAmmoWeapon.__init__()=spaceship.ProjectileAmmoWeapon-class.html#__init__,Method spaceship.ProjectileEnergyWeapon.__init__()=spaceship.ProjectileEnergyWeapon-class.html#__init__,Method spaceship.Reactor.__init__()=spaceship.Reactor-class.html#__init__,Method spaceship.Shell.__init__()=spaceship.Shell-class.html#__init__,Method spaceship.ShellExplosion.__init__()=spaceship.ShellExplosion-class.html#__init__,Method spaceship.Shield.__init__()=spaceship.Shield-class.html#__init__,Method spaceship.Ship.__init__()=spaceship.Ship-class.html#__init__,Method spaceship.Weapon.__init__()=spaceship.Weapon-class.html#__init__,Method widgets.VerticalProgressBar.__init__()=widgets.VerticalProgressBar-class.html#__init__,Method widgets.Widget.__init__()=widgets.Widget-class.html#__init__"><a title="background.BackgroundImage.__init__
+background.BackgroundObject.__init__
+background.CloserStar.__init__
+background.CloserStarCluster.__init__
+background.DistantStar.__init__
+background.SpaceBackground.__init__
+base.AGObject.__init__
+clock.Clock.__init__
+hud.Hud.__init__
+mover.CircularMover.__init__
+mover.LinearMover.__init__
+mover.Mover.__init__
+mover.RandomMover.__init__
+mover.ZigZagMover.__init__
+obstacle.MovingObstacle.__init__
+obstacle.Obstacle.__init__
+signals.Signal.__init__
+signals.WeakMethod.__init__
+signals._WeakMethod_FuncHost.__init__
+spaceship.AGSprite.__init__
+spaceship.AdvancedPlayerShip.__init__
+spaceship.AmmoWeapon.__init__
+spaceship.Armour.__init__
+spaceship.BasicArmour.__init__
+spaceship.BasicBeam.__init__
+spaceship.BasicBeamExplosion.__init__
+spaceship.BasicBeamer.__init__
+spaceship.BasicProjectileEnergyWeapon.__init__
+spaceship.BasicReactor.__init__
+spaceship.BasicShield.__init__
+spaceship.Bullet.__init__
+spaceship.BulletExplosion.__init__
+spaceship.Destructible.__init__
+spaceship.EnemyShip.__init__
+spaceship.EnergyProjectile.__init__
+spaceship.EnergyProjectileExplosion.__init__
+spaceship.EnergyWeapon.__init__
+spaceship.Explosion.__init__
+spaceship.InstantEnergyBeam.__init__
+spaceship.InstantEnergyWeapon.__init__
+spaceship.ObstacleExplosion.__init__
+spaceship.PlayerShip.__init__
+spaceship.Projectile.__init__
+spaceship.ProjectileAmmoWeapon.__init__
+spaceship.ProjectileEnergyWeapon.__init__
+spaceship.Reactor.__init__
+spaceship.Shell.__init__
+spaceship.ShellExplosion.__init__
+spaceship.Shield.__init__
+spaceship.Ship.__init__
+spaceship.Weapon.__init__
+widgets.VerticalProgressBar.__init__
+widgets.Widget.__init__" class="py-name" href="#" onclick="return doclink('link-8', '__init__', 'link-8');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">g_expl</tt><tt class="py-op">,</tt> <tt class="py-name">pos</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-name">groups</tt><tt class="py-op">)</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">     </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">    <tt class="py-name">size</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt><tt class="py-op">[</tt><tt class="py-string">'obstacle'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'w'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">gfx</tt><tt class="py-op">[</tt><tt class="py-string">'obstacle'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'h'</tt><tt class="py-op">]</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">     </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">Surface</tt><tt class="py-op">(</tt><tt class="py-name">size</tt><tt class="py-op">)</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method spaceship.AGSprite._blit_state()=spaceship.AGSprite-class.html#_blit_state"><a title="spaceship.AGSprite._blit_state" class="py-name" href="#" onclick="return doclink('link-9', '_blit_state', 'link-9');">_blit_state</a></tt><tt class="py-op">(</tt><tt class="py-string">'obstacle'</tt><tt class="py-op">,</tt> <tt class="py-string">'def'</tt><tt class="py-op">)</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method spaceship.AGSprite._initialize_position()=spaceship.AGSprite-class.html#_initialize_position"><a title="spaceship.AGSprite._initialize_position" class="py-name" href="#" onclick="return doclink('link-10', '_initialize_position', 'link-10');">_initialize_position</a></tt><tt class="py-op">(</tt><tt class="py-name">pos</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-string">'left'</tt><tt class="py-op">,</tt> <tt class="py-string">'top'</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">size</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"> </tt>
+<a name="Obstacle.update"></a><div id="Obstacle.update-def"><a name="L21"></a><tt class="py-lineno">21</tt> <a class="py-toggle" href="#" id="Obstacle.update-toggle" onclick="return toggle('Obstacle.update');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="obstacle.Obstacle-class.html#update">update</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Obstacle.update-collapsed" style="display:none;" pad="++" indent="++++++"></div><div id="Obstacle.update-expanded"><a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">    <tt class="py-keyword">pass</tt> </tt>
+</div></div><a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"> </tt>
+<a name="MovingObstacle"></a><div id="MovingObstacle-def"><a name="L24"></a><tt class="py-lineno">24</tt> <a class="py-toggle" href="#" id="MovingObstacle-toggle" onclick="return toggle('MovingObstacle');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="obstacle.MovingObstacle-class.html">MovingObstacle</a><tt class="py-op">(</tt><tt class="py-base-class">Obstacle</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MovingObstacle-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="MovingObstacle-expanded"><a name="MovingObstacle.__init__"></a><div id="MovingObstacle.__init__-def"><a name="L25"></a><tt class="py-lineno">25</tt> <a class="py-toggle" href="#" id="MovingObstacle.__init__-toggle" onclick="return toggle('MovingObstacle.__init__');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="obstacle.MovingObstacle-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">g_expl</tt><tt class="py-op">,</tt> <tt class="py-param">pos</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">groups</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MovingObstacle.__init__-collapsed" style="display:none;" pad="++" indent="++++++"></div><div id="MovingObstacle.__init__-expanded"><a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">    <tt id="link-11" class="py-name" targets="Class obstacle.Obstacle=obstacle.Obstacle-class.html"><a title="obstacle.Obstacle" class="py-name" href="#" onclick="return doclink('link-11', 'Obstacle', 'link-11');">Obstacle</a></tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="background.BackgroundImage.__init__
+background.BackgroundObject.__init__
+background.CloserStar.__init__
+background.CloserStarCluster.__init__
+background.DistantStar.__init__
+background.SpaceBackground.__init__
+base.AGObject.__init__
+clock.Clock.__init__
+hud.Hud.__init__
+mover.CircularMover.__init__
+mover.LinearMover.__init__
+mover.Mover.__init__
+mover.RandomMover.__init__
+mover.ZigZagMover.__init__
+obstacle.MovingObstacle.__init__
+obstacle.Obstacle.__init__
+signals.Signal.__init__
+signals.WeakMethod.__init__
+signals._WeakMethod_FuncHost.__init__
+spaceship.AGSprite.__init__
+spaceship.AdvancedPlayerShip.__init__
+spaceship.AmmoWeapon.__init__
+spaceship.Armour.__init__
+spaceship.BasicArmour.__init__
+spaceship.BasicBeam.__init__
+spaceship.BasicBeamExplosion.__init__
+spaceship.BasicBeamer.__init__
+spaceship.BasicProjectileEnergyWeapon.__init__
+spaceship.BasicReactor.__init__
+spaceship.BasicShield.__init__
+spaceship.Bullet.__init__
+spaceship.BulletExplosion.__init__
+spaceship.Destructible.__init__
+spaceship.EnemyShip.__init__
+spaceship.EnergyProjectile.__init__
+spaceship.EnergyProjectileExplosion.__init__
+spaceship.EnergyWeapon.__init__
+spaceship.Explosion.__init__
+spaceship.InstantEnergyBeam.__init__
+spaceship.InstantEnergyWeapon.__init__
+spaceship.ObstacleExplosion.__init__
+spaceship.PlayerShip.__init__
+spaceship.Projectile.__init__
+spaceship.ProjectileAmmoWeapon.__init__
+spaceship.ProjectileEnergyWeapon.__init__
+spaceship.Reactor.__init__
+spaceship.Shell.__init__
+spaceship.ShellExplosion.__init__
+spaceship.Shield.__init__
+spaceship.Ship.__init__
+spaceship.Weapon.__init__
+widgets.VerticalProgressBar.__init__
+widgets.Widget.__init__" class="py-name" href="#" onclick="return doclink('link-12', '__init__', 'link-8');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">g_expl</tt><tt class="py-op">,</tt> <tt class="py-name">pos</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-name">groups</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="mover" class="py-name" href="#" onclick="return doclink('link-13', 'mover', 'link-2');">mover</a></tt> <tt class="py-op">=</tt> <tt id="link-14" class="py-name"><a title="mover.RandomMover" class="py-name" href="#" onclick="return doclink('link-14', 'RandomMover', 'link-3');">RandomMover</a></tt><tt class="py-op">(</tt><tt class="py-name">pos</tt><tt class="py-op">,</tt> <tt class="py-number">50</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">    <tt class="py-comment">#self.mover = ZigZagMover(pos, 100, {})</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"><tt class="py-comment"></tt>    <tt class="py-comment">#self.mover = CircularMover([pos[0], pos[1]], 1, {})</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"><tt class="py-comment"></tt>    <tt class="py-comment">#self.mover = LinearMover([pos[0], pos[1]], 1, {})</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"><tt class="py-comment"></tt>    <tt class="py-comment">#self.mover = LinearMover([pos[0], pos[1]], 60, {})</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
+<a name="MovingObstacle.update"></a><div id="MovingObstacle.update-def"><a name="L34"></a><tt class="py-lineno">34</tt> <a class="py-toggle" href="#" id="MovingObstacle.update-toggle" onclick="return toggle('MovingObstacle.update');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="obstacle.MovingObstacle-class.html#update">update</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="MovingObstacle.update-collapsed" style="display:none;" pad="++" indent="++++++"></div><div id="MovingObstacle.update-expanded"><a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Method spaceship.AGSprite._update_position()=spaceship.AGSprite-class.html#_update_position"><a title="spaceship.AGSprite._update_position" class="py-name" href="#" onclick="return doclink('link-15', '_update_position', 'link-15');">_update_position</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0beta1 on Mon Oct 29 20:02:44 2007
+    </td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>

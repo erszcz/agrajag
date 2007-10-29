@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>background</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        Module&nbsp;background
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="background-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="background-module.html">Module background</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#!/usr/bin/python</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment"></tt><tt class="py-comment">#coding: utf-8</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">random</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pygame</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Module clock=clock-module.html"><a title="clock" class="py-name" href="#" onclick="return doclink('link-0', 'clock', 'link-0');">clock</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Class clock.Clock=clock.Clock-class.html"><a title="clock.Clock" class="py-name" href="#" onclick="return doclink('link-1', 'Clock', 'link-1');">Clock</a></tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"> </tt>
+<a name="BackgroundObject"></a><div id="BackgroundObject-def"><a name="L9"></a><tt class="py-lineno">  9</tt> <a class="py-toggle" href="#" id="BackgroundObject-toggle" onclick="return toggle('BackgroundObject');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="background.BackgroundObject-class.html">BackgroundObject</a><tt class="py-op">(</tt><tt class="py-base-class">pygame</tt><tt class="py-op">.</tt><tt class="py-base-class">sprite</tt><tt class="py-op">.</tt><tt class="py-base-class">Sprite</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundObject-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="BackgroundObject-expanded"><a name="BackgroundObject.__init__"></a><div id="BackgroundObject.__init__-def"><a name="L10"></a><tt class="py-lineno"> 10</tt> <a class="py-toggle" href="#" id="BackgroundObject.__init__-toggle" onclick="return toggle('BackgroundObject.__init__');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.BackgroundObject-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">pos</tt><tt class="py-op">,</tt> <tt class="py-param">speed</tt><tt class="py-op">,</tt> <tt class="py-param">boundary</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">groups</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundObject.__init__-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="BackgroundObject.__init__-expanded"><a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line">    <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">sprite</tt><tt class="py-op">.</tt><tt class="py-name">Sprite</tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Method background.BackgroundImage.__init__()=background.BackgroundImage-class.html#__init__,Method background.BackgroundObject.__init__()=background.BackgroundObject-class.html#__init__,Method background.CloserStar.__init__()=background.CloserStar-class.html#__init__,Method background.CloserStarCluster.__init__()=background.CloserStarCluster-class.html#__init__,Method background.DistantStar.__init__()=background.DistantStar-class.html#__init__,Method background.SpaceBackground.__init__()=background.SpaceBackground-class.html#__init__,Method base.AGObject.__init__()=base.AGObject-class.html#__init__,Method clock.Clock.__init__()=clock.Clock-class.html#__init__,Method hud.Hud.__init__()=hud.Hud-class.html#__init__,Method mover.CircularMover.__init__()=mover.CircularMover-class.html#__init__,Method mover.LinearMover.__init__()=mover.LinearMover-class.html#__init__,Method mover.Mover.__init__()=mover.Mover-class.html#__init__,Method mover.RandomMover.__init__()=mover.RandomMover-class.html#__init__,Method mover.ZigZagMover.__init__()=mover.ZigZagMover-class.html#__init__,Method obstacle.MovingObstacle.__init__()=obstacle.MovingObstacle-class.html#__init__,Method obstacle.Obstacle.__init__()=obstacle.Obstacle-class.html#__init__,Method signals.Signal.__init__()=signals.Signal-class.html#__init__,Method signals.WeakMethod.__init__()=signals.WeakMethod-class.html#__init__,Method signals._WeakMethod_FuncHost.__init__()=signals._WeakMethod_FuncHost-class.html#__init__,Method spaceship.AGSprite.__init__()=spaceship.AGSprite-class.html#__init__,Method spaceship.AdvancedPlayerShip.__init__()=spaceship.AdvancedPlayerShip-class.html#__init__,Method spaceship.AmmoWeapon.__init__()=spaceship.AmmoWeapon-class.html#__init__,Method spaceship.Armour.__init__()=spaceship.Armour-class.html#__init__,Method spaceship.BasicArmour.__init__()=spaceship.BasicArmour-class.html#__init__,Method spaceship.BasicBeam.__init__()=spaceship.BasicBeam-class.html#__init__,Method spaceship.BasicBeamExplosion.__init__()=spaceship.BasicBeamExplosion-class.html#__init__,Method spaceship.BasicBeamer.__init__()=spaceship.BasicBeamer-class.html#__init__,Method spaceship.BasicProjectileEnergyWeapon.__init__()=spaceship.BasicProjectileEnergyWeapon-class.html#__init__,Method spaceship.BasicReactor.__init__()=spaceship.BasicReactor-class.html#__init__,Method spaceship.BasicShield.__init__()=spaceship.BasicShield-class.html#__init__,Method spaceship.Bullet.__init__()=spaceship.Bullet-class.html#__init__,Method spaceship.BulletExplosion.__init__()=spaceship.BulletExplosion-class.html#__init__,Method spaceship.Destructible.__init__()=spaceship.Destructible-class.html#__init__,Method spaceship.EnemyShip.__init__()=spaceship.EnemyShip-class.html#__init__,Method spaceship.EnergyProjectile.__init__()=spaceship.EnergyProjectile-class.html#__init__,Method spaceship.EnergyProjectileExplosion.__init__()=spaceship.EnergyProjectileExplosion-class.html#__init__,Method spaceship.EnergyWeapon.__init__()=spaceship.EnergyWeapon-class.html#__init__,Method spaceship.Explosion.__init__()=spaceship.Explosion-class.html#__init__,Method spaceship.InstantEnergyBeam.__init__()=spaceship.InstantEnergyBeam-class.html#__init__,Method spaceship.InstantEnergyWeapon.__init__()=spaceship.InstantEnergyWeapon-class.html#__init__,Method spaceship.ObstacleExplosion.__init__()=spaceship.ObstacleExplosion-class.html#__init__,Method spaceship.PlayerShip.__init__()=spaceship.PlayerShip-class.html#__init__,Method spaceship.Projectile.__init__()=spaceship.Projectile-class.html#__init__,Method spaceship.ProjectileAmmoWeapon.__init__()=spaceship.ProjectileAmmoWeapon-class.html#__init__,Method spaceship.ProjectileEnergyWeapon.__init__()=spaceship.ProjectileEnergyWeapon-class.html#__init__,Method spaceship.Reactor.__init__()=spaceship.Reactor-class.html#__init__,Method spaceship.Shell.__init__()=spaceship.Shell-class.html#__init__,Method spaceship.ShellExplosion.__init__()=spaceship.ShellExplosion-class.html#__init__,Method spaceship.Shield.__init__()=spaceship.Shield-class.html#__init__,Method spaceship.Ship.__init__()=spaceship.Ship-class.html#__init__,Method spaceship.Weapon.__init__()=spaceship.Weapon-class.html#__init__,Method widgets.VerticalProgressBar.__init__()=widgets.VerticalProgressBar-class.html#__init__,Method widgets.Widget.__init__()=widgets.Widget-class.html#__init__"><a title="background.BackgroundImage.__init__
+background.BackgroundObject.__init__
+background.CloserStar.__init__
+background.CloserStarCluster.__init__
+background.DistantStar.__init__
+background.SpaceBackground.__init__
+base.AGObject.__init__
+clock.Clock.__init__
+hud.Hud.__init__
+mover.CircularMover.__init__
+mover.LinearMover.__init__
+mover.Mover.__init__
+mover.RandomMover.__init__
+mover.ZigZagMover.__init__
+obstacle.MovingObstacle.__init__
+obstacle.Obstacle.__init__
+signals.Signal.__init__
+signals.WeakMethod.__init__
+signals._WeakMethod_FuncHost.__init__
+spaceship.AGSprite.__init__
+spaceship.AdvancedPlayerShip.__init__
+spaceship.AmmoWeapon.__init__
+spaceship.Armour.__init__
+spaceship.BasicArmour.__init__
+spaceship.BasicBeam.__init__
+spaceship.BasicBeamExplosion.__init__
+spaceship.BasicBeamer.__init__
+spaceship.BasicProjectileEnergyWeapon.__init__
+spaceship.BasicReactor.__init__
+spaceship.BasicShield.__init__
+spaceship.Bullet.__init__
+spaceship.BulletExplosion.__init__
+spaceship.Destructible.__init__
+spaceship.EnemyShip.__init__
+spaceship.EnergyProjectile.__init__
+spaceship.EnergyProjectileExplosion.__init__
+spaceship.EnergyWeapon.__init__
+spaceship.Explosion.__init__
+spaceship.InstantEnergyBeam.__init__
+spaceship.InstantEnergyWeapon.__init__
+spaceship.ObstacleExplosion.__init__
+spaceship.PlayerShip.__init__
+spaceship.Projectile.__init__
+spaceship.ProjectileAmmoWeapon.__init__
+spaceship.ProjectileEnergyWeapon.__init__
+spaceship.Reactor.__init__
+spaceship.Shell.__init__
+spaceship.ShellExplosion.__init__
+spaceship.Shield.__init__
+spaceship.Ship.__init__
+spaceship.Weapon.__init__
+widgets.VerticalProgressBar.__init__
+widgets.Widget.__init__" class="py-name" href="#" onclick="return doclink('link-2', '__init__', 'link-2');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-name">groups</tt><tt class="py-op">)</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rect</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">Rect</tt><tt class="py-op">(</tt><tt class="py-name">pos</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">speed</tt> <tt class="py-op">=</tt> <tt class="py-name">speed</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">boundary</tt> <tt class="py-op">=</tt> <tt class="py-name">boundary</tt>    <tt class="py-comment"># wysokosc vieportu w pikselach</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-3" class="py-name"><a title="clock" class="py-name" href="#" onclick="return doclink('link-3', 'clock', 'link-0');">clock</a></tt> <tt class="py-op">=</tt> <tt id="link-4" class="py-name"><a title="clock.Clock" class="py-name" href="#" onclick="return doclink('link-4', 'Clock', 'link-1');">Clock</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"> </tt>
+<a name="BackgroundObject.update"></a><div id="BackgroundObject.update-def"><a name="L17"></a><tt class="py-lineno"> 17</tt> <a class="py-toggle" href="#" id="BackgroundObject.update-toggle" onclick="return toggle('BackgroundObject.update');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.BackgroundObject-class.html#update">update</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundObject.update-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="BackgroundObject.update-expanded"><a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line">    <tt class="py-name">delta_y</tt> <tt class="py-op">=</tt> <tt class="py-name">round</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name"><a title="clock" class="py-name" href="#" onclick="return doclink('link-5', 'clock', 'link-0');">clock</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Static Method clock.Clock.frame_span()=clock.Clock-class.html#frame_span"><a title="clock.Clock.frame_span" class="py-name" href="#" onclick="return doclink('link-6', 'frame_span', 'link-6');">frame_span</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">*</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">speed</tt> <tt class="py-op">/</tt> <tt class="py-number">1000</tt><tt class="py-op">)</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rect</tt><tt class="py-op">.</tt><tt class="py-name">move_ip</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">delta_y</tt><tt class="py-op">)</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rect</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Method background.BackgroundObject.top()=background.BackgroundObject-class.html#top"><a title="background.BackgroundObject.top" class="py-name" href="#" onclick="return doclink('link-7', 'top', 'link-7');">top</a></tt> <tt class="py-op">&gt;=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">boundary</tt><tt class="py-op">:</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line">      <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">kill</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line">      <tt class="py-keyword">del</tt> <tt class="py-name">self</tt> </tt>
+</div><a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"> </tt>
+<a name="BackgroundObject.left"></a><div id="BackgroundObject.left-def"><a name="L24"></a><tt class="py-lineno"> 24</tt> <a class="py-toggle" href="#" id="BackgroundObject.left-toggle" onclick="return toggle('BackgroundObject.left');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.BackgroundObject-class.html#left">left</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>   <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rect</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method background.BackgroundObject.left()=background.BackgroundObject-class.html#left"><a title="background.BackgroundObject.left" class="py-name" href="#" onclick="return doclink('link-8', 'left', 'link-8');">left</a></tt> </tt>
+</div><a name="BackgroundObject.right"></a><div id="BackgroundObject.right-def"><a name="L25"></a><tt class="py-lineno"> 25</tt> <a class="py-toggle" href="#" id="BackgroundObject.right-toggle" onclick="return toggle('BackgroundObject.right');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.BackgroundObject-class.html#right">right</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>  <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rect</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method background.BackgroundObject.right()=background.BackgroundObject-class.html#right"><a title="background.BackgroundObject.right" class="py-name" href="#" onclick="return doclink('link-9', 'right', 'link-9');">right</a></tt> </tt>
+</div><a name="BackgroundObject.top"></a><div id="BackgroundObject.top-def"><a name="L26"></a><tt class="py-lineno"> 26</tt> <a class="py-toggle" href="#" id="BackgroundObject.top-toggle" onclick="return toggle('BackgroundObject.top');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.BackgroundObject-class.html#top">top</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>    <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rect</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name"><a title="background.BackgroundObject.top" class="py-name" href="#" onclick="return doclink('link-10', 'top', 'link-7');">top</a></tt> </tt>
+</div><a name="BackgroundObject.bottom"></a><div id="BackgroundObject.bottom-def"><a name="L27"></a><tt class="py-lineno"> 27</tt> <a class="py-toggle" href="#" id="BackgroundObject.bottom-toggle" onclick="return toggle('BackgroundObject.bottom');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.BackgroundObject-class.html#bottom">bottom</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rect</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Method background.BackgroundObject.bottom()=background.BackgroundObject-class.html#bottom"><a title="background.BackgroundObject.bottom" class="py-name" href="#" onclick="return doclink('link-11', 'bottom', 'link-11');">bottom</a></tt> </tt>
+</div></div><a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-comment"># temp</tt> </tt>
+<a name="BackgroundImage"></a><div id="BackgroundImage-def"><a name="L30"></a><tt class="py-lineno"> 30</tt> <a class="py-toggle" href="#" id="BackgroundImage-toggle" onclick="return toggle('BackgroundImage');">-</a><tt class="py-line"><tt class="py-comment"></tt><tt class="py-keyword">class</tt> <a class="py-def-name" href="background.BackgroundImage-class.html">BackgroundImage</a><tt class="py-op">(</tt><tt class="py-base-class">BackgroundObject</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundImage-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="BackgroundImage-expanded"><a name="BackgroundImage.__init__"></a><div id="BackgroundImage.__init__-def"><a name="L31"></a><tt class="py-lineno"> 31</tt> <a class="py-toggle" href="#" id="BackgroundImage.__init__-toggle" onclick="return toggle('BackgroundImage.__init__');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.BackgroundImage-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">speed</tt><tt class="py-op">,</tt> <tt class="py-param">boundary</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">groups</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundImage.__init__-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="BackgroundImage.__init__-expanded"><a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">    <tt id="link-12" class="py-name" targets="Class background.BackgroundObject=background.BackgroundObject-class.html"><a title="background.BackgroundObject" class="py-name" href="#" onclick="return doclink('link-12', 'BackgroundObject', 'link-12');">BackgroundObject</a></tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="background.BackgroundImage.__init__
+background.BackgroundObject.__init__
+background.CloserStar.__init__
+background.CloserStarCluster.__init__
+background.DistantStar.__init__
+background.SpaceBackground.__init__
+base.AGObject.__init__
+clock.Clock.__init__
+hud.Hud.__init__
+mover.CircularMover.__init__
+mover.LinearMover.__init__
+mover.Mover.__init__
+mover.RandomMover.__init__
+mover.ZigZagMover.__init__
+obstacle.MovingObstacle.__init__
+obstacle.Obstacle.__init__
+signals.Signal.__init__
+signals.WeakMethod.__init__
+signals._WeakMethod_FuncHost.__init__
+spaceship.AGSprite.__init__
+spaceship.AdvancedPlayerShip.__init__
+spaceship.AmmoWeapon.__init__
+spaceship.Armour.__init__
+spaceship.BasicArmour.__init__
+spaceship.BasicBeam.__init__
+spaceship.BasicBeamExplosion.__init__
+spaceship.BasicBeamer.__init__
+spaceship.BasicProjectileEnergyWeapon.__init__
+spaceship.BasicReactor.__init__
+spaceship.BasicShield.__init__
+spaceship.Bullet.__init__
+spaceship.BulletExplosion.__init__
+spaceship.Destructible.__init__
+spaceship.EnemyShip.__init__
+spaceship.EnergyProjectile.__init__
+spaceship.EnergyProjectileExplosion.__init__
+spaceship.EnergyWeapon.__init__
+spaceship.Explosion.__init__
+spaceship.InstantEnergyBeam.__init__
+spaceship.InstantEnergyWeapon.__init__
+spaceship.ObstacleExplosion.__init__
+spaceship.PlayerShip.__init__
+spaceship.Projectile.__init__
+spaceship.ProjectileAmmoWeapon.__init__
+spaceship.ProjectileEnergyWeapon.__init__
+spaceship.Reactor.__init__
+spaceship.Shell.__init__
+spaceship.ShellExplosion.__init__
+spaceship.Shield.__init__
+spaceship.Ship.__init__
+spaceship.Weapon.__init__
+widgets.VerticalProgressBar.__init__
+widgets.Widget.__init__" class="py-name" href="#" onclick="return doclink('link-13', '__init__', 'link-2');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">speed</tt><tt class="py-op">,</tt> <tt class="py-name">boundary</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-name">groups</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">image</tt><tt class="py-op">.</tt><tt class="py-name">load</tt><tt class="py-op">(</tt><tt class="py-string">'gfx/terrain/TEST7B.bmp'</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">convert_alpha</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rect</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">Rect</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">abs</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt><tt class="py-op">.</tt><tt class="py-name">get_height</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">-</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">boundary</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="clock" class="py-name" href="#" onclick="return doclink('link-14', 'clock', 'link-0');">clock</a></tt> <tt class="py-op">=</tt> <tt id="link-15" class="py-name"><a title="clock.Clock" class="py-name" href="#" onclick="return doclink('link-15', 'Clock', 'link-1');">Clock</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"> </tt>
+<a name="BackgroundImage.update"></a><div id="BackgroundImage.update-def"><a name="L38"></a><tt class="py-lineno"> 38</tt> <a class="py-toggle" href="#" id="BackgroundImage.update-toggle" onclick="return toggle('BackgroundImage.update');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.BackgroundImage-class.html#update">update</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundImage.update-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="BackgroundImage.update-expanded"><a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">    <tt class="py-name">delta_y</tt> <tt class="py-op">=</tt> <tt class="py-name">round</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="clock" class="py-name" href="#" onclick="return doclink('link-16', 'clock', 'link-0');">clock</a></tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="clock.Clock.frame_span" class="py-name" href="#" onclick="return doclink('link-17', 'frame_span', 'link-6');">frame_span</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">*</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">speed</tt> <tt class="py-op">/</tt> <tt class="py-number">1000</tt><tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rect</tt><tt class="py-op">.</tt><tt class="py-name">move_ip</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">delta_y</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-comment"># end of temp</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"><tt class="py-comment"></tt> </tt>
+<a name="DistantStar"></a><div id="DistantStar-def"><a name="L43"></a><tt class="py-lineno"> 43</tt> <a class="py-toggle" href="#" id="DistantStar-toggle" onclick="return toggle('DistantStar');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="background.DistantStar-class.html">DistantStar</a><tt class="py-op">(</tt><tt class="py-base-class">BackgroundObject</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DistantStar-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="DistantStar-expanded"><a name="DistantStar.__init__"></a><div id="DistantStar.__init__-def"><a name="L44"></a><tt class="py-lineno"> 44</tt> <a class="py-toggle" href="#" id="DistantStar.__init__-toggle" onclick="return toggle('DistantStar.__init__');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.DistantStar-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">pos</tt><tt class="py-op">,</tt> <tt class="py-param">boundary</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">groups</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DistantStar.__init__-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="DistantStar.__init__-expanded"><a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">    <tt id="link-18" class="py-name"><a title="background.BackgroundObject" class="py-name" href="#" onclick="return doclink('link-18', 'BackgroundObject', 'link-12');">BackgroundObject</a></tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="background.BackgroundImage.__init__
+background.BackgroundObject.__init__
+background.CloserStar.__init__
+background.CloserStarCluster.__init__
+background.DistantStar.__init__
+background.SpaceBackground.__init__
+base.AGObject.__init__
+clock.Clock.__init__
+hud.Hud.__init__
+mover.CircularMover.__init__
+mover.LinearMover.__init__
+mover.Mover.__init__
+mover.RandomMover.__init__
+mover.ZigZagMover.__init__
+obstacle.MovingObstacle.__init__
+obstacle.Obstacle.__init__
+signals.Signal.__init__
+signals.WeakMethod.__init__
+signals._WeakMethod_FuncHost.__init__
+spaceship.AGSprite.__init__
+spaceship.AdvancedPlayerShip.__init__
+spaceship.AmmoWeapon.__init__
+spaceship.Armour.__init__
+spaceship.BasicArmour.__init__
+spaceship.BasicBeam.__init__
+spaceship.BasicBeamExplosion.__init__
+spaceship.BasicBeamer.__init__
+spaceship.BasicProjectileEnergyWeapon.__init__
+spaceship.BasicReactor.__init__
+spaceship.BasicShield.__init__
+spaceship.Bullet.__init__
+spaceship.BulletExplosion.__init__
+spaceship.Destructible.__init__
+spaceship.EnemyShip.__init__
+spaceship.EnergyProjectile.__init__
+spaceship.EnergyProjectileExplosion.__init__
+spaceship.EnergyWeapon.__init__
+spaceship.Explosion.__init__
+spaceship.InstantEnergyBeam.__init__
+spaceship.InstantEnergyWeapon.__init__
+spaceship.ObstacleExplosion.__init__
+spaceship.PlayerShip.__init__
+spaceship.Projectile.__init__
+spaceship.ProjectileAmmoWeapon.__init__
+spaceship.ProjectileEnergyWeapon.__init__
+spaceship.Reactor.__init__
+spaceship.Shell.__init__
+spaceship.ShellExplosion.__init__
+spaceship.Shield.__init__
+spaceship.Ship.__init__
+spaceship.Weapon.__init__
+widgets.VerticalProgressBar.__init__
+widgets.Widget.__init__" class="py-name" href="#" onclick="return doclink('link-19', '__init__', 'link-2');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">pos</tt><tt class="py-op">,</tt> <tt class="py-number">80</tt><tt class="py-op">,</tt> <tt class="py-name">boundary</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-name">groups</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">Surface</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt><tt class="py-op">.</tt><tt class="py-name">fill</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">255</tt><tt class="py-op">,</tt> <tt class="py-number">255</tt><tt class="py-op">,</tt> <tt class="py-number">255</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rect</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">Rect</tt><tt class="py-op">(</tt><tt class="py-name">pos</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"> </tt>
+<a name="CloserStar"></a><div id="CloserStar-def"><a name="L51"></a><tt class="py-lineno"> 51</tt> <a class="py-toggle" href="#" id="CloserStar-toggle" onclick="return toggle('CloserStar');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="background.CloserStar-class.html">CloserStar</a><tt class="py-op">(</tt><tt class="py-base-class">BackgroundObject</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CloserStar-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="CloserStar-expanded"><a name="CloserStar.__init__"></a><div id="CloserStar.__init__-def"><a name="L52"></a><tt class="py-lineno"> 52</tt> <a class="py-toggle" href="#" id="CloserStar.__init__-toggle" onclick="return toggle('CloserStar.__init__');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.CloserStar-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">pos</tt><tt class="py-op">,</tt> <tt class="py-param">boundary</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">groups</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CloserStar.__init__-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="CloserStar.__init__-expanded"><a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">    <tt id="link-20" class="py-name"><a title="background.BackgroundObject" class="py-name" href="#" onclick="return doclink('link-20', 'BackgroundObject', 'link-12');">BackgroundObject</a></tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="background.BackgroundImage.__init__
+background.BackgroundObject.__init__
+background.CloserStar.__init__
+background.CloserStarCluster.__init__
+background.DistantStar.__init__
+background.SpaceBackground.__init__
+base.AGObject.__init__
+clock.Clock.__init__
+hud.Hud.__init__
+mover.CircularMover.__init__
+mover.LinearMover.__init__
+mover.Mover.__init__
+mover.RandomMover.__init__
+mover.ZigZagMover.__init__
+obstacle.MovingObstacle.__init__
+obstacle.Obstacle.__init__
+signals.Signal.__init__
+signals.WeakMethod.__init__
+signals._WeakMethod_FuncHost.__init__
+spaceship.AGSprite.__init__
+spaceship.AdvancedPlayerShip.__init__
+spaceship.AmmoWeapon.__init__
+spaceship.Armour.__init__
+spaceship.BasicArmour.__init__
+spaceship.BasicBeam.__init__
+spaceship.BasicBeamExplosion.__init__
+spaceship.BasicBeamer.__init__
+spaceship.BasicProjectileEnergyWeapon.__init__
+spaceship.BasicReactor.__init__
+spaceship.BasicShield.__init__
+spaceship.Bullet.__init__
+spaceship.BulletExplosion.__init__
+spaceship.Destructible.__init__
+spaceship.EnemyShip.__init__
+spaceship.EnergyProjectile.__init__
+spaceship.EnergyProjectileExplosion.__init__
+spaceship.EnergyWeapon.__init__
+spaceship.Explosion.__init__
+spaceship.InstantEnergyBeam.__init__
+spaceship.InstantEnergyWeapon.__init__
+spaceship.ObstacleExplosion.__init__
+spaceship.PlayerShip.__init__
+spaceship.Projectile.__init__
+spaceship.ProjectileAmmoWeapon.__init__
+spaceship.ProjectileEnergyWeapon.__init__
+spaceship.Reactor.__init__
+spaceship.Shell.__init__
+spaceship.ShellExplosion.__init__
+spaceship.Shield.__init__
+spaceship.Ship.__init__
+spaceship.Weapon.__init__
+widgets.VerticalProgressBar.__init__
+widgets.Widget.__init__" class="py-name" href="#" onclick="return doclink('link-21', '__init__', 'link-2');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">pos</tt><tt class="py-op">,</tt> <tt class="py-number">120</tt><tt class="py-op">,</tt> <tt class="py-name">boundary</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-name">groups</tt><tt class="py-op">)</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">Surface</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">3</tt><tt class="py-op">,</tt> <tt class="py-number">3</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt><tt class="py-op">.</tt><tt class="py-name">set_colorkey</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt><tt class="py-op">.</tt><tt class="py-name">fill</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt><tt class="py-op">.</tt><tt class="py-name">set_at</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">255</tt><tt class="py-op">,</tt> <tt class="py-number">255</tt><tt class="py-op">,</tt> <tt class="py-number">255</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">    <tt id="link-22" class="py-name" targets="Variable widgets.VerticalProgressBar.color=widgets.VerticalProgressBar-class.html#color"><a title="widgets.VerticalProgressBar.color" class="py-name" href="#" onclick="return doclink('link-22', 'color', 'link-22');">color</a></tt> <tt class="py-op">=</tt> <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt><tt class="py-number">2</tt><tt class="py-op">)</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt>   <tt id="link-23" class="py-name"><a title="widgets.VerticalProgressBar.color" class="py-name" href="#" onclick="return doclink('link-23', 'color', 'link-22');">color</a></tt> <tt class="py-op">==</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> <tt id="link-24" class="py-name"><a title="widgets.VerticalProgressBar.color" class="py-name" href="#" onclick="return doclink('link-24', 'color', 'link-22');">color</a></tt> <tt class="py-op">=</tt> <tt class="py-number">255</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt id="link-25" class="py-name"><a title="widgets.VerticalProgressBar.color" class="py-name" href="#" onclick="return doclink('link-25', 'color', 'link-22');">color</a></tt> <tt class="py-op">==</tt> <tt class="py-number">1</tt><tt class="py-op">:</tt> <tt id="link-26" class="py-name"><a title="widgets.VerticalProgressBar.color" class="py-name" href="#" onclick="return doclink('link-26', 'color', 'link-22');">color</a></tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">200</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt id="link-27" class="py-name"><a title="widgets.VerticalProgressBar.color" class="py-name" href="#" onclick="return doclink('link-27', 'color', 'link-22');">color</a></tt> <tt class="py-op">==</tt> <tt class="py-number">2</tt><tt class="py-op">:</tt> <tt id="link-28" class="py-name"><a title="widgets.VerticalProgressBar.color" class="py-name" href="#" onclick="return doclink('link-28', 'color', 'link-22');">color</a></tt> <tt class="py-op">=</tt> <tt class="py-number">50</tt><tt class="py-op">,</tt> <tt class="py-number">50</tt><tt class="py-op">,</tt> <tt class="py-number">255</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> <tt class="py-keyword">print</tt> <tt class="py-string">'CloserStar object init error - color undefined for'</tt><tt class="py-op">,</tt> <tt id="link-29" class="py-name"><a title="widgets.VerticalProgressBar.color" class="py-name" href="#" onclick="return doclink('link-29', 'color', 'link-22');">color</a></tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">pixel</tt> <tt class="py-keyword">in</tt> <tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">2</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">      <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt><tt class="py-op">.</tt><tt class="py-name">set_at</tt><tt class="py-op">(</tt><tt class="py-name">pixel</tt><tt class="py-op">,</tt> <tt id="link-30" class="py-name"><a title="widgets.VerticalProgressBar.color" class="py-name" href="#" onclick="return doclink('link-30', 'color', 'link-22');">color</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rect</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">Rect</tt><tt class="py-op">(</tt><tt class="py-name">pos</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">3</tt><tt class="py-op">,</tt> <tt class="py-number">3</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"> </tt>
+<a name="CloserStarCluster"></a><div id="CloserStarCluster-def"><a name="L68"></a><tt class="py-lineno"> 68</tt> <a class="py-toggle" href="#" id="CloserStarCluster-toggle" onclick="return toggle('CloserStarCluster');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="background.CloserStarCluster-class.html">CloserStarCluster</a><tt class="py-op">(</tt><tt class="py-base-class">BackgroundObject</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CloserStarCluster-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="CloserStarCluster-expanded"><a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">  <tt class="py-docstring">'''Cluster of small random numer of CloserStar instances positioned randomly each close to one another'''</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"> </tt>
+<a name="CloserStarCluster.__init__"></a><div id="CloserStarCluster.__init__-def"><a name="L71"></a><tt class="py-lineno"> 71</tt> <a class="py-toggle" href="#" id="CloserStarCluster.__init__-toggle" onclick="return toggle('CloserStarCluster.__init__');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.CloserStarCluster-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">pos</tt><tt class="py-op">,</tt> <tt class="py-param">boundary</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">groups</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="CloserStarCluster.__init__-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="CloserStarCluster.__init__-expanded"><a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">    <tt id="link-31" class="py-name"><a title="background.BackgroundObject" class="py-name" href="#" onclick="return doclink('link-31', 'BackgroundObject', 'link-12');">BackgroundObject</a></tt><tt class="py-op">.</tt><tt id="link-32" class="py-name"><a title="background.BackgroundImage.__init__
+background.BackgroundObject.__init__
+background.CloserStar.__init__
+background.CloserStarCluster.__init__
+background.DistantStar.__init__
+background.SpaceBackground.__init__
+base.AGObject.__init__
+clock.Clock.__init__
+hud.Hud.__init__
+mover.CircularMover.__init__
+mover.LinearMover.__init__
+mover.Mover.__init__
+mover.RandomMover.__init__
+mover.ZigZagMover.__init__
+obstacle.MovingObstacle.__init__
+obstacle.Obstacle.__init__
+signals.Signal.__init__
+signals.WeakMethod.__init__
+signals._WeakMethod_FuncHost.__init__
+spaceship.AGSprite.__init__
+spaceship.AdvancedPlayerShip.__init__
+spaceship.AmmoWeapon.__init__
+spaceship.Armour.__init__
+spaceship.BasicArmour.__init__
+spaceship.BasicBeam.__init__
+spaceship.BasicBeamExplosion.__init__
+spaceship.BasicBeamer.__init__
+spaceship.BasicProjectileEnergyWeapon.__init__
+spaceship.BasicReactor.__init__
+spaceship.BasicShield.__init__
+spaceship.Bullet.__init__
+spaceship.BulletExplosion.__init__
+spaceship.Destructible.__init__
+spaceship.EnemyShip.__init__
+spaceship.EnergyProjectile.__init__
+spaceship.EnergyProjectileExplosion.__init__
+spaceship.EnergyWeapon.__init__
+spaceship.Explosion.__init__
+spaceship.InstantEnergyBeam.__init__
+spaceship.InstantEnergyWeapon.__init__
+spaceship.ObstacleExplosion.__init__
+spaceship.PlayerShip.__init__
+spaceship.Projectile.__init__
+spaceship.ProjectileAmmoWeapon.__init__
+spaceship.ProjectileEnergyWeapon.__init__
+spaceship.Reactor.__init__
+spaceship.Shell.__init__
+spaceship.ShellExplosion.__init__
+spaceship.Shield.__init__
+spaceship.Ship.__init__
+spaceship.Weapon.__init__
+widgets.VerticalProgressBar.__init__
+widgets.Widget.__init__" class="py-name" href="#" onclick="return doclink('link-32', '__init__', 'link-2');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">,</tt> <tt class="py-name">pos</tt><tt class="py-op">,</tt> <tt class="py-number">160</tt><tt class="py-op">,</tt> <tt class="py-name">boundary</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-name">groups</tt><tt class="py-op">)</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">    <tt class="py-name">count</tt> <tt class="py-op">=</tt> <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">2</tt><tt class="py-op">,</tt> <tt class="py-number">5</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">    <tt class="py-name">size</tt> <tt class="py-op">=</tt> <tt class="py-number">75</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rect</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">Rect</tt><tt class="py-op">(</tt><tt class="py-name">pos</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-name">size</tt><tt class="py-op">,</tt> <tt class="py-name">size</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">Surface</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">size</tt><tt class="py-op">,</tt> <tt class="py-name">size</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt><tt class="py-op">.</tt><tt class="py-name">set_colorkey</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt><tt class="py-op">.</tt><tt class="py-name">fill</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-name">count</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">      <tt class="py-name">x</tt> <tt class="py-op">=</tt> <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-name">size</tt> <tt class="py-op">-</tt> <tt class="py-number">2</tt><tt class="py-op">)</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">      <tt class="py-name">y</tt> <tt class="py-op">=</tt> <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt> <tt class="py-name">size</tt> <tt class="py-op">-</tt> <tt class="py-number">2</tt><tt class="py-op">)</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">      <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt><tt class="py-op">.</tt><tt class="py-name">set_at</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-number">1</tt> <tt class="py-op">+</tt> <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt> <tt class="py-op">+</tt> <tt class="py-name">y</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">255</tt><tt class="py-op">,</tt> <tt class="py-number">255</tt><tt class="py-op">,</tt> <tt class="py-number">255</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">      <tt class="py-name">r</tt> <tt class="py-op">=</tt> <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">32</tt><tt class="py-op">,</tt> <tt class="py-number">196</tt><tt class="py-op">)</tt><tt class="py-op">;</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">      <tt class="py-name">b</tt> <tt class="py-op">=</tt> <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">196</tt> <tt class="py-op">-</tt> <tt class="py-name">r</tt><tt class="py-op">)</tt><tt class="py-op">;</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">      <tt class="py-name">g</tt> <tt class="py-op">=</tt> <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-number">196</tt> <tt class="py-op">-</tt> <tt class="py-name">r</tt> <tt class="py-op">-</tt> <tt class="py-name">b</tt><tt class="py-op">)</tt><tt class="py-op">;</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">      <tt class="py-keyword">for</tt> <tt class="py-name">pixel</tt> <tt class="py-keyword">in</tt> <tt class="py-op">(</tt><tt class="py-number">1</tt> <tt class="py-op">+</tt> <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt> <tt class="py-op">+</tt> <tt class="py-name">y</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">0</tt> <tt class="py-op">+</tt> <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt> <tt class="py-op">+</tt> <tt class="py-name">y</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">1</tt> <tt class="py-op">+</tt> <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-number">2</tt> <tt class="py-op">+</tt> <tt class="py-name">y</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">2</tt> <tt class="py-op">+</tt> <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-number">1</tt> <tt class="py-op">+</tt> <tt class="py-name">y</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">image</tt><tt class="py-op">.</tt><tt class="py-name">set_at</tt><tt class="py-op">(</tt><tt class="py-name">pixel</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-name">r</tt><tt class="py-op">,</tt> <tt class="py-name">g</tt><tt class="py-op">,</tt> <tt class="py-name">b</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"> </tt>
+<a name="SpaceBackground"></a><div id="SpaceBackground-def"><a name="L96"></a><tt class="py-lineno"> 96</tt> <a class="py-toggle" href="#" id="SpaceBackground-toggle" onclick="return toggle('SpaceBackground');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="background.SpaceBackground-class.html">SpaceBackground</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SpaceBackground-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="SpaceBackground-expanded"><a name="SpaceBackground.__init__"></a><div id="SpaceBackground.__init__-def"><a name="L97"></a><tt class="py-lineno"> 97</tt> <a class="py-toggle" href="#" id="SpaceBackground.__init__-toggle" onclick="return toggle('SpaceBackground.__init__');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.SpaceBackground-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">screen_dims</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SpaceBackground.__init__-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="SpaceBackground.__init__-expanded"><a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt> <tt class="py-op">=</tt> <tt class="py-name">screen_dims</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">distant_count</tt> <tt class="py-op">=</tt> <tt class="py-number">20</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_count</tt> <tt class="py-op">=</tt> <tt class="py-number">16</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_cluster_count</tt> <tt class="py-op">=</tt> <tt class="py-number">3</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-33" class="py-name" targets="Method background.SpaceBackground.distant_stars_init()=background.SpaceBackground-class.html#distant_stars_init"><a title="background.SpaceBackground.distant_stars_init" class="py-name" href="#" onclick="return doclink('link-33', 'distant_stars_init', 'link-33');">distant_stars_init</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-34" class="py-name" targets="Method background.SpaceBackground.closer_stars_init()=background.SpaceBackground-class.html#closer_stars_init"><a title="background.SpaceBackground.closer_stars_init" class="py-name" href="#" onclick="return doclink('link-34', 'closer_stars_init', 'link-34');">closer_stars_init</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name" targets="Method background.SpaceBackground.closer_star_clusters_init()=background.SpaceBackground-class.html#closer_star_clusters_init"><a title="background.SpaceBackground.closer_star_clusters_init" class="py-name" href="#" onclick="return doclink('link-35', 'closer_star_clusters_init', 'link-35');">closer_star_clusters_init</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"> </tt>
+<a name="SpaceBackground.distant_stars_init"></a><div id="SpaceBackground.distant_stars_init-def"><a name="L107"></a><tt class="py-lineno">107</tt> <a class="py-toggle" href="#" id="SpaceBackground.distant_stars_init-toggle" onclick="return toggle('SpaceBackground.distant_stars_init');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.SpaceBackground-class.html#distant_stars_init">distant_stars_init</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SpaceBackground.distant_stars_init-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="SpaceBackground.distant_stars_init-expanded"><a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">distant_stars</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">sprite</tt><tt class="py-op">.</tt><tt class="py-name">Group</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">star</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">distant_count</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">      <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-name">y</tt> <tt class="py-op">=</tt> <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">,</tt>\ </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">             <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">      <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">distant_stars</tt><tt class="py-op">.</tt><tt class="py-name">add</tt><tt class="py-op">(</tt><tt id="link-36" class="py-name" targets="Class background.DistantStar=background.DistantStar-class.html"><a title="background.DistantStar" class="py-name" href="#" onclick="return doclink('link-36', 'DistantStar', 'link-36');">DistantStar</a></tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-name">y</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line"> </tt>
+<a name="SpaceBackground.distant_stars_update"></a><div id="SpaceBackground.distant_stars_update-def"><a name="L114"></a><tt class="py-lineno">114</tt> <a class="py-toggle" href="#" id="SpaceBackground.distant_stars_update-toggle" onclick="return toggle('SpaceBackground.distant_stars_update');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.SpaceBackground-class.html#distant_stars_update">distant_stars_update</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SpaceBackground.distant_stars_update-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="SpaceBackground.distant_stars_update-expanded"><a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">distant_stars</tt><tt class="py-op">.</tt><tt id="link-37" class="py-name" targets="Method background.BackgroundImage.update()=background.BackgroundImage-class.html#update,Method background.BackgroundObject.update()=background.BackgroundObject-class.html#update,Method background.SpaceBackground.update()=background.SpaceBackground-class.html#update,Method hud.Hud.update()=hud.Hud-class.html#update,Method mover.CircularMover.update()=mover.CircularMover-class.html#update,Method mover.LinearMover.update()=mover.LinearMover-class.html#update,Method mover.Mover.update()=mover.Mover-class.html#update,Method mover.RandomMover.update()=mover.RandomMover-class.html#update,Method mover.ZigZagMover.update()=mover.ZigZagMover-class.html#update,Method obstacle.MovingObstacle.update()=obstacle.MovingObstacle-class.html#update,Method obstacle.Obstacle.update()=obstacle.Obstacle-class.html#update,Method spaceship.AdvancedPlayerShip.update()=spaceship.AdvancedPlayerShip-class.html#update,Method spaceship.EnemyShip.update()=spaceship.EnemyShip-class.html#update,Method spaceship.EnergyProjectile.update()=spaceship.EnergyProjectile-class.html#update,Method spaceship.Explosion.update()=spaceship.Explosion-class.html#update,Method spaceship.InstantEnergyBeam.update()=spaceship.InstantEnergyBeam-class.html#update,Method spaceship.Projectile.update()=spaceship.Projectile-class.html#update,Method spaceship.Shell.update()=spaceship.Shell-class.html#update,Method spaceship.Shield.update()=spaceship.Shield-class.html#update,Method spaceship.Weapon.update()=spaceship.Weapon-class.html#update,Method widgets.VerticalProgressBar.update()=widgets.VerticalProgressBar-class.html#update"><a title="background.BackgroundImage.update
+background.BackgroundObject.update
+background.SpaceBackground.update
+hud.Hud.update
+mover.CircularMover.update
+mover.LinearMover.update
+mover.Mover.update
+mover.RandomMover.update
+mover.ZigZagMover.update
+obstacle.MovingObstacle.update
+obstacle.Obstacle.update
+spaceship.AdvancedPlayerShip.update
+spaceship.EnemyShip.update
+spaceship.EnergyProjectile.update
+spaceship.Explosion.update
+spaceship.InstantEnergyBeam.update
+spaceship.Projectile.update
+spaceship.Shell.update
+spaceship.Shield.update
+spaceship.Weapon.update
+widgets.VerticalProgressBar.update" class="py-name" href="#" onclick="return doclink('link-37', 'update', 'link-37');">update</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line"> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">distant_stars</tt><tt class="py-op">.</tt><tt class="py-name">sprites</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">__len__</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">&lt;</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">distant_count</tt><tt class="py-op">:</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">      <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-name">y</tt> <tt class="py-op">=</tt> <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">      <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">distant_stars</tt><tt class="py-op">.</tt><tt class="py-name">add</tt><tt class="py-op">(</tt><tt id="link-38" class="py-name"><a title="background.DistantStar" class="py-name" href="#" onclick="return doclink('link-38', 'DistantStar', 'link-36');">DistantStar</a></tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">,</tt><tt class="py-name">y</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line"> </tt>
+<a name="SpaceBackground.closer_stars_init"></a><div id="SpaceBackground.closer_stars_init-def"><a name="L121"></a><tt class="py-lineno">121</tt> <a class="py-toggle" href="#" id="SpaceBackground.closer_stars_init-toggle" onclick="return toggle('SpaceBackground.closer_stars_init');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.SpaceBackground-class.html#closer_stars_init">closer_stars_init</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SpaceBackground.closer_stars_init-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="SpaceBackground.closer_stars_init-expanded"><a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_stars</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">sprite</tt><tt class="py-op">.</tt><tt class="py-name">Group</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">star</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_count</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">      <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-name">y</tt> <tt class="py-op">=</tt> <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">,</tt>\ </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">             <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">      <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_stars</tt><tt class="py-op">.</tt><tt class="py-name">add</tt><tt class="py-op">(</tt><tt id="link-39" class="py-name" targets="Class background.CloserStar=background.CloserStar-class.html"><a title="background.CloserStar" class="py-name" href="#" onclick="return doclink('link-39', 'CloserStar', 'link-39');">CloserStar</a></tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-name">y</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line"> </tt>
+<a name="SpaceBackground.closer_stars_update"></a><div id="SpaceBackground.closer_stars_update-def"><a name="L128"></a><tt class="py-lineno">128</tt> <a class="py-toggle" href="#" id="SpaceBackground.closer_stars_update-toggle" onclick="return toggle('SpaceBackground.closer_stars_update');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.SpaceBackground-class.html#closer_stars_update">closer_stars_update</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SpaceBackground.closer_stars_update-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="SpaceBackground.closer_stars_update-expanded"><a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_stars</tt><tt class="py-op">.</tt><tt id="link-40" class="py-name"><a title="background.BackgroundImage.update
+background.BackgroundObject.update
+background.SpaceBackground.update
+hud.Hud.update
+mover.CircularMover.update
+mover.LinearMover.update
+mover.Mover.update
+mover.RandomMover.update
+mover.ZigZagMover.update
+obstacle.MovingObstacle.update
+obstacle.Obstacle.update
+spaceship.AdvancedPlayerShip.update
+spaceship.EnemyShip.update
+spaceship.EnergyProjectile.update
+spaceship.Explosion.update
+spaceship.InstantEnergyBeam.update
+spaceship.Projectile.update
+spaceship.Shell.update
+spaceship.Shield.update
+spaceship.Weapon.update
+widgets.VerticalProgressBar.update" class="py-name" href="#" onclick="return doclink('link-40', 'update', 'link-37');">update</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_stars</tt><tt class="py-op">.</tt><tt class="py-name">sprites</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">__len__</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">&lt;</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_count</tt><tt class="py-op">:</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">        <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-name">y</tt> <tt class="py-op">=</tt> <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_stars</tt><tt class="py-op">.</tt><tt class="py-name">add</tt><tt class="py-op">(</tt><tt id="link-41" class="py-name"><a title="background.CloserStar" class="py-name" href="#" onclick="return doclink('link-41', 'CloserStar', 'link-39');">CloserStar</a></tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">,</tt><tt class="py-name">y</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line"> </tt>
+<a name="SpaceBackground.closer_star_clusters_init"></a><div id="SpaceBackground.closer_star_clusters_init-def"><a name="L135"></a><tt class="py-lineno">135</tt> <a class="py-toggle" href="#" id="SpaceBackground.closer_star_clusters_init-toggle" onclick="return toggle('SpaceBackground.closer_star_clusters_init');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.SpaceBackground-class.html#closer_star_clusters_init">closer_star_clusters_init</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SpaceBackground.closer_star_clusters_init-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="SpaceBackground.closer_star_clusters_init-expanded"><a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_star_clusters</tt> <tt class="py-op">=</tt> <tt class="py-name">pygame</tt><tt class="py-op">.</tt><tt class="py-name">sprite</tt><tt class="py-op">.</tt><tt class="py-name">Group</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">cluster</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_cluster_count</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">      <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-name">y</tt> <tt class="py-op">=</tt> <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">,</tt>\ </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">             <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">      <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_star_clusters</tt><tt class="py-op">.</tt><tt class="py-name">add</tt><tt class="py-op">(</tt><tt id="link-42" class="py-name" targets="Class background.CloserStarCluster=background.CloserStarCluster-class.html"><a title="background.CloserStarCluster" class="py-name" href="#" onclick="return doclink('link-42', 'CloserStarCluster', 'link-42');">CloserStarCluster</a></tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-name">y</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line"> </tt>
+<a name="SpaceBackground.closer_star_clusters_update"></a><div id="SpaceBackground.closer_star_clusters_update-def"><a name="L142"></a><tt class="py-lineno">142</tt> <a class="py-toggle" href="#" id="SpaceBackground.closer_star_clusters_update-toggle" onclick="return toggle('SpaceBackground.closer_star_clusters_update');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.SpaceBackground-class.html#closer_star_clusters_update">closer_star_clusters_update</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SpaceBackground.closer_star_clusters_update-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="SpaceBackground.closer_star_clusters_update-expanded"><a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_star_clusters</tt><tt class="py-op">.</tt><tt id="link-43" class="py-name"><a title="background.BackgroundImage.update
+background.BackgroundObject.update
+background.SpaceBackground.update
+hud.Hud.update
+mover.CircularMover.update
+mover.LinearMover.update
+mover.Mover.update
+mover.RandomMover.update
+mover.ZigZagMover.update
+obstacle.MovingObstacle.update
+obstacle.Obstacle.update
+spaceship.AdvancedPlayerShip.update
+spaceship.EnemyShip.update
+spaceship.EnergyProjectile.update
+spaceship.Explosion.update
+spaceship.InstantEnergyBeam.update
+spaceship.Projectile.update
+spaceship.Shell.update
+spaceship.Shield.update
+spaceship.Weapon.update
+widgets.VerticalProgressBar.update" class="py-name" href="#" onclick="return doclink('link-43', 'update', 'link-37');">update</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line"> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_star_clusters</tt><tt class="py-op">.</tt><tt class="py-name">sprites</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">__len__</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">&lt;</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_cluster_count</tt><tt class="py-op">:</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">      <tt class="py-name">x</tt><tt class="py-op">,</tt> <tt class="py-name">y</tt> <tt class="py-op">=</tt> <tt class="py-name">random</tt><tt class="py-op">.</tt><tt class="py-name">randint</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">      <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_star_clusters</tt><tt class="py-op">.</tt><tt class="py-name">add</tt><tt class="py-op">(</tt><tt id="link-44" class="py-name"><a title="background.CloserStarCluster" class="py-name" href="#" onclick="return doclink('link-44', 'CloserStarCluster', 'link-42');">CloserStarCluster</a></tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">,</tt><tt class="py-name">y</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">dims</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line"> </tt>
+<a name="SpaceBackground.update"></a><div id="SpaceBackground.update-def"><a name="L149"></a><tt class="py-lineno">149</tt> <a class="py-toggle" href="#" id="SpaceBackground.update-toggle" onclick="return toggle('SpaceBackground.update');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.SpaceBackground-class.html#update">update</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SpaceBackground.update-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="SpaceBackground.update-expanded"><a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-45" class="py-name" targets="Method background.SpaceBackground.distant_stars_update()=background.SpaceBackground-class.html#distant_stars_update"><a title="background.SpaceBackground.distant_stars_update" class="py-name" href="#" onclick="return doclink('link-45', 'distant_stars_update', 'link-45');">distant_stars_update</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-46" class="py-name" targets="Method background.SpaceBackground.closer_stars_update()=background.SpaceBackground-class.html#closer_stars_update"><a title="background.SpaceBackground.closer_stars_update" class="py-name" href="#" onclick="return doclink('link-46', 'closer_stars_update', 'link-46');">closer_stars_update</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-47" class="py-name" targets="Method background.SpaceBackground.closer_star_clusters_update()=background.SpaceBackground-class.html#closer_star_clusters_update"><a title="background.SpaceBackground.closer_star_clusters_update" class="py-name" href="#" onclick="return doclink('link-47', 'closer_star_clusters_update', 'link-47');">closer_star_clusters_update</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"> </tt>
+<a name="SpaceBackground.draw"></a><div id="SpaceBackground.draw-def"><a name="L154"></a><tt class="py-lineno">154</tt> <a class="py-toggle" href="#" id="SpaceBackground.draw-toggle" onclick="return toggle('SpaceBackground.draw');">-</a><tt class="py-line">  <tt class="py-keyword">def</tt> <a class="py-def-name" href="background.SpaceBackground-class.html#draw">draw</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">surface</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="SpaceBackground.draw-collapsed" style="display:none;" pad="+++" indent="++++++"></div><div id="SpaceBackground.draw-expanded"><a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">distant_stars</tt><tt class="py-op">.</tt><tt id="link-48" class="py-name" targets="Method background.SpaceBackground.draw()=background.SpaceBackground-class.html#draw,Method hud.Hud.draw()=hud.Hud-class.html#draw"><a title="background.SpaceBackground.draw
+hud.Hud.draw" class="py-name" href="#" onclick="return doclink('link-48', 'draw', 'link-48');">draw</a></tt><tt class="py-op">(</tt><tt class="py-name">surface</tt><tt class="py-op">)</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_stars</tt><tt class="py-op">.</tt><tt id="link-49" class="py-name"><a title="background.SpaceBackground.draw
+hud.Hud.draw" class="py-name" href="#" onclick="return doclink('link-49', 'draw', 'link-48');">draw</a></tt><tt class="py-op">(</tt><tt class="py-name">surface</tt><tt class="py-op">)</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">    <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">closer_star_clusters</tt><tt class="py-op">.</tt><tt id="link-50" class="py-name"><a title="background.SpaceBackground.draw
+hud.Hud.draw" class="py-name" href="#" onclick="return doclink('link-50', 'draw', 'link-48');">draw</a></tt><tt class="py-op">(</tt><tt class="py-name">surface</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0beta1 on Mon Oct 29 20:02:44 2007
+    </td>
+    <td align="right" class="footer">
+      <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie()
+  // -->
+</script>
+  
+</body>
+</html>
