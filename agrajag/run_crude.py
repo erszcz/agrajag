@@ -14,8 +14,6 @@ import mover
 from clock import Clock
 from hud import Hud
 
-from weakref import proxy, ref
-
 import psyco
 
 def run():
@@ -58,8 +56,10 @@ def run():
   g_enemies.add(MovingObstacle(g_explosions, (160, 80)))
   g_enemies.add(EnemyShip(g_bullets, g_explosions, (160, 160)))
 
-  ship = ref( AdvancedPlayerShip(g_enemies, g_explosions, (175, viewport_size[1] - 60), g_ship) )
-  hud.setup_connections(ship())
+  #ship = AdvancedPlayerShip(g_enemies, g_explosions, (175, viewport_size[1] - 60), g_ship)
+  #hud.setup_connections(ship)
+  AdvancedPlayerShip(g_enemies, g_explosions, (175, viewport_size[1] - 60), g_ship)
+  hud.setup_connections(g_ship.sprites()[0])
 
   back = SpaceBackground(viewport_size)
 
@@ -97,37 +97,57 @@ def run():
         if   event.type == pygame.QUIT: sys.exit()
         elif event.type == pygame.KEYDOWN:
           if   event.key == pygame.K_q: sys.exit()
+          #elif event.key == pygame.K_s: ship.next_weapon()
+          #elif event.key == pygame.K_a: ship.previous_weapon()
+          #elif event.key == pygame.K_x: ship.activate_shield(True)
           elif event.key == pygame.K_s:
-            if ship(): ship().next_weapon()
+            if g_ship.sprites():
+              g_ship.sprites()[0].next_weapon()
           elif event.key == pygame.K_a:
-            if ship(): ship().previous_weapon()
+            if g_ship.sprites():
+              g_ship.sprites()[0].previous_weapon()
           elif event.key == pygame.K_x:
-            if ship(): ship().activate_shield(True)
+            if g_ship.sprites():
+              g_ship.sprites()[0].activate_shield(True)
         elif event.type == pygame.KEYUP:
+          #if   event.key == pygame.K_UP: ship.fly_up(False)
+          #elif event.key == pygame.K_x: ship.activate_shield(False)
           if   event.key == pygame.K_UP:
-            if ship(): ship().fly_up(False)
+            if g_ship.sprites():
+              g_ship.sprites()[0].fly_up(False)
           elif event.key == pygame.K_x:
-            if ship(): ship().activate_shield(False)
+            if g_ship.sprites():
+              g_ship.sprites()[0].activate_shield(False)
     
       pressed_keys = pygame.key.get_pressed()
+      #if pressed_keys[pygame.K_UP]: ship.fly_up(True)
+      #if pressed_keys[pygame.K_DOWN]: ship.fly_down(viewport_size[1])
+      #if pressed_keys[pygame.K_LEFT]: ship.fly_left()
+      #if pressed_keys[pygame.K_RIGHT]: ship.fly_right(viewport_size[0])
+      #if pressed_keys[pygame.K_z]: ship.shoot(g_bullets, g_explosions)
       if pressed_keys[pygame.K_UP]:
-        if ship(): ship().fly_up(True)
+        if g_ship.sprites():
+          g_ship.sprites()[0].fly_up(True)
       if pressed_keys[pygame.K_DOWN]:
-        if ship(): ship().fly_down(viewport_size[1])
+        if g_ship.sprites():
+          g_ship.sprites()[0].fly_down(viewport_size[1])
       if pressed_keys[pygame.K_LEFT]:
-        if ship(): ship().fly_left()
+        if g_ship.sprites():
+          g_ship.sprites()[0].fly_left()
       if pressed_keys[pygame.K_RIGHT]:
-        if ship(): ship().fly_right(viewport_size[0])
-      if pressed_keys[pygame.K_z]:
-        if ship(): ship().shoot(g_bullets, g_explosions)
+        if g_ship.sprites():
+          g_ship.sprites()[0].fly_right(viewport_size[0])
+      if pressed_keys[pygame.K_z]: 
+        if g_ship.sprites():
+          g_ship.sprites()[0].shoot(g_bullets, g_explosions)
 
       screen.fill(black)
       back.update()
       back.draw(screen)
 
       # temp
-      if ship():
-        ship().damage(1)
+      if g_ship.sprites():
+        g_ship.sprites()[0].damage(1)
       #
 
       g_enemies.update()
@@ -149,8 +169,8 @@ def run():
                  )
       pygame.display.flip()
       print g_ship.sprites()
-      if ship():
-        print sys.getrefcount(ship())
+      if g_ship.sprites():
+        print sys.getrefcount(g_ship.sprites()[0])
 
 if __name__ == '__main__':
   run()

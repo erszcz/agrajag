@@ -61,16 +61,6 @@
       <em class="summary">Abstract sprite class used as a parent class for more specific 
         classes like Ship, Projectile or Obstacle.</em>
     <ul>
-    <li> <strong class="uidlink"><a href="spaceship.Projectile-class.html">spaceship.Projectile</a></strong>
-    <ul>
-    <li> <strong class="uidlink"><a href="spaceship.Shell-class.html">spaceship.Shell</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.EnergyProjectile-class.html">spaceship.EnergyProjectile</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.Bullet-class.html">spaceship.Bullet</a></strong>
-    </li>
-    </ul>
-    </li>
     <li> <strong class="uidlink"><a href="spaceship.InstantEnergyBeam-class.html">spaceship.InstantEnergyBeam</a></strong>:
       <em class="summary">Visual representation of energy fired by <code><a 
         href="spaceship.InstantEnergyWeapon-class.html" 
@@ -83,15 +73,15 @@
     </li>
     <li> <strong class="uidlink"><a href="spaceship.Explosion-class.html">spaceship.Explosion</a></strong>
     <ul>
+    <li> <strong class="uidlink"><a href="spaceship.ShellExplosion-class.html">spaceship.ShellExplosion</a></strong>
+    </li>
     <li> <strong class="uidlink"><a href="spaceship.BulletExplosion-class.html">spaceship.BulletExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ObstacleExplosion-class.html">spaceship.ObstacleExplosion</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="spaceship.BasicBeamExplosion-class.html">spaceship.BasicBeamExplosion</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="spaceship.EnergyProjectileExplosion-class.html">spaceship.EnergyProjectileExplosion</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.ShellExplosion-class.html">spaceship.ShellExplosion</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.ObstacleExplosion-class.html">spaceship.ObstacleExplosion</a></strong>
     </li>
     </ul>
     </li>
@@ -122,6 +112,16 @@
     </li>
     </ul>
     </li>
+    <li> <strong class="uidlink"><a href="spaceship.Projectile-class.html">spaceship.Projectile</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.Shell-class.html">spaceship.Shell</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnergyProjectile-class.html">spaceship.EnergyProjectile</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Bullet-class.html">spaceship.Bullet</a></strong>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink"><a href="spaceship.Shield-class.html">spaceship.Shield</a></strong>:
       <em class="summary">Base class for all shield types used both by player ship and 
         enemies.</em>
@@ -139,12 +139,23 @@
     </li>
     </ul>
     </li>
+    <li> <strong class="uidlink"><a href="spaceship.Armour-class.html">spaceship.Armour</a></strong>:
+      <em class="summary">Base class for all ship armours.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicArmour-class.html">spaceship.BasicArmour</a></strong>:
+      <em class="summary">The weakest armour type player ship can use.</em>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink"><a href="mover.Mover-class.html">mover.Mover</a></strong>:
       <em class="summary">Base class for all movers.</em>
     <ul>
     <li> <strong class="uidlink"><a href="mover.LinearMover-class.html">mover.LinearMover</a></strong>:
       <em class="summary">Causes object to move in a straight line with constant 
         speed.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="mover.RandomMover-class.html">mover.RandomMover</a></strong>:
+      <em class="summary">Randomly changes direction of an object but not its speed.</em>
     </li>
     <li> <strong class="uidlink"><a href="mover.ZigZagMover-class.html">mover.ZigZagMover</a></strong>:
       <em class="summary">Couses object to make zigzaging movement from top to the 
@@ -153,9 +164,6 @@
     <li> <strong class="uidlink"><a href="mover.CircularMover-class.html">mover.CircularMover</a></strong>:
       <em class="summary">Causes object to make circular movement around its initial 
         position.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="mover.RandomMover-class.html">mover.RandomMover</a></strong>:
-      <em class="summary">Randomly changes direction of an object but not its speed.</em>
     </li>
     </ul>
     </li>
@@ -209,14 +217,6 @@
     </li>
     </ul>
     </li>
-    <li> <strong class="uidlink"><a href="spaceship.Armour-class.html">spaceship.Armour</a></strong>:
-      <em class="summary">Base class for all ship armours.</em>
-    <ul>
-    <li> <strong class="uidlink"><a href="spaceship.BasicArmour-class.html">spaceship.BasicArmour</a></strong>:
-      <em class="summary">The weakest armour type player ship can use.</em>
-    </li>
-    </ul>
-    </li>
     </ul>
     </li>
     <li> <strong class="uidlink"><a href="gfxmanager.GfxManager-class.html">gfxmanager.GfxManager</a></strong>
@@ -237,16 +237,6 @@
       <em class="summary">Abstract sprite class used as a parent class for more specific 
         classes like Ship, Projectile or Obstacle.</em>
     <ul>
-    <li> <strong class="uidlink"><a href="spaceship.Projectile-class.html">spaceship.Projectile</a></strong>
-    <ul>
-    <li> <strong class="uidlink"><a href="spaceship.Shell-class.html">spaceship.Shell</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.EnergyProjectile-class.html">spaceship.EnergyProjectile</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.Bullet-class.html">spaceship.Bullet</a></strong>
-    </li>
-    </ul>
-    </li>
     <li> <strong class="uidlink"><a href="spaceship.InstantEnergyBeam-class.html">spaceship.InstantEnergyBeam</a></strong>:
       <em class="summary">Visual representation of energy fired by <code><a 
         href="spaceship.InstantEnergyWeapon-class.html" 
@@ -259,15 +249,15 @@
     </li>
     <li> <strong class="uidlink"><a href="spaceship.Explosion-class.html">spaceship.Explosion</a></strong>
     <ul>
+    <li> <strong class="uidlink"><a href="spaceship.ShellExplosion-class.html">spaceship.ShellExplosion</a></strong>
+    </li>
     <li> <strong class="uidlink"><a href="spaceship.BulletExplosion-class.html">spaceship.BulletExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ObstacleExplosion-class.html">spaceship.ObstacleExplosion</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="spaceship.BasicBeamExplosion-class.html">spaceship.BasicBeamExplosion</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="spaceship.EnergyProjectileExplosion-class.html">spaceship.EnergyProjectileExplosion</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.ShellExplosion-class.html">spaceship.ShellExplosion</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.ObstacleExplosion-class.html">spaceship.ObstacleExplosion</a></strong>
     </li>
     </ul>
     </li>
@@ -295,6 +285,16 @@
     <li> <strong class="uidlink"><a href="obstacle.MovingObstacle-class.html">obstacle.MovingObstacle</a></strong>
     </li>
     </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Projectile-class.html">spaceship.Projectile</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.Shell-class.html">spaceship.Shell</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnergyProjectile-class.html">spaceship.EnergyProjectile</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Bullet-class.html">spaceship.Bullet</a></strong>
     </li>
     </ul>
     </li>
@@ -379,7 +379,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0beta1 on Mon Oct 29 20:02:43 2007
+    Generated by Epydoc 3.0beta1 on Tue Oct 30 16:10:11 2007
     </td>
     <td align="right" class="footer">
       <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>

@@ -13,6 +13,8 @@ mover.rad2deg	functions-module.html#rad2deg
 obstacle	obstacle-module.html
 run	run-module.html
 run.run	run-module.html#run
+run_crude	run_crude-module.html
+run_crude.run	run_crude-module.html#run
 signals	signals-module.html
 spaceship	spaceship-module.html
 spaceship.deg2rad	functions-module.html#deg2rad
@@ -87,8 +89,12 @@ gfxmanager.GfxManager.content	gfxmanager.GfxManager-class.html#content
 gfxmanager.GfxManager.import_gfx	gfxmanager.GfxManager-class.html#import_gfx
 gfxmanager.GfxManager.get	gfxmanager.GfxManager-class.html#get
 hud.Hud	hud.Hud-class.html
+hud.Hud.slot_weapon_updated	hud.Hud-class.html#slot_weapon_updated
+hud.Hud.setup_connections	hud.Hud-class.html#setup_connections
 hud.Hud.draw	hud.Hud-class.html#draw
 hud.Hud.update	hud.Hud-class.html#update
+hud.Hud.slot_shield_updated	hud.Hud-class.html#slot_shield_updated
+hud.Hud.slot_armour_updated	hud.Hud-class.html#slot_armour_updated
 hud.Hud.__init__	hud.Hud-class.html#__init__
 mover.CircularMover	mover.CircularMover-class.html
 mover.CircularMover.ang_speed	mover.CircularMover-class.html#ang_speed
@@ -233,6 +239,8 @@ spaceship.AGSprite.cfg	spaceship.AGSprite-class.html#cfg
 spaceship.AGSprite._check_gfx	spaceship.AGSprite-class.html#_check_gfx
 base.AGObject._setattrs	base.AGObject-class.html#_setattrs
 spaceship.PlayerShip.exhaust	spaceship.PlayerShip-class.html#exhaust
+spaceship.AdvancedPlayerShip._current_weapon	spaceship.AdvancedPlayerShip-class.html#_current_weapon
+spaceship.AdvancedPlayerShip.get_current_weapon	spaceship.AdvancedPlayerShip-class.html#get_current_weapon
 spaceship.AdvancedPlayerShip.update	spaceship.AdvancedPlayerShip-class.html#update
 spaceship.AGSprite.max_speed	spaceship.AGSprite-class.html#max_speed
 spaceship.Ship.rect	spaceship.Ship-class.html#rect
@@ -244,6 +252,7 @@ spaceship.AGSprite.align	spaceship.AGSprite-class.html#align
 spaceship.Destructible.explode	spaceship.Destructible-class.html#explode
 spaceship.PlayerShip.fly_right	spaceship.PlayerShip-class.html#fly_right
 spaceship.AmmoWeapon	spaceship.AmmoWeapon-class.html
+spaceship.AmmoWeapon.shoot	spaceship.AmmoWeapon-class.html#shoot
 base.AGObject._setattrs	base.AGObject-class.html#_setattrs
 spaceship.Weapon.cfg	spaceship.Weapon-class.html#cfg
 spaceship.Weapon.last_shot_time	spaceship.Weapon-class.html#last_shot_time
@@ -482,6 +491,7 @@ spaceship.Explosion.update	spaceship.Explosion-class.html#update
 spaceship.AGSprite.max_speed	spaceship.AGSprite-class.html#max_speed
 spaceship.AGSprite.align	spaceship.AGSprite-class.html#align
 spaceship.EnergyWeapon	spaceship.EnergyWeapon-class.html
+spaceship.EnergyWeapon.shoot	spaceship.EnergyWeapon-class.html#shoot
 spaceship.Weapon.cooldown	spaceship.Weapon-class.html#cooldown
 base.AGObject._setattrs	base.AGObject-class.html#_setattrs
 spaceship.EnergyWeapon.recharge_rate	spaceship.EnergyWeapon-class.html#recharge_rate
@@ -511,6 +521,7 @@ spaceship.Explosion.update	spaceship.Explosion-class.html#update
 spaceship.AGSprite.max_speed	spaceship.AGSprite-class.html#max_speed
 spaceship.AGSprite.align	spaceship.AGSprite-class.html#align
 spaceship.InstantAmmoWeapon	spaceship.InstantAmmoWeapon-class.html
+spaceship.AmmoWeapon.shoot	spaceship.AmmoWeapon-class.html#shoot
 base.AGObject._setattrs	base.AGObject-class.html#_setattrs
 spaceship.Weapon.cfg	spaceship.Weapon-class.html#cfg
 spaceship.Weapon.last_shot_time	spaceship.Weapon-class.html#last_shot_time
@@ -580,7 +591,6 @@ spaceship.AGSprite.pos	spaceship.AGSprite-class.html#pos
 spaceship.AGSprite.mover	spaceship.AGSprite-class.html#mover
 spaceship.AGSprite._check_cfg	spaceship.AGSprite-class.html#_check_cfg
 spaceship.PlayerShip.cooldown	spaceship.PlayerShip-class.html#cooldown
-spaceship.PlayerShip.current_weapon	spaceship.PlayerShip-class.html#current_weapon
 spaceship.AGSprite._update_position	spaceship.AGSprite-class.html#_update_position
 spaceship.PlayerShip.fly_left	spaceship.PlayerShip-class.html#fly_left
 spaceship.PlayerShip.__init__	spaceship.PlayerShip-class.html#__init__
@@ -594,6 +604,7 @@ spaceship.AGSprite.cfg	spaceship.AGSprite-class.html#cfg
 spaceship.AGSprite._check_gfx	spaceship.AGSprite-class.html#_check_gfx
 base.AGObject._setattrs	base.AGObject-class.html#_setattrs
 spaceship.PlayerShip.exhaust	spaceship.PlayerShip-class.html#exhaust
+spaceship.PlayerShip._current_weapon	spaceship.PlayerShip-class.html#_current_weapon
 spaceship.AGSprite.max_speed	spaceship.AGSprite-class.html#max_speed
 spaceship.Ship.rect	spaceship.Ship-class.html#rect
 spaceship.PlayerShip.shoot	spaceship.PlayerShip-class.html#shoot
@@ -752,13 +763,17 @@ widgets.VerticalProgressBar	widgets.VerticalProgressBar-class.html
 widgets.VerticalProgressBar.color	widgets.VerticalProgressBar-class.html#color
 widgets.VerticalProgressBar.set_val	widgets.VerticalProgressBar-class.html#set_val
 widgets.VerticalProgressBar.__init__	widgets.VerticalProgressBar-class.html#__init__
+widgets.VerticalProgressBar.get_strip_img	widgets.VerticalProgressBar-class.html#get_strip_img
 widgets.VerticalProgressBar.val	widgets.VerticalProgressBar-class.html#val
 widgets.VerticalProgressBar.min	widgets.VerticalProgressBar-class.html#min
+widgets.VerticalProgressBar.get_max	widgets.VerticalProgressBar-class.html#get_max
 widgets.VerticalProgressBar.get_color	widgets.VerticalProgressBar-class.html#get_color
+widgets.VerticalProgressBar.set_min	widgets.VerticalProgressBar-class.html#set_min
 widgets.VerticalProgressBar.max	widgets.VerticalProgressBar-class.html#max
-widgets.VerticalProgressBar.get_strip_img	widgets.VerticalProgressBar-class.html#get_strip_img
 widgets.VerticalProgressBar.update	widgets.VerticalProgressBar-class.html#update
 widgets.VerticalProgressBar.get_val	widgets.VerticalProgressBar-class.html#get_val
+widgets.VerticalProgressBar.get_min	widgets.VerticalProgressBar-class.html#get_min
+widgets.VerticalProgressBar.set_max	widgets.VerticalProgressBar-class.html#set_max
 widgets.VerticalProgressBar.length	widgets.VerticalProgressBar-class.html#length
 widgets.VerticalProgressBar.set_color	widgets.VerticalProgressBar-class.html#set_color
 widgets.Widget	widgets.Widget-class.html

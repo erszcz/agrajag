@@ -248,8 +248,8 @@ class PlayerShip(Ship):
   @type weapons: sequence
   @ivar weapons: A sequence of weapons available on the ship.
 
-  @type current_weapon: integer
-  @ivar current_weapon: Index of the sequence C{L{weapons}} which
+  @type _current_weapon: integer
+  @ivar _current_weapon: Index of the sequence C{L{weapons}} which
   designates the currently used weapon.
 
   @type cooldown: unsigned integer
@@ -289,7 +289,7 @@ class PlayerShip(Ship):
 
     self.exhaust(False) # inits the image
     self.weapons = (Bullet, EnergyProjectile, Shell)
-    self.current_weapon = 0 # current weapon list index
+    self._current_weapon = 0 # current weapon list index
     self.cooldown = 0
 
   def exhaust(self, on):
@@ -375,7 +375,7 @@ class PlayerShip(Ship):
     """
     
     if not self.cooldown:
-      cls = self.weapons[self.current_weapon]
+      cls = self.weapons[self._current_weapon]
       if cls in (Bullet, Shell):
         p1 = cls(self.g_coll, self.g_expl,
                  (self.pos[0] - cls.offset, self.pos[1])) 
@@ -395,17 +395,17 @@ class PlayerShip(Ship):
 
   def next_weapon(self):
     """Select next weapon."""
-    if self.current_weapon == self.weapons.__len__() - 1:
-      self.current_weapon = 0
+    if self._current_weapon == self.weapons.__len__() - 1:
+      self._current_weapon = 0
     else:
-      self.current_weapon += 1
+      self._current_weapon += 1
 
   def previous_weapon(self):
     """Select previous weapon."""
-    if self.current_weapon == 0:
-      self.current_weapon = self.weapons.__len__() - 1
+    if self._current_weapon == 0:
+      self._current_weapon = self.weapons.__len__() - 1
     else:
-      self.current_weapon -= 1
+      self._current_weapon -= 1
 
 class EnemyShip(Ship):
   def __init__(self, g_coll, g_expl, pos, *groups):
@@ -454,8 +454,8 @@ class AdvancedPlayerShip(PlayerShip):
   @type weapons: sequence
   @ivar weapons: A sequence of C{L{Weapon}}s available on the ship.
 
-  @type current_weapon: integer
-  @ivar current_weapon: Index of the sequence C{L{weapons}} which designates
+  @type _current_weapon: integer
+  @ivar _current_weapon: Index of the sequence C{L{weapons}} which designates
   the currently used weapon. 
 
   @type shield: L{Shield}
@@ -491,7 +491,7 @@ class AdvancedPlayerShip(PlayerShip):
     self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
 
     self.weapons = [BasicBeamer(), BasicProjectileEnergyWeapon(), BasicPAW()]
-    self.current_weapon = 0
+    self._current_weapon = 0
     self.cooldown = None
 
     self.shield = BasicShield(self, g_expl)
@@ -499,29 +499,37 @@ class AdvancedPlayerShip(PlayerShip):
     self.reactor = BasicReactor()
 
     # signals
-    signals = 'shield_updated', \
-              'armour_updated', \
-              'weapon_updated'
-    for s in signals:
-      setattr( self, s, Signal() )
-    #self.shield_updated.connect(self.shield.state_updated)
-    #self.armour_updated.connect(self.armour.state_updated)
-    #self.weapon_updated.connect(self.weapons[self.current_weapon].state_updated)
-    self.shield.state_updated.connect(self.shield_updated)
-    self.armour.state_updated.connect(self.armour_updated)
-    self.weapons[self.current_weapon].state_updated.connect(self.weapon_updated)
+    self.shield_updated = Signal()
+    self.armour_updated = Signal()
+    self.weapon_updated = Signal()
+    self.shield.shield_state_updated.connect(self.shield_updated)
+    self.armour.armour_state_updated.connect(self.armour_updated)
+    self.weapons[self._current_weapon].weapon_state_updated.connect(self.weapon_updated)
+
+  def get_current_weapon(self):
+    return self.weapons[self._current_weapon]
+  current_weapon = property(get_current_weapon)
 
   def next_weapon(self):
     """Select next weapon."""
-    self.weapons[self.current_weapon].state_updated.disconnectAll()
+    self.current_weapon.weapon_state_updated.disconnect(self.weapon_updated)
     PlayerShip.next_weapon(self)
-    self.weapons[self.current_weapon].state_updated.connect(self.weapon_updated)
+    self.current_weapon.weapon_state_updated.connect(self.weapon_updated)
+    if isinstance(self.current_weapon, AmmoWeapon):
+      self.weapon_updated('ammo', self.current_weapon.current)
+    elif isinstance(self.current_weapon, EnergyWeapon):
+      self.weapon_updated('energy', self.current_weapon.current, self.current_weapon.maximum)
+      
 
   def previous_weapon(self):
     """Select previous weapon."""
-    self.weapons[self.current_weapon].state_updated.disconnectAll()
+    self.current_weapon.weapon_state_updated.disconnect(self.weapon_updated)
     PlayerShip.previous_weapon(self)
-    self.weapons[self.current_weapon].state_updated.connect(self.weapon_updated)
+    self.current_weapon.weapon_state_updated.connect(self.weapon_updated)
+    if isinstance(self.current_weapon, AmmoWeapon):
+      self.weapon_updated('ammo', self.current_weapon.current)
+    elif isinstance(self.current_weapon, EnergyWeapon):
+      self.weapon_updated('energy', self.current_weapon.current, self.current_weapon.maximum)
 
   def shoot(self, g_projectiles, g_explosions):
     """
@@ -535,8 +543,8 @@ class AdvancedPlayerShip(PlayerShip):
     @param g_explosions: Group to add the newly created explosions to (if any).
     """
 
-    if self.current_weapon is not None:
-      self.weapons[self.current_weapon].shoot(self.pos,
+    if self._current_weapon is not None:
+      self.weapons[self._current_weapon].shoot(self.pos,
                                               self.g_coll,
                                               g_projectiles,
                                               g_explosions)
@@ -640,14 +648,11 @@ class Weapon(AGObject):
     self._setattrs('cooldown', self.cfg)
 
     # signals
-    self.state_updated = Signal()
+    self.weapon_state_updated = Signal()
 
   def update(self):
     if self.remaining_cooldown > 0:
       self.remaining_cooldown -= 1
-
-  def shoot(self):
-    self.state_updated()
 
 
 class EnergyWeapon(Weapon):
@@ -702,7 +707,11 @@ class EnergyWeapon(Weapon):
     if self.current > self.maximum:
       self.current = self.maximum
 
-    self.state_updated(self.current)
+    self.weapon_state_updated('energy', self.current, self.maximum)
+
+
+  def shoot(self):
+    self.weapon_state_updated('energy', self.current, self.maximum)
 
 
 class AmmoWeapon(Weapon):
@@ -721,6 +730,9 @@ class AmmoWeapon(Weapon):
     self._setattrs('maximum', self.cfg)
 
     self.current = self.maximum
+
+  def shoot(self):
+    self.weapon_state_updated('ammo', self.current)
 
 class InstantAmmoWeapon(AmmoWeapon):
   """
@@ -765,7 +777,7 @@ class ProjectileAmmoWeapon(AmmoWeapon):
 
     g_proj.add(projectile)
 
-    self.state_updated(self.current)
+    AmmoWeapon.shoot(self)
 
 
 class BasicPAW(ProjectileAmmoWeapon):
@@ -856,7 +868,7 @@ class InstantEnergyWeapon(EnergyWeapon):
 
     t.damage(self.damage)
 
-    self.state_updated(self.current)
+    EnergyWeapon.shoot(self)
 
 
 class BasicBeamer(InstantEnergyWeapon):
@@ -965,7 +977,7 @@ class ProjectileEnergyWeapon(EnergyWeapon):
 
     g_proj.add(projectile)
 
-    self.state_updated(self.current)
+    EnergyWeapon.shoot(self)
 
 
 class BasicProjectileEnergyWeapon(ProjectileEnergyWeapon):
@@ -1023,7 +1035,7 @@ class Shield(AGSprite):
     group.add(self)
 
     # signals
-    self.state_updated = Signal()
+    self.shield_state_updated = Signal()
 
   def update(self):
     if self.active:
@@ -1031,7 +1043,9 @@ class Shield(AGSprite):
 
       pos = self.owner.center
       self._initialize_position(pos, 'center', size)
-      self.state_updated(self.current)
+
+    self.shield_state_updated(self.current, self.maximum)
+
 
   def activate(self, on):
     """
@@ -1044,6 +1058,7 @@ class Shield(AGSprite):
       self._blit_state('shield', 'def')
     else:
       self.image.fill((0, 0, 0, 0))
+
 
   def absorb(self, damage, efficiency):
     """
@@ -1065,8 +1080,8 @@ class Shield(AGSprite):
     if self.current == 0:
       self.activate(False)
 
-    self.state_updated(self.current)
     return remaining
+
 
   def get_demand(self):
     """
@@ -1075,6 +1090,7 @@ class Shield(AGSprite):
     """
 
     return self.maximum - self.current
+
 
   def recharge(self, supply):
     """
@@ -1088,8 +1104,6 @@ class Shield(AGSprite):
 
     if self.current > self.maximum:
       self.current = self.maximum
-
-    self.state_updated(self.current)
 
     
 class BasicShield(Shield):
@@ -1121,7 +1135,7 @@ class Armour(AGObject):
     self._setattrs('maximum', self.cfg)
 
     # signals
-    self.state_updated = Signal()
+    self.armour_state_updated = Signal()
 
   def absorb(self, damage, efficiency):
     """
@@ -1135,7 +1149,7 @@ class Armour(AGObject):
 
     self.current -= absorbed
 
-    self.state_updated(self.current)
+    self.armour_state_updated(self.current)
     return remaining
 
 

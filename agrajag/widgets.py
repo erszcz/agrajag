@@ -44,13 +44,13 @@ class VerticalProgressBar(Widget):
   @ivar length: The height of the widget.
   """
   
-  def __init__(self, min, max, pos, length, *groups):
+  def __init__(self, pos, length, *groups):
     Widget.__init__(self, pos, *groups)
     
     self.gfx = GfxManager().get('StripVertical')
 
-    self.min = min
-    self.max = max
+    self.__min = 0
+    self.__max = 100
 
     self.__val = 0
     self.__color = 'yellow'
@@ -58,14 +58,32 @@ class VerticalProgressBar(Widget):
     self.length = length
     self.update()  # initializes self.image and self.rect needed for drawing
 
+  def get_min(self): return self.__min
+  def set_min(self, min):
+    if type(min) not in (int, long, float):
+      raise Exception('Incorrect argument type. Must be one of: int, long, float.')
+    else:
+      self.__min = min
+      #self.update()
+  min = property(get_min, set_min)
+
+  def get_max(self): return self.__max
+  def set_max(self, max):
+    if type(max) not in (int, long, float):
+      raise Exception('Incorrect argument type. Must be one of: int, long, float.')
+    else:
+      self.__max = max
+      #self.update()
+  max = property(get_max, set_max)
+
   def get_val(self): return self.__val
   def set_val(self, val):
     if val > self.max or val < self.min:
-      raise Exception('Value outside range. Supply value between %d and %d.'
-                       % (self.min, self.max) )
+      raise Exception('Value outside range. Required value between %d and %d. Got %d.'
+                       % (self.min, self.max, val) )
     else:
       self.__val = val
-      self.update()
+      #self.update()
   val = property(get_val, set_val)
 
   def get_color(self): return self.__color
@@ -96,7 +114,7 @@ class VerticalProgressBar(Widget):
     """Update the C{image} and C{rect} of the widget."""
     # sprowadzenie wartosci do przedzialu <0, 100>:
     # self.__val * 100. / abs(self.max - self.min)
-    tmp_val = round( self.__val * 100. / abs(self.max - self.min) )
+    tmp_val = int( self.__val * 100. / abs(self.max - self.min) )
 
     # image
     self.image = pygame.Surface((self.gfx['strip']['w'], self.length),
