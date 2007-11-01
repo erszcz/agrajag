@@ -454,7 +454,6 @@ class AdvancedPlayerShip(PlayerShip):
     self.armour_updated = Signal()
     self.weapon_updated = Signal()
     self.shield.shield_state_updated.connect(self.shield_updated)
-    self.armour.armour_state_updated.connect(self.armour_updated)
     self.weapons[self._current_weapon].weapon_state_updated.connect(self.weapon_updated)
 
   def get_current_weapon(self):
@@ -514,6 +513,7 @@ class AdvancedPlayerShip(PlayerShip):
       return
 
     self.durability -= damage
+    self.armour_updated(self.durability + self.armour.current)
     if self.durability <= 0:
       self.explode()
 
@@ -1051,8 +1051,6 @@ class Armour(AGObject):
     self.cfg = DBManager().get(self.__class__.__name__)['props']
     self._setattrs('maximum', self.cfg)
 
-    # signals
-    self.armour_state_updated = Signal()
 
   def absorb(self, damage, efficiency):
     """
@@ -1066,7 +1064,6 @@ class Armour(AGObject):
 
     self.current -= absorbed
 
-    self.armour_state_updated(self.current)
     return remaining
 
 

@@ -29,6 +29,10 @@ class Hud:
     self.pb_eweapon.color = 'red'
     self.pb_eweapon.val = 100
 
+    # armour and ammo labels
+    self.l_armour = self.label_font.render('000', True, (255, 255, 255))
+    self.l_ammo = self.label_font.render('000', True, (255, 255, 255))
+
 
   def update(self):
     self.g_hud.update()
@@ -39,6 +43,10 @@ class Hud:
                 (4, self.vps[1] - 6 - self.label_font.size('s')[1]))
     screen.blit(self.l_eweapon,
                 (self.vps[0] - 11, self.vps[1] - 6 - self.label_font.size('s')[1]))
+    screen.blit(self.l_armour,
+                (22, self.vps[1] - 6 - self.label_font.size('s')[1]))
+    screen.blit(self.l_ammo,
+                (self.vps[0] - 50, self.vps[1] - 6 - self.label_font.size('s')[1]))
     self.g_hud.draw(screen)
 
 
@@ -48,16 +56,17 @@ class Hud:
 
 
   def slot_armour_updated(self, value):
-    print "Armour HUD info updated. Value:", value
+    self.l_armour = self.label_font.render('%03d' % value, True, (255, 255, 255))
 
 
   def slot_weapon_updated(self, type, value, maximum = None):
     if type == 'energy':
+      self.l_ammo = self.label_font.render('000', True, (255, 255, 255))
       self.pb_eweapon.max = maximum
       self.pb_eweapon.val = value
     elif type == 'ammo':
       self.pb_eweapon.val = 0
-      self.update()
+      self.l_ammo = self.label_font.render('%03d' % value, True, (255, 255, 255))
 
 
   # temp
