@@ -7,6 +7,7 @@ import pygame
 from dbmanager import DBManager
 from gfxmanager import GfxManager
 from stagemanager import StageManager
+from groupmanager import GroupManager
 from spaceship import PlayerShip, AdvancedPlayerShip, EnemyShip
 from background import SpaceBackground
 from obstacle import Obstacle, MovingObstacle
@@ -47,18 +48,21 @@ def run():
   stagemanager.import_stages('./stages')
   stages = stagemanager.get()
 
-  g_ship = pygame.sprite.Group()
-  g_enemies = pygame.sprite.Group()
-  g_bullets = pygame.sprite.Group()
-  g_explosions = pygame.sprite.Group()
+  groupmanager = GroupManager()
+
+  g_ship = groupmanager.add('ship')
+  g_enemies = groupmanager.add('enemies')
+  g_bullets = groupmanager.add('projectiles')
+  g_explosions = groupmanager.add('explosions')
+  g_shields = groupmanager.add('shields')
 
   hud = Hud(viewport_size)
 
-  g_enemies.add(Obstacle(g_explosions, (60, 30)))
-  g_enemies.add(MovingObstacle(g_explosions, (160, 80)))
-  g_enemies.add(EnemyShip(g_bullets, g_explosions, (160, 160)))
+  g_enemies.add(Obstacle((60, 30)))
+  g_enemies.add(MovingObstacle((160, 80)))
+  g_enemies.add(EnemyShip((160, 160)))
 
-  ship = ref( AdvancedPlayerShip(g_enemies, g_explosions, (175, viewport_size[1] - 60), g_ship) )
+  ship = ref( AdvancedPlayerShip((175, viewport_size[1] - 60), g_ship) )
   hud.setup_connections(ship())
 
   back = SpaceBackground(viewport_size)
@@ -73,7 +77,7 @@ def run():
             pos = spawn['x'], spawn['y']
 
             object_cls = eval(spawn['object_cls_name'])
-            object = object_cls(g_bullets, g_explosions, pos)
+            object = object_cls(pos)
 
             if spawn['mover_cls_name']:
               mover_cls = eval("mover.%s" % spawn['mover_cls_name'])
@@ -119,7 +123,7 @@ def run():
       if pressed_keys[pygame.K_RIGHT]:
         if ship(): ship().fly_right(viewport_size[0])
       if pressed_keys[pygame.K_z]:
-        if ship(): ship().shoot(g_bullets, g_explosions)
+        if ship(): ship().shoot()
 
       screen.fill(black)
       back.update()
@@ -134,12 +138,14 @@ def run():
       g_explosions.update()
       g_ship.update()
       g_bullets.update()
+      g_shields.update()
       hud.update()
 
       g_enemies.draw(screen)
       g_explosions.draw(screen)
       g_ship.draw(screen)
       g_bullets.draw(screen)
+      g_shields.draw(screen)
       hud.draw(screen)
 
       screen.fill(red,

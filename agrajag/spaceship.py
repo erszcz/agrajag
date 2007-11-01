@@ -7,6 +7,7 @@ import mover
 from base import AGObject
 from dbmanager import DBManager
 from gfxmanager import GfxManager
+from groupmanager import GroupManager
 from clock import Clock
 from signals import Signal
 
@@ -147,10 +148,6 @@ class Destructible(AGSprite):
   An object of this class is destructible: it has got a specified
   durability and C{damage} and C{explode} methods.
 
-  @type g_expl: C{pygame.sprite.Group}
-  @ivar g_expl: Group of independent objects (C{pygame.sprite.Sprite})
-      (which perish in time) such as explosions, salvage, etc.
-  
   @type durability: integer
   @ivar durability: Object's durability. It describes how much damage the
       object can sustain before blowing up.
@@ -164,17 +161,12 @@ class Destructible(AGSprite):
   durability = 0
   explosion_cls_name = None
 
-  def __init__(self, g_expl, pos, *groups):
+  def __init__(self, pos, *groups):
     """
-    @type  g_expl: C{pygame.sprite.Group}
-    @param g_expl: Group of independent objects (C{pygame.sprite.Sprite})
-        (which perish in time) such as explosions, salvage, etc.
     """
 
     AGSprite.__init__(self, pos, *groups)
     self._setattrs('durability, explosion_cls_name', self.cfg)
-
-    self.g_expl = g_expl
 
   def damage(self, damage):
     """
@@ -196,7 +188,7 @@ class Destructible(AGSprite):
       explosion_cls = eval(self.explosion_cls_name)
       explosion = explosion_cls(self.rect.center)
 
-      self.g_expl.add( explosion )
+      GroupManager().get('explosions').add( explosion )
 
     self.kill()
     del self
@@ -206,28 +198,12 @@ class Ship(Destructible):
   '''
   Base class for player's ship and enemy ships.
   
-  @type g_coll: C{pygame.sprite.Group}
-  @ivar g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship can
-      collide with.
-
-  @type g_expl: C{pygame.sprite.Group}
-  @ivar g_expl: Group of independent objects (C{pygame.sprite.Sprite})
-      such as explosions, salvage, etc.
-
   @type rect: C{pygame.Rect}
   @ivar rect: Rectangle describing position and size of the ship.
   '''
 
-  def __init__(self, g_coll, g_expl, pos, *groups):
+  def __init__(self, pos, *groups):
     '''
-    @type  g_coll: C{pygame.sprite.Group}
-    @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship
-        can collide with.
-
-    @type  g_expl: C{pygame.sprite.Group}
-    @param g_expl: Group of independent objects (C{pygame.sprite.Sprite})
-        (which perish in time) such as explosions, salvage, etc.
-
     @type  pos: pair of integers
     @param pos: Initial position of the ship. This pair defines the top-left
         corner of the ship's rectangle C{rect}.
@@ -236,10 +212,8 @@ class Ship(Destructible):
     @param groups: A sequence of groups the object will be added to.
     '''
 
-    Destructible.__init__(self, g_expl, pos, *groups)
+    Destructible.__init__(self, pos, *groups)
     
-    self.g_coll = g_coll
-
 
 class PlayerShip(Ship):
   """
@@ -257,16 +231,8 @@ class PlayerShip(Ship):
       can be fired again.
   """
 
-  def __init__(self, g_coll, g_expl, pos, *groups):
+  def __init__(self, pos, *groups):
     """
-    @type  g_coll: C{pygame.sprite.Group}
-    @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship
-        can collide with.
-
-    @type  g_expl: C{pygame.sprite.Group}
-    @param g_expl: Group of independent (which perish in time) objects
-        (C{pygame.sprite.Sprite}) such as explosions, salvage, etc.
-
     @type  pos: pair of integers
     @param pos: Initial position of the ship. This pair defines position
     of the ship nose.
@@ -275,7 +241,7 @@ class PlayerShip(Ship):
     @param groups: A sequence of groups the object will be added to.
     """
 
-    Ship.__init__(self, g_coll, g_expl, pos, *groups)
+    Ship.__init__(self, pos, *groups)
     self._check_gfx(['ship', 'exhaust'])
     self._check_cfg(['max_speed'])
 
@@ -365,28 +331,29 @@ class PlayerShip(Ship):
       self.rect.move_ip(delta_x, 0)
       self.pos = self.pos[0] + delta_x, self.pos[1]
 
-  def shoot(self, g_projectiles):
+  def shoot(self):
     """
     Shoot the currently selected weapon. Appropriately
     increase C{L{cooldown}}.
-
-    @type  g_projectiles: pygame.sprite.Group
-    @param g_projectiles: Group to add the newly created projectiles to.
     """
     
+    groupmanager = GroupManager()
+
+    g_coll = groupmanager.get('enemies')
+    g_expl = groupmanager.get('explosions')
+    g_projectiles = groupmanager.get('projectiles')
+
     if not self.cooldown:
       cls = self.weapons[self._current_weapon]
       if cls in (Bullet, Shell):
-        p1 = cls(self.g_coll, self.g_expl,
-                 (self.pos[0] - cls.offset, self.pos[1])) 
-        p2 = cls(self.g_coll, self.g_expl,
-                 (self.pos[0] + cls.offset, self.pos[1])) 
+        p1 = cls(g_coll, g_expl, (self.pos[0] - cls.offset, self.pos[1])) 
+        p2 = cls(g_coll, g_expl, (self.pos[0] + cls.offset, self.pos[1])) 
 
         g_projectiles.add(p1, p2)
 
         self.cooldown = p1.cooldown
       else:
-        p = cls(self.g_coll, self.g_expl, self.pos)
+        p = cls(g_coll, g_expl, self.pos)
         g_projectiles.add(p)
 
         self.cooldown = p.cooldown
@@ -408,16 +375,8 @@ class PlayerShip(Ship):
       self._current_weapon -= 1
 
 class EnemyShip(Ship):
-  def __init__(self, g_coll, g_expl, pos, *groups):
+  def __init__(self, pos, *groups):
     """
-    @type  g_coll: C{pygame.sprite.Group}
-    @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship
-        can collide with.
-
-    @type  g_expl: C{pygame.sprite.Group}
-    @param g_expl: Group of independent (which perish in time) objects
-        (C{pygame.sprite.Sprite}) such as explosions, salvage, etc.
-
     @type  pos: pair of integers
     @param pos: Initial position of the ship. This pair defines the top-left
         corner of the ship's rectangle C{rect}.
@@ -426,7 +385,7 @@ class EnemyShip(Ship):
     @param groups: A sequence of groups the object will be added to.
     """
 
-    Ship.__init__(self, g_coll, g_expl, pos, *groups)
+    Ship.__init__(self, pos, *groups)
  
     size = self.gfx['ship']['w'], self.gfx['ship']['h']
 
@@ -468,16 +427,8 @@ class AdvancedPlayerShip(PlayerShip):
   @ivar reactor: Ship's reactor.
   """
 
-  def __init__(self, g_coll, g_expl, pos, *groups):
+  def __init__(self, pos, *groups):
     """
-    @type  g_coll: C{pygame.sprite.Group}
-    @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the ship
-        can collide with.
-
-    @type  g_expl: C{pygame.sprite.Group}
-    @param g_expl: Group of independent (which perish in time) objects
-        (C{pygame.sprite.Sprite}) such as explosions, salvage, etc.
-
     @type  pos: sequence
     @param pos: Initial position of the ship. This pair defines position
     of ship nose.
@@ -486,7 +437,7 @@ class AdvancedPlayerShip(PlayerShip):
     @param groups: A sequence of groups the object will be added to.
     """
 
-    PlayerShip.__init__(self, g_coll, g_expl, pos, *groups)
+    PlayerShip.__init__(self, pos, *groups)
 
     self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
 
@@ -494,7 +445,7 @@ class AdvancedPlayerShip(PlayerShip):
     self._current_weapon = 0
     self.cooldown = None
 
-    self.shield = BasicShield(self, g_expl)
+    self.shield = BasicShield(self)
     self.armour = BasicArmour()
     self.reactor = BasicReactor()
 
@@ -531,23 +482,14 @@ class AdvancedPlayerShip(PlayerShip):
     elif isinstance(self.current_weapon, EnergyWeapon):
       self.weapon_updated('energy', self.current_weapon.current, self.current_weapon.maximum)
 
-  def shoot(self, g_projectiles, g_explosions):
+  def shoot(self):
     """
     Shot from currently selected weapon. Do nothing if there is no 
     weapon selected.
-
-    @type  g_projectiles: pygame.sprite.Group
-    @param g_projectiles: Group to add the newly created projectiles to.
-
-    @type  g_explosions: pygame.sprite.Group
-    @param g_explosions: Group to add the newly created explosions to (if any).
     """
 
     if self._current_weapon is not None:
-      self.weapons[self._current_weapon].shoot(self.pos,
-                                              self.g_coll,
-                                              g_projectiles,
-                                              g_explosions)
+      self.weapons[self._current_weapon].shoot(self.pos)
 
   def activate_shield(self, on):
     if self.shield is not None:
@@ -750,17 +692,10 @@ class ProjectileAmmoWeapon(AmmoWeapon):
     AmmoWeapon.__init__(self)
     self._setattrs('projectile_cls_name', self.cfg)
 
-  def shoot(self, pos, g_coll, g_proj, g_expl):
+  def shoot(self, pos):
     """
     Perform shot if the weapon has cooled and there is ammo left. Create
     projectile instance.
-
-    @type  g_coll: C{pygame.sprite.Group}
-    @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the projectile
-    can collide with.
-
-    @type  g_proj: C{pygame.sprite.Group}
-    @param g_proj: Group to add created projectiles.
     """
   
     if self.remaining_cooldown > 0:
@@ -773,9 +708,9 @@ class ProjectileAmmoWeapon(AmmoWeapon):
     self.current -= 1
 
     projectile_cls = eval(self.projectile_cls_name)
-    projectile = projectile_cls(g_coll, g_expl, pos)
+    projectile = projectile_cls(pos)
 
-    g_proj.add(projectile)
+    GroupManager().get('projectiles').add(projectile)
 
     AmmoWeapon.shoot(self)
 
@@ -810,22 +745,11 @@ class InstantEnergyWeapon(EnergyWeapon):
     else:
       return 1
 
-  def shoot(self, pos, g_coll, g_proj, g_expl):
+  def shoot(self, pos):
     """
     Perform shot if the weapon has cooled and there is enough energy. Find
     closest colliding object and damage it. Create visual representation of
     the beam.
-
-    @type  g_coll: C{pygame.sprite.Group}
-    @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the projectile
-    can collide with.
-
-    @type  g_proj: C{pygame.sprite.Group}
-    @param g_proj: Group to add created projectiles.
-
-    @type  g_expl: C{pygame.sprite.Group}
-    @param g_expl: Group to add independent objects which perish in time
-    such as explosions.
     """
   
     if self.remaining_cooldown > 0:
@@ -840,9 +764,9 @@ class InstantEnergyWeapon(EnergyWeapon):
     beam_cls = eval(self.beam_cls_name)
     beam = beam_cls()
 
-    g_proj.add(beam)
+    GroupManager().get('projectiles').add(beam)
 
-    all_targets = g_coll.sprites()
+    all_targets = GroupManager().get('enemies').sprites()
     targets = []
 
     for t in all_targets:
@@ -864,7 +788,7 @@ class InstantEnergyWeapon(EnergyWeapon):
     expl_cls = eval(self.explosion_cls_name)
     expl = expl_cls(t_pos)
 
-    g_expl.add(expl)
+    GroupManager().get('explosions').add(expl)
 
     t.damage(self.damage)
 
@@ -950,17 +874,10 @@ class ProjectileEnergyWeapon(EnergyWeapon):
     EnergyWeapon.__init__(self)
     self._setattrs('projectile_cls_name', self.cfg)
 
-  def shoot(self, pos, g_coll, g_proj, g_expl):
+  def shoot(self, pos):
     """
     Perform shot if the weapon has cooled and there is enough energy. Create
     projectile instance.
-
-    @type  g_coll: C{pygame.sprite.Group}
-    @param g_coll: Group of objects (C{pygame.sprite.Sprite}) the projectile
-    can collide with.
-
-    @type  g_proj: C{pygame.sprite.Group}
-    @param g_proj: Group to add created projectiles.
     """
   
     if self.remaining_cooldown > 0:
@@ -973,9 +890,9 @@ class ProjectileEnergyWeapon(EnergyWeapon):
     self.current -= self.cost
 
     projectile_cls = eval(self.projectile_cls_name)
-    projectile = projectile_cls(g_coll, g_expl, pos)
+    projectile = projectile_cls(pos)
 
-    g_proj.add(projectile)
+    GroupManager().get('projectiles').add(projectile)
 
     EnergyWeapon.shoot(self)
 
@@ -1018,7 +935,7 @@ class Shield(AGSprite):
   owner = None
   active = False
 
-  def __init__(self, owner, group):
+  def __init__(self, owner):
     AGSprite.__init__(self, owner.rect.center)
     self._check_gfx(['shield'])
     self._check_cfg(['maximum', 'recharge_rate'])
@@ -1032,7 +949,7 @@ class Shield(AGSprite):
     self.image = pygame.Surface(size, pygame.SRCALPHA, 
         self.gfx['shield']['image'])
 
-    group.add(self)
+    GroupManager().get('shields').add(self)
 
     # signals
     self.shield_state_updated = Signal()
@@ -1107,8 +1024,8 @@ class Shield(AGSprite):
 
     
 class BasicShield(Shield):
-  def __init__(self, owner, group):
-    Shield.__init__(self, owner, group)
+  def __init__(self, owner):
+    Shield.__init__(self, owner)
 
     
 class Armour(AGObject):
@@ -1296,13 +1213,13 @@ class Projectile(AGSprite):
   cooldown = 0
   offset = 0
 
-  def __init__(self, g_coll, g_expl, pos, *groups):
+  def __init__(self, pos, *groups):
     AGSprite.__init__(self, pos, *groups)
  
     self._setattrs('damage, cooldown', self.cfg)
 
-    self.g_coll = g_coll
-    self.g_expl = g_expl
+    self.g_coll = GroupManager().get('enemies')
+    self.g_expl = GroupManager().get('explosions')
 
     self.mover = mover.LinearMover(pos, self.max_speed, {'dir' : 180})
 
@@ -1327,8 +1244,8 @@ class Projectile(AGSprite):
 class Bullet(Projectile):
   offset = 6
 
-  def __init__(self, g_coll, g_expl, pos, *groups):
-    Projectile.__init__(self, g_coll, g_expl, pos, *groups)
+  def __init__(self, pos, *groups):
+    Projectile.__init__(self, pos, *groups)
     
     size = 1, 2
 
@@ -1355,8 +1272,8 @@ class Shell(Projectile):
     else:
       return 1
 
-  def __init__(self, g_coll, g_expl, pos, *groups):
-    Projectile.__init__(self, g_coll, g_expl, pos, *groups)
+  def __init__(self, pos, *groups):
+    Projectile.__init__(self, pos, *groups)
     
     self.image = pygame.Surface((1, 1))
     self.image.fill((110, 110, 110))
@@ -1390,8 +1307,8 @@ class Shell(Projectile):
     del self
 
 class EnergyProjectile(Projectile):
-  def __init__(self, g_coll, g_expl, pos, *groups):
-    Projectile.__init__(self, g_coll, g_expl, pos, *groups)
+  def __init__(self, pos, *groups):
+    Projectile.__init__(self, pos, *groups)
 
     size = self.gfx['energy']['w'], self.gfx['energy']['h']
 
