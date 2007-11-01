@@ -50,7 +50,8 @@ def run():
 
   g_ship = groupmanager.add('ship')
   g_enemies = groupmanager.add('enemies')
-  g_bullets = groupmanager.add('projectiles')
+  g_enemy_projectiles = groupmanager.add('enemy_projectiles')
+  g_player_projectiles = groupmanager.add('player_projectiles')
   g_explosions = groupmanager.add('explosions')
   g_shields = groupmanager.add('shields')
 
@@ -58,9 +59,8 @@ def run():
 
   g_enemies.add(Obstacle((60, 30)))
   g_enemies.add(MovingObstacle((160, 80)))
-  g_enemies.add(EnemyShip((160, 160)))
 
-  #ship = AdvancedPlayerShip(g_enemies, g_explosions, (175, viewport_size[1] - 60), g_ship)
+  #ship = AdvancedPlayerShip((175, viewport_size[1] - 60), g_ship)
   #hud.setup_connections(ship)
   AdvancedPlayerShip((175, viewport_size[1] - 60), g_ship)
   hud.setup_connections(g_ship.sprites()[0])
@@ -89,8 +89,10 @@ def run():
                 g_enemies.add(object)
               elif g == 'explosions':
                 g_explosions.add(object)
-              elif g == 'bullets':
-                g_bullets.add(object)
+              elif g == 'enemy_projectiles':
+                g_enemy_projectiles.add(object)
+              elif g == 'player_projectiles':
+                g_player_projectiles.add(object)
 
       # time management
       clock.tick(40)
@@ -150,22 +152,24 @@ def run():
       back.draw(screen)
 
       # temp
-      if g_ship.sprites():
-        g_ship.sprites()[0].damage(1)
+      #if g_ship.sprites():
+      #  g_ship.sprites()[0].damage(1)
       #
 
       g_enemies.update()
       g_explosions.update()
       g_ship.update()
-      g_bullets.update()
+      g_enemy_projectiles.update()
+      g_player_projectiles.update()
       g_shields.update()
       hud.update()
 
       g_enemies.draw(screen)
-      g_explosions.draw(screen)
       g_ship.draw(screen)
-      g_bullets.draw(screen)
+      g_enemy_projectiles.draw(screen)
+      g_player_projectiles.draw(screen)
       g_shields.draw(screen)
+      g_explosions.draw(screen)
       hud.draw(screen)
 
       screen.fill(red,
