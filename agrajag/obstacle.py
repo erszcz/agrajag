@@ -7,9 +7,8 @@ from spaceship import Destructible
 from mover import RandomMover, ZigZagMover, CircularMover, LinearMover
 
 class Obstacle(Destructible):
-  def __init__(self, g_expl, pos, *groups):
-    #AGSprite.__init__(self, pos, *groups)
-    Destructible.__init__(self, g_expl, pos, *groups)
+  def __init__(self, pos, *groups):
+    Destructible.__init__(self, pos, *groups)
     
     size = self.gfx['obstacle']['w'], self.gfx['obstacle']['h']
     
@@ -22,8 +21,8 @@ class Obstacle(Destructible):
     pass
 
 class MovingObstacle(Obstacle):
-  def __init__(self, g_expl, pos, *groups):
-    Obstacle.__init__(self, g_expl, pos, *groups)
+  def __init__(self, pos, *groups):
+    Obstacle.__init__(self, pos, *groups)
 
     self.mover = RandomMover(pos, 50, {})
     #self.mover = ZigZagMover(pos, 100, {})
