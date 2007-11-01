@@ -35,6 +35,8 @@ class XMLManager:
           props[name] = int(props[name])
         elif type == 'float':
           props[name] = float(props[name])
+        elif type == 'tuple':
+          props[name] = map(lambda x: x.strip(), props[name].split(','))
 
     return props
     
