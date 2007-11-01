@@ -1,8 +1,12 @@
 <events>
-  <spawn time='1000' x='200' y='0' object_cls_name='EnemyShip'
-    mover_cls_name='LinearMover'>
-    <object_param name='zxc' value='zxc' />
-    <mover_param name='dir' value='-10' type='int' />
+  <spawn time='0' x='50' y='50' object_cls_name='EnemyShip'
+    mover_cls_name='LinearPlayerTargetingMover'>
+    <mover_param name='vertical_div' value='0.3' type='float' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='3500' x='250' y='50' object_cls_name='EnemyShip'
+    mover_cls_name='LinearPlayerTargetingMover'>
+    <mover_param name='vertical_div' value='0.3' type='float' />
     <group name='enemies' />
   </spawn>
   <spawn time='2500' x='300' y='0' object_cls_name='EnemyShip'

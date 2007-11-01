@@ -20,6 +20,7 @@ import math
 
 from base import AGObject
 from clock import Clock
+from groupmanager import GroupManager
 
 from functions import deg2rad, rad2deg
 
@@ -49,7 +50,6 @@ class Mover(AGObject):
     by child classes.
     """
  
-    self.clock += 1
     return 0, 0
 
 
@@ -303,3 +303,39 @@ class LinearMover(Mover):
     except ValueError, value:
       print "Warning: unhandled ValueError: %s" % value
 
+
+class LinearPlayerTargetingMover(Mover):
+  """
+  This mover choses its target from group 'ship' and tries to position
+  owning ship in front of the target.
+
+  @type vertical_div: float
+  @ivar vertical_div: Angular divergence from default (vertical) direction (in
+  radians).
+  """
+
+  vertical_div = math.pi / 3.
+
+  def __init__(self, pos, speed, params):
+    Mover.__init__(self)
+    self._setattrs('vertical_div', params)
+
+    self.pos = list(pos)
+    self.speed = speed
+
+    ships = GroupManager().get('ship').sprites()
+    self.target = None if len(ships) == 0 else ships[0]
+
+  def update(self):
+    delta_pos = self.clock.frame_span() * self.speed / 1000.
+    d = self.target.pos[0] - self.pos[0]
+
+    dir = math.pi / 2. - self.vertical_div
+    if delta_pos > math.fabs(d):
+      self.pos[0] += d * math.sin(dir)
+    else:
+      self.pos[0] += delta_pos * d / math.fabs(d) * math.sin(dir)
+
+    self.pos[1] += math.fabs(delta_pos * math.cos(dir))
+
+    return round(self.pos[0]), round(self.pos[1])
