@@ -200,6 +200,22 @@ class Ship(Destructible):
   
   @type rect: C{pygame.Rect}
   @ivar rect: Rectangle describing position and size of the ship.
+
+  @type weapons: sequence
+  @ivar weapons: A sequence of C{L{Weapon}}s available on the ship.
+
+  @type _current_weapon: integer
+  @ivar _current_weapon: Index of the sequence C{L{weapons}} which designates
+  the currently used weapon. 
+
+  @type shield: L{Shield}
+  @ivar shield: Shield installed on the ship (may be None).
+
+  @type armour: L{Armour}
+  @ivar armour: Ship's armour.
+
+  @type reactor: L{Reactor}
+  @ivar reactor: Ship's reactor.
   '''
 
   def __init__(self, pos, *groups):
@@ -213,22 +229,60 @@ class Ship(Destructible):
     '''
 
     Destructible.__init__(self, pos, *groups)
-    
+
+    self.weapons = []
+    self._current_weapon = None
+
+    self.shield = None
+    self.armour = None
+    self.reactor = None
+
+  def update(self):
+    """
+    Update ship state (center, weapons, shield, armour, reactor, etc.)
+    """
+
+    self._recharge()
+
+    for w in self.weapons:
+      w.update()
+
+    if self.shield is not None:
+      self.shield.update()
+      
+  def _recharge(self):
+    """
+    Recharge energy consuming items if ship is equipped with a reactor.
+
+    Distribution of energy is determined by the reactor based on provided
+    demands.
+    """
+
+    if self.reactor is None:
+      return
+
+    rechargables = []
+    demands = []
+    for w in self.weapons:
+      if isinstance(w, EnergyWeapon):
+        rechargables.append(w)
+        demands.append(w.get_demand())
+
+    if self.shield is not None:
+      rechargables.append(self.shield)
+      demands.append(self.shield.get_demand())
+
+    supplies = self.reactor.supply(demands)
+    if supplies is None:
+      return
+
+    for i in xrange(len(rechargables)):
+      rechargables[i].recharge(supplies[i])
+
 
 class PlayerShip(Ship):
   """
   Represents the player's ship (not necessarily a spaceship).
-
-  @type weapons: sequence
-  @ivar weapons: A sequence of weapons available on the ship.
-
-  @type _current_weapon: integer
-  @ivar _current_weapon: Index of the sequence C{L{weapons}} which
-  designates the currently used weapon.
-
-  @type cooldown: unsigned integer
-  @ivar cooldown: Number of rounds that have to pass before the weapon/s
-      can be fired again.
   """
 
   def __init__(self, pos, *groups):
@@ -253,9 +307,9 @@ class PlayerShip(Ship):
 
     self._initialize_position(pos, ('centerx', 'top'), size)
 
-    self.exhaust(False) # inits the image
-    self.weapons = (Bullet, EnergyProjectile, Shell)
-    self._current_weapon = 0 # current weapon list index
+    self.exhaust(False) 
+    self.weapons = [Bullet, EnergyProjectile, Shell]
+    self._current_weapon = 0 
     self.cooldown = 0
 
   def exhaust(self, on):
@@ -331,35 +385,6 @@ class PlayerShip(Ship):
       self.rect.move_ip(delta_x, 0)
       self.pos = self.pos[0] + delta_x, self.pos[1]
 
-  def shoot(self):
-    """
-    Shoot the currently selected weapon. Appropriately
-    increase C{L{cooldown}}.
-    """
-    
-    groupmanager = GroupManager()
-
-    g_coll = groupmanager.get('enemies')
-    g_expl = groupmanager.get('explosions')
-    g_projectiles = groupmanager.get('projectiles')
-
-    if not self.cooldown:
-      cls = self.weapons[self._current_weapon]
-      if cls in (Bullet, Shell):
-        p1 = cls(g_coll, g_expl, (self.pos[0] - cls.offset, self.pos[1])) 
-        p2 = cls(g_coll, g_expl, (self.pos[0] + cls.offset, self.pos[1])) 
-
-        g_projectiles.add(p1, p2)
-
-        self.cooldown = p1.cooldown
-      else:
-        p = cls(g_coll, g_expl, self.pos)
-        g_projectiles.add(p)
-
-        self.cooldown = p.cooldown
-    else:
-      self.cooldown -= 1
-
   def next_weapon(self):
     """Select next weapon."""
     if self._current_weapon == self.weapons.__len__() - 1:
@@ -375,6 +400,9 @@ class PlayerShip(Ship):
       self._current_weapon -= 1
 
 class EnemyShip(Ship):
+  """
+  """
+
   def __init__(self, pos, *groups):
     """
     @type  pos: pair of integers
@@ -393,11 +421,50 @@ class EnemyShip(Ship):
         self.gfx['ship']['image'])
 
     self._blit_state('ship', 'def')
-
     self._initialize_position(pos, ('centerx', 'bottom'), size)
 
+    self._equip()
+
+  def _equip(self):
+    """
+    Initialize ship equipment (weapons, shield, armour, reactor, etc) 
+    according to class configuration.
+    """
+
+    if self.cfg.has_key('weapons_cls_names'):
+      for c in self.cfg['weapons_cls_names']:
+        weapon_cls = eval(c)
+        self.weapons.append(weapon_cls(self))
+
+    if len(self.weapons) > 0:
+      self._current_weapon = 0
+
+    if self.cfg.has_key('shield_cls_name'):
+      shield_cls = eval(self.cfg['shield_cls_name'])
+      self.shield = shield_cls()
+
+    if self.cfg.has_key('armour_cls_name'):
+      armour_cls = eval(self.cfg['armour_cls_name'])
+      self.armour = armour_cls()
+    
+    if self.cfg.has_key('reactor_cls_name'):
+      reactor_cls = eval(self.cfg['reactor_cls_name'])
+      self.reactor = reactor_cls()
+
+  def shoot(self):
+    """
+    Shot from currently selected weapon. Do nothing if there is no 
+    weapon selected.
+    """
+
+    if self._current_weapon is not None:
+      self.weapons[self._current_weapon].shoot(self.pos)
+
   def update(self):
+    Ship.update(self)
+
     self._update_position();
+    self.shoot()
 
 
 class AdvancedPlayerShip(PlayerShip):
@@ -409,22 +476,6 @@ class AdvancedPlayerShip(PlayerShip):
   @type center: sequence
   @ivar center: Position of ships center (ship itself, without exhaust
   and such).
-
-  @type weapons: sequence
-  @ivar weapons: A sequence of C{L{Weapon}}s available on the ship.
-
-  @type _current_weapon: integer
-  @ivar _current_weapon: Index of the sequence C{L{weapons}} which designates
-  the currently used weapon. 
-
-  @type shield: L{Shield}
-  @ivar shield: Shield installed on the ship (may be None).
-
-  @type armour: L{Armour}
-  @ivar armour: Ship's armour.
-
-  @type reactor: L{Reactor}
-  @ivar reactor: Ship's reactor.
   """
 
   def __init__(self, pos, *groups):
@@ -441,7 +492,8 @@ class AdvancedPlayerShip(PlayerShip):
 
     self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
 
-    self.weapons = [BasicBeamer(), BasicProjectileEnergyWeapon(), BasicPAW()]
+    self.weapons = [BasicBeamer(self), BasicProjectileEnergyWeapon(self),
+        BasicPAW(self)]
     self._current_weapon = 0
     self.cooldown = None
 
@@ -524,43 +576,8 @@ class AdvancedPlayerShip(PlayerShip):
 
     self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
 
-    self._recharge()
-
-    for w in self.weapons:
-      w.update()
-
-    if self.shield is not None:
-      self.shield.update()
+    Ship.update(self)
       
-  def _recharge(self):
-    """
-    Recharge energy consuming items if ship is equipped with a reactor.
-
-    Distribution of energy is determined by the reactor based on provided
-    demands.
-    """
-
-    if self.reactor is None:
-      return
-
-    rechargables = []
-    demands = []
-    for w in self.weapons:
-      if isinstance(w, EnergyWeapon):
-        rechargables.append(w)
-        demands.append(w.get_demand())
-
-    if self.shield is not None:
-      rechargables.append(self.shield)
-      demands.append(self.shield.get_demand())
-
-    supplies = self.reactor.supply(demands)
-    if supplies is None:
-      return
-
-    for i in xrange(len(rechargables)):
-      rechargables[i].recharge(supplies[i])
-
 
 class Weapon(AGObject):
   """
@@ -578,16 +595,20 @@ class Weapon(AGObject):
 
   @type last_shot_time: float
   @ivar last_shot_time: Previous shot time.
+
+  @type owner: C{L{AGSprite}}
+  @ivar owner: Game object that owns the weapon.
   """
 
   cooldown = 0
   remaining_cooldown = 0
 
-  def __init__(self):
+  def __init__(self, owner):
     AGObject.__init__(self)
 
     self.cfg = DBManager().get(self.__class__.__name__)['props']
     self._setattrs('cooldown', self.cfg)
+    self.owner = owner
 
     # signals
     self.weapon_state_updated = Signal()
@@ -619,11 +640,11 @@ class EnergyWeapon(Weapon):
   recharge_rate = 1
   cost = 1
 
-  def __init__(self):
+  def __init__(self, owner):
     """
     """
 
-    Weapon.__init__(self)
+    Weapon.__init__(self, owner)
     self._setattrs('maximum, recharge_rate, cost', self.cfg)
 
     self.current = self.maximum
@@ -667,8 +688,8 @@ class AmmoWeapon(Weapon):
   @ivar current: current number of ammo pieces in weapon storage
   """
 
-  def __init__(self):
-    Weapon.__init__(self)
+  def __init__(self, owner):
+    Weapon.__init__(self, owner)
     self._setattrs('maximum', self.cfg)
 
     self.current = self.maximum
@@ -688,8 +709,8 @@ class ProjectileAmmoWeapon(AmmoWeapon):
   speed.
   """
 
-  def __init__(self):
-    AmmoWeapon.__init__(self)
+  def __init__(self, owner):
+    AmmoWeapon.__init__(self, owner)
     self._setattrs('projectile_cls_name', self.cfg)
 
   def shoot(self, pos):
@@ -697,20 +718,32 @@ class ProjectileAmmoWeapon(AmmoWeapon):
     Perform shot if the weapon has cooled and there is ammo left. Create
     projectile instance.
     """
-  
+ 
     if self.remaining_cooldown > 0:
       return
 
     if self.current < 1:
       return
 
+    if isinstance(self.owner, EnemyShip):
+      print "boo"
+
     self.remaining_cooldown = self.cooldown
     self.current -= 1
 
-    projectile_cls = eval(self.projectile_cls_name)
-    projectile = projectile_cls(pos)
+    if isinstance(self.owner, EnemyShip):
+      dir = 0
+      g_proj = GroupManager().get('player_projectiles')
+      g_coll = GroupManager().get('ship')
+    else:
+      dir = -180
+      g_proj = GroupManager().get('enemy_projectiles')
+      g_coll = GroupManager().get('enemies')
 
-    GroupManager().get('projectiles').add(projectile)
+    projectile_cls = eval(self.projectile_cls_name)
+    projectile = projectile_cls(pos, dir, g_coll)
+
+    g_proj.add(projectile)
 
     AmmoWeapon.shoot(self)
 
@@ -732,8 +765,8 @@ class InstantEnergyWeapon(EnergyWeapon):
 
   damage = 1
 
-  def __init__(self):
-    EnergyWeapon.__init__(self)
+  def __init__(self, owner):
+    EnergyWeapon.__init__(self, owner)
     self._setattrs('damage, explosion_cls_name, beam_cls_name', self.cfg)
 
   @staticmethod
@@ -764,7 +797,7 @@ class InstantEnergyWeapon(EnergyWeapon):
     beam_cls = eval(self.beam_cls_name)
     beam = beam_cls()
 
-    GroupManager().get('projectiles').add(beam)
+    GroupManager().get('player_projectiles').add(beam)
 
     all_targets = GroupManager().get('enemies').sprites()
     targets = []
@@ -800,8 +833,8 @@ class BasicBeamer(InstantEnergyWeapon):
   The least powerful yet energy effective instant energy weapon.
   """
 
-  def __init__(self):
-    InstantEnergyWeapon.__init__(self)
+  def __init__(self, owner):
+    InstantEnergyWeapon.__init__(self, owner)
 
 
 class InstantEnergyBeam(AGSprite):
@@ -870,8 +903,8 @@ class ProjectileEnergyWeapon(EnergyWeapon):
   projectiles moving with finite speed.
   """
 
-  def __init__(self):
-    EnergyWeapon.__init__(self)
+  def __init__(self, owner):
+    EnergyWeapon.__init__(self, owner)
     self._setattrs('projectile_cls_name', self.cfg)
 
   def shoot(self, pos):
@@ -889,10 +922,19 @@ class ProjectileEnergyWeapon(EnergyWeapon):
     self.remaining_cooldown = self.cooldown
     self.current -= self.cost
 
-    projectile_cls = eval(self.projectile_cls_name)
-    projectile = projectile_cls(pos)
+    if isinstance(self.owner, EnemyShip):
+      dir = 0
+      g_proj = GroupManager().get('player_projectiles')
+      g_coll = GroupManager().get('ship')
+    else:
+      dir = -180
+      g_proj = GroupManager().get('enemy_projectiles')
+      g_coll = GroupManager().get('enemies')
 
-    GroupManager().get('projectiles').add(projectile)
+    projectile_cls = eval(self.projectile_cls_name)
+    projectile = projectile_cls(pos, dir, g_coll)
+
+    g_proj.add(projectile)
 
     EnergyWeapon.shoot(self)
 
@@ -902,8 +944,8 @@ class BasicProjectileEnergyWeapon(ProjectileEnergyWeapon):
   The least powerful, yet energy effective projectile energy weapon.
   """
 
-  def __init__(self):
-    ProjectileEnergyWeapon.__init__(self)
+  def __init__(self, owner):
+    ProjectileEnergyWeapon.__init__(self, owner)
 
 
 class Shield(AGSprite):
@@ -1087,6 +1129,8 @@ class Reactor(AGObject):
     """
     """
 
+    AGObject.__init__(self)
+
     self.cfg = DBManager().get(self.__class__.__name__)['props']
     self._setattrs('power', self.cfg)
 
@@ -1210,15 +1254,23 @@ class Projectile(AGSprite):
   cooldown = 0
   offset = 0
 
-  def __init__(self, pos, *groups):
+  def __init__(self, pos, dir, g_coll, *groups):
+    """
+    Create projectile moving in direction C{dir} and add it to group C{g_coll}.
+
+    @type  dir: float
+    @param dir: Approximate direction in which the projectile is shoot. This
+    may be used but also may be ignored by projectile's mover.
+    """
+
     AGSprite.__init__(self, pos, *groups)
  
     self._setattrs('damage, cooldown', self.cfg)
 
-    self.g_coll = GroupManager().get('enemies')
+    self.g_coll = g_coll
     self.g_expl = GroupManager().get('explosions')
 
-    self.mover = mover.LinearMover(pos, self.max_speed, {'dir' : 180})
+    self.mover = mover.LinearMover(pos, self.max_speed, {'dir' : dir})
 
   def update(self):
     self._update_position()
@@ -1241,8 +1293,8 @@ class Projectile(AGSprite):
 class Bullet(Projectile):
   offset = 6
 
-  def __init__(self, pos, *groups):
-    Projectile.__init__(self, pos, *groups)
+  def __init__(self, pos, dir, g_coll, *groups):
+    Projectile.__init__(self, pos, dir, g_coll, *groups)
     
     size = 1, 2
 
@@ -1269,8 +1321,8 @@ class Shell(Projectile):
     else:
       return 1
 
-  def __init__(self, pos, *groups):
-    Projectile.__init__(self, pos, *groups)
+  def __init__(self, pos, dir, g_coll, *groups):
+    Projectile.__init__(self, pos, dir, g_coll, *groups)
     
     self.image = pygame.Surface((1, 1))
     self.image.fill((110, 110, 110))
@@ -1304,8 +1356,8 @@ class Shell(Projectile):
     del self
 
 class EnergyProjectile(Projectile):
-  def __init__(self, pos, *groups):
-    Projectile.__init__(self, pos, *groups)
+  def __init__(self, pos, dir, g_coll, *groups):
+    Projectile.__init__(self, pos, dir, g_coll, *groups)
 
     size = self.gfx['energy']['w'], self.gfx['energy']['h']
 
