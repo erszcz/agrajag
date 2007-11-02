@@ -31,8 +31,9 @@ class BackgroundImage(BackgroundObject):
   def __init__(self, speed, boundary, *groups):
     BackgroundObject.__init__(self, (0, 0), speed, boundary, *groups)
 
-    self.image = pygame.image.load('gfx/terrain/TEST7B.bmp').convert_alpha()
-    self.rect = pygame.Rect((0, abs(self.image.get_height() - self.boundary)), (0, 0))
+    self.image = pygame.image.load('gfx/terrain/level_template.png').convert_alpha()
+    #self.rect = pygame.Rect((0, self.image.get_height() - self.boundary), (0, 0))
+    self.rect = pygame.Rect((0, self.boundary - self.image.get_height()), (0, 0))
     self.clock = Clock()
 
   def update(self):
