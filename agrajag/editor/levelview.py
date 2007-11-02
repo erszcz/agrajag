@@ -9,6 +9,8 @@ class LevelView(QGraphicsView):
     QGraphicsView.__init__(self, parent)
     self.setBackgroundBrush(QBrush(Qt.CrossPattern))
 
+    self.dragStartPos = None
+
     # bez layerow na start, zeby bylo latwiej
     self.newScene(QSize(800, 1000))
       # teraz zastanawialem sie co zrobic, zeby mi tego cham nie centrowal
@@ -24,6 +26,35 @@ class LevelView(QGraphicsView):
     graphicsItem = QGraphicsPixmapItem(pixmap)
     graphicsItem.setOffset(QPointF(pos))
     self.scene.addItem(graphicsItem)
+
+  def mousePressEvent(self, event):
+    if event.button() == Qt.LeftButton \
+    and self.items(event.pos()):
+      self.dragStartPos = event.pos()
+
+  def mouseMoveEvent(self, event):
+    if event.buttons() & Qt.LeftButton \
+    and self.dragStartPos is not None \
+    and event.pos() - self.dragStartPos >= QApplication.startDragDistance():
+      item = self.itemAt(self.dragStartPos)
+      
+      itemData = QByteArray()
+      dataStream = QDataStream(itemData, QIODevice.WriteOnly)
+      pixmap = item.pixmap()
+
+      dataStream << pixmap  # << filename  # pozniej trzeba bedzie dodac
+
+      mimeData = QMimeData()
+      mimeData.setData('image/x-tile', itemData)
+
+      drag = QDrag(self)
+      drag.setMimeData(mimeData)
+      drag.setHotSpot(QPoint(pixmap.width() / 2, pixmap.height() / 2))
+      drag.setPixmap(pixmap)
+
+      self.scene.removeItem(item)
+      self.dragStartPos = None
+      drag.start(Qt.MoveAction)
 
   def dragEnterEvent(self, event):
     if event.mimeData().hasFormat('image/x-tile'):
