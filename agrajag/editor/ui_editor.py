@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'editor.ui'
 #
-# Created: Fri Nov  2 12:07:43 2007
+# Created: Fri Nov  2 16:59:30 2007
 #      by: PyQt4 UI code generator 4.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -63,7 +63,20 @@ class Ui_MainWindow(object):
 
         self.actionAbout_Qt = QtGui.QAction(MainWindow)
         self.actionAbout_Qt.setObjectName("actionAbout_Qt")
+
+        self.actionSave_image = QtGui.QAction(MainWindow)
+        self.actionSave_image.setObjectName("actionSave_image")
+
+        self.actionNew_level = QtGui.QAction(MainWindow)
+        self.actionNew_level.setObjectName("actionNew_level")
+
+        self.actionSave_XML = QtGui.QAction(MainWindow)
+        self.actionSave_XML.setObjectName("actionSave_XML")
+        self.menuFile.addAction(self.actionNew_level)
         self.menuFile.addAction(self.actionLoad_tiles)
+        self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionSave_image)
+        self.menuFile.addAction(self.actionSave_XML)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionExit)
         self.menuHelp.addAction(self.actionAbout_Qt)
@@ -81,6 +94,9 @@ class Ui_MainWindow(object):
         self.actionExit.setText(QtGui.QApplication.translate("MainWindow", "E&xit", None, QtGui.QApplication.UnicodeUTF8))
         self.actionLoad_tiles.setText(QtGui.QApplication.translate("MainWindow", "&Load tiles...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAbout_Qt.setText(QtGui.QApplication.translate("MainWindow", "About &Qt", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSave_image.setText(QtGui.QApplication.translate("MainWindow", "Save &image", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionNew_level.setText(QtGui.QApplication.translate("MainWindow", "&New level...", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSave_XML.setText(QtGui.QApplication.translate("MainWindow", "&Save XML", None, QtGui.QApplication.UnicodeUTF8))
 
 from tilelist import TileList
 from levelview import LevelView

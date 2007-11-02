@@ -13,7 +13,6 @@ class LevelView(QGraphicsView):
 
     # bez layerow na start, zeby bylo latwiej
     self.newScene(QSize(800, 1000))
-      # teraz zastanawialem sie co zrobic, zeby mi tego cham nie centrowal
 
   def newScene(self, size):
     self.scene = QGraphicsScene()
@@ -21,6 +20,13 @@ class LevelView(QGraphicsView):
     self.setScene(self.scene)
 
     self.setMaximumSize(size)
+
+  def snapshot(self):
+    image = QImage(self.scene.width(), self.scene.height(), QImage.Format_ARGB32)
+    painter = QPainter(image)
+    self.scene.render(painter)
+
+    return image
 
   def placeTile(self, pixmap, pos):
     graphicsItem = QGraphicsPixmapItem(pixmap)
