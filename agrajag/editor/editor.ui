@@ -73,7 +73,11 @@
     <property name="title" >
      <string>&amp;File</string>
     </property>
+    <addaction name="actionNew_level" />
     <addaction name="actionLoad_tiles" />
+    <addaction name="separator" />
+    <addaction name="actionSave_image" />
+    <addaction name="actionSave_XML" />
     <addaction name="separator" />
     <addaction name="actionExit" />
    </widget>
@@ -100,6 +104,21 @@
   <action name="actionAbout_Qt" >
    <property name="text" >
     <string>About &amp;Qt</string>
+   </property>
+  </action>
+  <action name="actionSave_image" >
+   <property name="text" >
+    <string>Save &amp;image</string>
+   </property>
+  </action>
+  <action name="actionNew_level" >
+   <property name="text" >
+    <string>&amp;New level...</string>
+   </property>
+  </action>
+  <action name="actionSave_XML" >
+   <property name="text" >
+    <string>&amp;Save XML</string>
    </property>
   </action>
  </widget>

@@ -8,36 +8,52 @@ from PyQt4.QtGui import *
 
 from ui_editor import Ui_MainWindow
 
+from newleveldialog import NewLevelDialog
+
 class MainWindow(QMainWindow, Ui_MainWindow):
   def __init__(self, parent=None):
     QMainWindow.__init__(self, parent)
     Ui_MainWindow.setupUi(self, self)
+    Ui_MainWindow.retranslateUi(self, self)
 
     self.setupActions()
 
-    # temp
-    #newerImage = QPixmap()
-    #newerImage.load('../gfx/terrain/TEST7B.png')
-    #self.scene = QGraphicsScene()
-    #self.scene.addPixmap(newerImage)
-    #self.levelView.setScene(self.scene)
-    #self.levelView.update()
-    # koniec temp
-
   def setupActions(self):
+    self.connect(self.actionNew_level,
+                 SIGNAL('triggered()'),
+                 self.newLevel)
     self.connect(self.actionLoad_tiles,
                  SIGNAL('triggered()'),
                  self.loadTiles)
+    self.connect(self.actionSave_image,
+                 SIGNAL('triggered()'),
+                 self.saveImage)
     self.connect(self.actionAbout_Qt,
                  SIGNAL('triggered()'),
                  qApp.aboutQt)
 
-  def loadTiles(self, filenames = QStringList()):
-    if filenames.isEmpty():
+    # not implemented
+    self.connect(self.actionSave_XML,
+                 SIGNAL('triggered()'),
+                 self.notImplementedYet)
+
+  def notImplementedYet(self):
+    info = 'The feature you requested is not implemented yet.'
+    QMessageBox.information(self,
+                            self.trUtf8('Feature not implemented'),
+                            self.trUtf8(info))
+
+  def newLevel(self):
+    size = NewLevelDialog.getLevelSize(self)
+    if not size.isEmpty():
+      self.levelView.newScene(size)
+
+  def loadTiles(self, filenames = []):
+    if not filenames:
       filenames = QFileDialog.getOpenFileNames(self,
                                       self.trUtf8('Load tiles'),
                                       './',
-                                      'Image files(*.png *.jpg *.bmp)')
+                                      'Image files(*.png *.tiff *.jpg *.bmp)')
 
     unreadable = []
     for filename in filenames:
@@ -59,3 +75,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                           self.trUtf8('Load tiles'),
                           self.trUtf8(warn))
 
+  def saveImage(self, filename = ''):
+    if not filename:
+      filename = QFileDialog.getSaveFileName(self,
+                                  self.trUtf8('Save level as image'),
+                                  './',
+                                  'Image files(*.png *.tiff *.jpg *.bmp)')
+
+    if not filename:
+      return
+    image = self.levelView.snapshot()
+    if not image.save(filename):
+      QMessageBox.warning(self, self.trUtf8('Save level as image'),
+                          self.trUtf8('The file could not be saved.'))
