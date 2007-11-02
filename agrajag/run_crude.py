@@ -9,7 +9,7 @@ from gfxmanager import GfxManager
 from stagemanager import StageManager
 from groupmanager import GroupManager
 from spaceship import PlayerShip, AdvancedPlayerShip, EnemyShip
-from background import SpaceBackground
+from background import SpaceBackground, BackgroundImage
 from obstacle import Obstacle, MovingObstacle
 import mover
 from clock import Clock
@@ -66,6 +66,8 @@ def run():
   hud.setup_connections(g_ship.sprites()[0])
 
   back = SpaceBackground(viewport_size)
+  g_bimg = pygame.sprite.Group()
+  bimg = BackgroundImage(80, viewport_size[1], g_bimg)
 
   for stage_name in stages:
     stage_clock = 0
@@ -150,6 +152,8 @@ def run():
       screen.fill(black)
       back.update()
       back.draw(screen)
+      g_bimg.update()
+      g_bimg.draw(screen)
 
       # temp
       #if g_ship.sprites():
