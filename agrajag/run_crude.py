@@ -8,7 +8,8 @@ from dbmanager import DBManager
 from gfxmanager import GfxManager
 from stagemanager import StageManager
 from groupmanager import GroupManager
-from spaceship import PlayerShip, AdvancedPlayerShip, EnemyShip
+from spaceship import PlayerShip, AdvancedPlayerShip, EnemyShip, \
+    EnemyInterceptor
 from background import SpaceBackground, BackgroundImage
 from obstacle import Obstacle, MovingObstacle
 import mover
@@ -52,6 +53,7 @@ def run():
   g_enemies = groupmanager.add('enemies')
   g_enemy_projectiles = groupmanager.add('enemy_projectiles')
   g_player_projectiles = groupmanager.add('player_projectiles')
+  g_beams = groupmanager.add('beams')
   g_explosions = groupmanager.add('explosions')
   g_shields = groupmanager.add('shields')
 
@@ -67,7 +69,6 @@ def run():
 
   back = SpaceBackground(viewport_size)
   g_bimg = pygame.sprite.Group()
-  bimg = BackgroundImage(80, viewport_size[1], g_bimg)
 
   for stage_name in stages:
     stage_clock = 0
@@ -161,6 +162,7 @@ def run():
       #
 
       g_enemies.update()
+      g_beams.update()
       g_explosions.update()
       g_ship.update()
       g_enemy_projectiles.update()
@@ -170,6 +172,7 @@ def run():
 
       g_enemies.draw(screen)
       g_ship.draw(screen)
+      g_beams.draw(screen)
       g_enemy_projectiles.draw(screen)
       g_player_projectiles.draw(screen)
       g_shields.draw(screen)
@@ -182,9 +185,9 @@ def run():
                                display_size[1] - viewport_size[1]))
                  )
       pygame.display.flip()
-      print g_ship.sprites()
-      if g_ship.sprites():
-        print sys.getrefcount(g_ship.sprites()[0])
+      #print g_ship.sprites()
+      #if g_ship.sprites():
+        #print sys.getrefcount(g_ship.sprites()[0])
 
 if __name__ == '__main__':
   run()

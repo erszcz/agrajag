@@ -8,7 +8,8 @@ from dbmanager import DBManager
 from gfxmanager import GfxManager
 from stagemanager import StageManager
 from groupmanager import GroupManager
-from spaceship import PlayerShip, AdvancedPlayerShip, EnemyShip
+from spaceship import PlayerShip, AdvancedPlayerShip, EnemyShip, \
+    EnemyInterceptor
 from background import SpaceBackground
 from obstacle import Obstacle, MovingObstacle
 import mover
@@ -54,6 +55,7 @@ def run():
   g_enemies = groupmanager.add('enemies')
   g_enemy_projectiles = groupmanager.add('enemy_projectiles')
   g_player_projectiles = groupmanager.add('player_projectiles')
+  g_beams = groupmanager.add('beams')
   g_explosions = groupmanager.add('explosions')
   g_shields = groupmanager.add('shields')
 
@@ -137,6 +139,7 @@ def run():
       #
 
       g_enemies.update()
+      g_beams.update()
       g_explosions.update()
       g_ship.update()
       g_enemy_projectiles.update()
@@ -146,6 +149,7 @@ def run():
 
       g_enemies.draw(screen)
       g_ship.draw(screen)
+      g_beams.draw(screen)
       g_enemy_projectiles.draw(screen)
       g_player_projectiles.draw(screen)
       g_shields.draw(screen)
