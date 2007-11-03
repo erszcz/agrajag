@@ -1,0 +1,13 @@
+<content>
+  <gfx>
+    <resource name='shield' file='enemy_shield.png' state_w='43' state_h='49'>
+      <state name='def' x_off='0'   y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='maximum' value='300' type='int' />
+    <prop name='recharge_rate' value='9' type='int' />
+    <prop name='cost' value='2' type='int' />
+    <prop name='critical_speed' value='400' type='float' />
+  </properties>
+</content>

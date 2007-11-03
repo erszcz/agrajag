@@ -1,10 +1,10 @@
 <events>
-  <spawn time='0' x='50' y='50' object_cls_name='EnemyShip'
+  <spawn time='0' x='50' y='50' object_cls_name='EnemyInterceptor'
     mover_cls_name='LinearPlayerTargetingMover'>
     <mover_param name='vertical_div' value='0.3' type='float' />
     <group name='enemies' />
   </spawn>
-  <spawn time='3500' x='250' y='50' object_cls_name='EnemyShip'
+  <spawn time='3500' x='250' y='50' object_cls_name='EnemyInterceptor'
     mover_cls_name='LinearPlayerTargetingMover'>
     <mover_param name='vertical_div' value='0.3' type='float' />
     <group name='enemies' />

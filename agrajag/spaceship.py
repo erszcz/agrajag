@@ -141,6 +141,7 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
       elif type(self.align) is str:
         setattr(self.rect, self.align, self.pos)
 
+
 class Destructible(AGSprite):
   """
   Class describing an object that can be destroyed.
@@ -168,13 +169,16 @@ class Destructible(AGSprite):
     AGSprite.__init__(self, pos, *groups)
     self._setattrs('durability, explosion_cls_name', self.cfg)
 
-  def damage(self, damage):
+  def damage(self, damage, speed = None):
     """
     Deal damage and check whether the object ceases to exist. If so, call
     C{L{explode}}.
 
     @type  damage: integer
     @param damage: Amount of damage the object takes.
+
+    @type  speed: float or None
+    @param speed: Speed of damaging projectile. None for instant hits.
     """
 
     self.durability -= damage
@@ -200,6 +204,10 @@ class Ship(Destructible):
   
   @type rect: C{pygame.Rect}
   @ivar rect: Rectangle describing position and size of the ship.
+
+  @type center: sequence
+  @ivar center: Position of ships center (ship itself, without exhaust
+  and such). Needed to properly position C{L{Shield}}s.
 
   @type weapons: sequence
   @ivar weapons: A sequence of C{L{Weapon}}s available on the ship.
@@ -236,6 +244,17 @@ class Ship(Destructible):
     self.shield = None
     self.armour = None
     self.reactor = None
+
+  def _initialize_position(self, pos, align, size):
+    """
+    """
+
+    Destructible._initialize_position(self, pos, align, size)
+    self.center = self.rect.center
+
+  def _update_position(self):
+    Destructible._update_position(self)
+    self.center = self.rect.center
 
   def update(self):
     """
@@ -278,6 +297,43 @@ class Ship(Destructible):
 
     for i in xrange(len(rechargables)):
       rechargables[i].recharge(supplies[i])
+
+  def damage(self, damage, speed = None):
+    """
+    Deal damage and check whether the object ceases to exist. If so, call
+    C{L{explode}}.
+
+    @type  damage: integer
+    @param damage: Amount of raw damage the ship takes.
+
+    @type  speed: float
+    @param speed: Speed of projectile dealing damage or None if projectile
+    does not have finite speed or damage comes from other source. This
+    parameter is used to determine whether autoshield will activate or not.
+    """
+
+    if damage > 0 and self.shield is not None:
+      if isinstance(self.shield, AutoShield):
+        damage = self.shield.absorb(damage, 1, speed)
+      else:
+        damage = self.shield.absorb(damage, 1)
+
+    if damage > 0 and self.armour is not None:
+      damage = self.armour.absorb(damage, 1)
+
+    if damage == 0:
+      return
+
+    self.durability -= damage
+    if self.durability <= 0:
+      self.explode()
+
+  def explode(self):
+    if self.shield is not None:
+      self.shield.kill()
+      del self.shield
+
+    Destructible.explode(self)
 
 
 class PlayerShip(Ship):
@@ -441,7 +497,7 @@ class EnemyShip(Ship):
 
     if self.cfg.has_key('shield_cls_name'):
       shield_cls = eval(self.cfg['shield_cls_name'])
-      self.shield = shield_cls()
+      self.shield = shield_cls(self)
 
     if self.cfg.has_key('armour_cls_name'):
       armour_cls = eval(self.cfg['armour_cls_name'])
@@ -467,15 +523,20 @@ class EnemyShip(Ship):
     self.shoot()
 
 
+class EnemyInterceptor(EnemyShip):
+  """
+  """
+
+  def __init__(self, pos, *groups):
+    EnemyShip.__init__(self, pos, *groups)
+
+
 class AdvancedPlayerShip(PlayerShip):
   """
   Represents the player's ship in more advanced version described in project's
   wiki. In later stage some funcionality of this class may be moved to not
   yet existant class Hull.
 
-  @type center: sequence
-  @ivar center: Position of ships center (ship itself, without exhaust
-  and such).
   """
 
   def __init__(self, pos, *groups):
@@ -497,7 +558,7 @@ class AdvancedPlayerShip(PlayerShip):
     self._current_weapon = 0
     self.cooldown = None
 
-    self.shield = BasicShield(self)
+    self.shield = BasicAutoShield(self)
     self.armour = BasicArmour()
     self.reactor = BasicReactor()
 
@@ -546,7 +607,7 @@ class AdvancedPlayerShip(PlayerShip):
     if self.shield is not None:
       self.shield.activate(on)
 
-  def damage(self, damage):
+  def damage(self, damage, speed = None):
     """
     Deal damage and check whether the object ceases to exist. If so, call
     C{L{explode}}.
@@ -555,28 +616,18 @@ class AdvancedPlayerShip(PlayerShip):
     @param damage: Amount of raw damage the ship takes.
     """
 
-    if damage > 0 and self.shield is not None:
-      damage = self.shield.absorb(damage, 1)
-
-    if damage > 0 and self.armour is not None:
-      damage = self.armour.absorb(damage, 1)
-
-    if damage == 0:
-      return
-
-    self.durability -= damage
+    Ship.damage(self, damage, speed)
     self.armour_updated(self.durability + self.armour.current)
-    if self.durability <= 0:
-      self.explode()
 
   def update(self):
     """
     Update ship state (center, weapons, shield, armour, reactor, etc.)
     """
 
+    Ship.update(self)
+
     self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
 
-    Ship.update(self)
       
 
 class Weapon(AGObject):
@@ -725,19 +776,16 @@ class ProjectileAmmoWeapon(AmmoWeapon):
     if self.current < 1:
       return
 
-    if isinstance(self.owner, EnemyShip):
-      print "boo"
-
     self.remaining_cooldown = self.cooldown
     self.current -= 1
 
     if isinstance(self.owner, EnemyShip):
       dir = 0
-      g_proj = GroupManager().get('player_projectiles')
+      g_proj = GroupManager().get('enemy_projectiles')
       g_coll = GroupManager().get('ship')
     else:
       dir = -180
-      g_proj = GroupManager().get('enemy_projectiles')
+      g_proj = GroupManager().get('player_projectiles')
       g_coll = GroupManager().get('enemies')
 
     projectile_cls = eval(self.projectile_cls_name)
@@ -770,13 +818,49 @@ class InstantEnergyWeapon(EnergyWeapon):
     self._setattrs('damage, explosion_cls_name, beam_cls_name', self.cfg)
 
   @staticmethod
-  def _compare_target_pos(a, b):
+  def _compare_player_target_pos(a, b):
     if a.rect.bottom > b.rect.bottom:
       return -1
     elif a.rect.bottom == b.rect.bottom:
       return 0
     else:
       return 1
+
+  @staticmethod
+  def _compare_enemy_target_pos(a, b):
+    if a.rect.top < b.rect.top:
+      return -1
+    elif a.rect.top == b.rect.top:
+      return 0
+    else:
+      return 1
+
+  def _find_target(self, pos):
+    """
+    Return target that will be hit by the beam or None.
+    """
+
+    targets = []
+    if isinstance(self.owner, EnemyShip):
+      all_targets = GroupManager().get('ship').sprites()
+
+      for t in all_targets:
+        if pos[0] < t.rect.right and pos[0] > t.rect.left \
+          and pos[1] < t.rect.top:
+            targets.append(t)
+
+      targets.sort(cmp = self._compare_enemy_target_pos)
+    else:
+      all_targets = GroupManager().get('enemies').sprites()
+
+      for t in all_targets:
+        if pos[0] < t.rect.right and pos[0] > t.rect.left \
+          and pos[1] > t.rect.bottom:
+            targets.append(t)
+
+      targets.sort(cmp = self._compare_player_target_pos)
+
+    return targets[0] if len(targets) > 0 else None
 
   def shoot(self, pos):
     """
@@ -797,33 +881,36 @@ class InstantEnergyWeapon(EnergyWeapon):
     beam_cls = eval(self.beam_cls_name)
     beam = beam_cls()
 
-    GroupManager().get('player_projectiles').add(beam)
+    GroupManager().get('beams').add(beam)
 
-    all_targets = GroupManager().get('enemies').sprites()
-    targets = []
+    if isinstance(self.owner, EnemyShip):
+      g_coll = GroupManager().get('ship')
+    else:
+      g_coll = GroupManager().get('enemies')
 
-    for t in all_targets:
-      if pos[0] < t.rect.right and pos[0] > t.rect.left \
-          and pos[1] > t.rect.bottom:
-            targets.append(t)
+    target = self._find_target(pos)
+    if target is None:
+      if isinstance(self.owner, EnemyShip):
+        #tmp
+        beam.set_position((pos[0], 500), pos)
+      else:
+        beam.set_position(pos, (pos[0], 0))
 
-    if len(targets) == 0:
-      beam.set_position(pos, (pos[0], 0))
       return 
 
-    targets.sort(cmp = self._compare_target_pos)
-    t = targets[0]
-
-    t_pos = pos[0], t.rect.bottom
-
-    beam.set_position(pos, t_pos)
+    if isinstance(self.owner, EnemyShip):
+      t_pos = pos[0], target.rect.top
+      beam.set_position(t_pos, pos)
+    else:
+      t_pos = pos[0], target.rect.bottom
+      beam.set_position(pos, t_pos)
 
     expl_cls = eval(self.explosion_cls_name)
     expl = expl_cls(t_pos)
 
     GroupManager().get('explosions').add(expl)
 
-    t.damage(self.damage)
+    target.damage(self.damage)
 
     EnergyWeapon.shoot(self)
 
@@ -924,11 +1011,11 @@ class ProjectileEnergyWeapon(EnergyWeapon):
 
     if isinstance(self.owner, EnemyShip):
       dir = 0
-      g_proj = GroupManager().get('player_projectiles')
+      g_proj = GroupManager().get('enemy_projectiles')
       g_coll = GroupManager().get('ship')
     else:
       dir = -180
-      g_proj = GroupManager().get('enemy_projectiles')
+      g_proj = GroupManager().get('player_projectiles')
       g_coll = GroupManager().get('enemies')
 
     projectile_cls = eval(self.projectile_cls_name)
@@ -1065,11 +1152,93 @@ class Shield(AGSprite):
       self.current = self.maximum
 
     
+class AutoShield(Shield):
+  """
+  Base class for all automatically activated shields. AutoShield is activated
+  automatically when projectile moving with speed lesser than C{critical_speed}
+  approaches owner so that it could hit it in next iteration. Automatically 
+  activated shield is also automatically deactivated. If player activates
+  shield manually it cannot be automatically deactivated unless there is
+  no more energy.
+
+  @type critical_speed: float
+  @ivar critical_speed: Maximal speed of objects that will automatically
+  trigger shield expressed in pixels per second.
+
+  @type auto: bool
+  @ivar auto: Tells whether shield was activated automatically or not.
+  """
+
+  critical_speed = 0
+  vanish_speed = 1
+  auto = True
+
+  vanish_time = 0
+  
+  def __init__(self, owner):
+    Shield.__init__(self, owner)
+    self._setattrs('critical_speed, vanish_speed', self.cfg)
+
+  def activate(self, on, auto = False):
+    """
+    Activate or deactivate the shield. Display shield graphics if shield
+    is activated. Do not allow the shield to be automatically deactivated
+    id it was activated by player.
+
+    @type  activate: bool
+    @param activate: Tells whether shield should be activated or deactivated.
+
+    @type  auto: bool
+    @param auto: Tells whether action is taken by player or automatically.
+    """
+
+    if on is self.active:
+      return
+
+    if on is False and self.auto is not True and auto is True:
+      return
+
+    self.auto = auto
+    self.vanish_time = self.vanish_speed if auto is True else 0
+
+    Shield.activate(self, on)
+
+  def absorb(self, damage, efficiency, speed):
+    """
+    If shield is not active and C{speed} is lower than C{self.critical_speed}
+    activate it and absorb damage. Return remaining raw damage.
+    """
+
+    if self.active is False and speed is not None and \
+        speed < self.critical_speed:
+      self.activate(True, True)
+
+    return Shield.absorb(self, damage, efficiency)    
+
+
+  def update(self):
+    self.vanish_time -= Clock().frame_span() / 1000.
+    if self.vanish_time <= 0:
+      self.activate(False, True)
+
+    Shield.update(self)
+
+
 class BasicShield(Shield):
   def __init__(self, owner):
     Shield.__init__(self, owner)
 
-    
+
+class BasicAutoShield(AutoShield):
+  def __init__(self, owner):
+    AutoShield.__init__(self, owner)
+
+
+class EnemyShipShield(AutoShield):
+  def __init__(self, owner):
+    AutoShield.__init__(self, owner)
+ 
+
 class Armour(AGObject):
   """
   Base class for all ship armours.
@@ -1183,6 +1352,7 @@ class Explosion(AGSprite):
             break
       except ValueError, value:
         print "Warning: unhandled ValueError: %s" % value
+
       self.time += self.clock.frame_span()
 
 
@@ -1287,7 +1457,7 @@ class Projectile(AGSprite):
     for sprite in self.g_coll.sprites():
       if sprite.rect.collidepoint(self.rect.centerx, self.rect.top):
         self.explode()
-        sprite.damage(self.damage)
+        sprite.damage(self.damage, self.max_speed)
 
 
 class Bullet(Projectile):
