@@ -24,7 +24,7 @@ def run():
   random.seed()
   
   display_size = 800, 600
-  viewport_size = display_size[0], 500
+  viewport_size = display_size[0], 600
   black = 0, 0, 0
   red = 255, 70, 70
   green = 70, 255, 70

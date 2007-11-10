@@ -1454,7 +1454,7 @@ class Projectile(AGSprite):
     self._update_position()
     self._detect_collisions()
     # tmp
-    if self.rect.top < 0 or self.rect.bottom > 600:
+    if self.rect.bottom < 0 or self.rect.top > 600:
       self.kill()
       del self
 
@@ -1463,12 +1463,10 @@ class Projectile(AGSprite):
     del self
 
   def _detect_collisions(self):
-    sprites = self.g_coll.sprites()
-    for sprite in sprites:
-      if sprite.rect.collidepoint(self.rect.centerx, self.rect.top):
-        self.explode()
-        sprite.damage(self.damage, self.max_speed)
-
+    hit = pygame.sprite.spritecollide(self, self.g_coll, False)
+    if hit:  # hit is a list
+      hit[0].damage(self.damage, self.max_speed)
+      self.explode()
 
 class Bullet(Projectile):
   offset = 6
