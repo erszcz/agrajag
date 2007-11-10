@@ -32,7 +32,7 @@ class Clock(object):
     """
     self.readonly = readonly
 
-  def tick(self, fps):
+  def tick(self, fps = 0):
     """
     Tick the game clock (if instance type allows it).
 
@@ -54,3 +54,7 @@ class Clock(object):
   @staticmethod
   def frame_span():
     return Clock.__frame_span
+
+  @staticmethod
+  def get_fps():
+    return Clock.__clock.get_fps()
