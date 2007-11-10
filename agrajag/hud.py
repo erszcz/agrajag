@@ -34,6 +34,9 @@ class Hud:
     self.l_ammo = self.label_font.render('000', True, (255, 255, 255))
 
 
+  def clear(self, screen, callback):
+    self.g_hud.clear(screen, callback)
+
   def update(self):
     self.g_hud.update()
 

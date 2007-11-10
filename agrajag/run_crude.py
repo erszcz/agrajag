@@ -3,13 +3,14 @@
 
 import os, sys, random
 import pygame
+from profilehooks import profile
 
 from dbmanager import DBManager
 from gfxmanager import GfxManager
 from stagemanager import StageManager
 from groupmanager import GroupManager
 from spaceship import PlayerShip, AdvancedPlayerShip, EnemyShip, \
-    EnemyInterceptor
+    EnemyInterceptor, RechargeBonus
 from background import SpaceBackground, BackgroundImage
 from obstacle import Obstacle, MovingObstacle
 import mover
@@ -56,11 +57,14 @@ def run():
   g_beams = groupmanager.add('beams')
   g_explosions = groupmanager.add('explosions')
   g_shields = groupmanager.add('shields')
+  g_bonuses = groupmanager.add('bonuses')
 
   hud = Hud(viewport_size)
 
   g_enemies.add(Obstacle((60, 30)))
   g_enemies.add(MovingObstacle((160, 80)))
+
+  g_bonuses.add(RechargeBonus((300, 200)))
 
   #ship = AdvancedPlayerShip((175, viewport_size[1] - 60), g_ship)
   #hud.setup_connections(ship)
@@ -99,7 +103,7 @@ def run():
 
       # time management
       clock.tick(40)
-      #clock.tick( float(sys.argv[1]) )
+      #print clock.get_fps()
       stage_clock += clock.get_rawtime()
 
       for event in pygame.event.get():
@@ -150,44 +154,63 @@ def run():
         if g_ship.sprites():
           g_ship.sprites()[0].shoot()
 
-      screen.fill(black)
+      back.clear(screen, clear_bg)
       back.update()
       back.draw(screen)
-      g_bimg.update()
-      g_bimg.draw(screen)
+#      g_bimg.update()
+#      g_bimg.draw(screen)
 
       # temp
       #if g_ship.sprites():
       #  g_ship.sprites()[0].damage(1)
       #
 
+      g_enemies.clear(screen, clear_bg)
+      g_ship.clear(screen, clear_bg)
+      g_beams.clear(screen, clear_bg)
+      g_enemy_projectiles.clear(screen, clear_bg)
+      g_player_projectiles.clear(screen, clear_bg)
+      g_bonuses.clear(screen, clear_bg)
+      g_shields.clear(screen, clear_bg)
+      g_explosions.clear(screen, clear_bg)
+      hud.clear(screen, clear_bg)
+
       g_enemies.update()
       g_beams.update()
       g_explosions.update()
       g_ship.update()
       g_enemy_projectiles.update()
+      g_bonuses.update()
       g_player_projectiles.update()
       g_shields.update()
       hud.update()
+
+      #print len(g_enemy_projectiles.sprites())
 
       g_enemies.draw(screen)
       g_ship.draw(screen)
       g_beams.draw(screen)
       g_enemy_projectiles.draw(screen)
       g_player_projectiles.draw(screen)
+      g_bonuses.draw(screen)
       g_shields.draw(screen)
       g_explosions.draw(screen)
       hud.draw(screen)
 
-      screen.fill(red,
-                  pygame.Rect((0, viewport_size[1]),
-                              (display_size[0],
-                               display_size[1] - viewport_size[1]))
-                 )
+#      screen.fill(red,
+#                  pygame.Rect((0, viewport_size[1]),
+#                              (display_size[0],
+#                               display_size[1] - viewport_size[1]))
+#                 )
       pygame.display.flip()
       #print g_ship.sprites()
       #if g_ship.sprites():
         #print sys.getrefcount(g_ship.sprites()[0])
+
+
+def clear_bg(surf, rect):
+  surf.fill((0, 0, 0), rect)
+
 
 if __name__ == '__main__':
   run()

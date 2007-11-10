@@ -2,8 +2,9 @@
 #coding: utf-8
 
 import pygame, math, random
-import mover
+import sys
 
+import mover
 from base import AGObject
 from dbmanager import DBManager
 from gfxmanager import GfxManager
@@ -261,7 +262,8 @@ class Ship(Destructible):
     Update ship state (center, weapons, shield, armour, reactor, etc.)
     """
 
-    self._recharge()
+    if self.reactor is not None:
+      self.recharge(self.reactor.supply())
 
     for w in self.weapons:
       w.update()
@@ -269,17 +271,21 @@ class Ship(Destructible):
     if self.shield is not None:
       self.shield.update()
       
-  def _recharge(self):
+  def recharge(self, supply, ignore_recharge_rates = False):
     """
-    Recharge energy consuming items if ship is equipped with a reactor.
+    Recharge energy consuming items with C{supply} units of energy.
 
-    Distribution of energy is determined by the reactor based on provided
-    demands.
+    Distribution of energy is proportional to energy demands.
+
+    @type  supply: float
+    @param supply: Amount of energy to divide between rechargable items.
+
+    @type  ignore_recharge_rates: bool
+    @param ignore_recharge_rates: If True items' can be recharged faster
+    than their recharge rates allow.
     """
 
-    if self.reactor is None:
-      return
-
+    # find rechargable items and their energy demands
     rechargables = []
     demands = []
     for w in self.weapons:
@@ -291,12 +297,16 @@ class Ship(Destructible):
       rechargables.append(self.shield)
       demands.append(self.shield.get_demand())
 
-    supplies = self.reactor.supply(demands)
-    if supplies is None:
+    # distribute supply according to demands
+    total_demand = float(sum(demands))
+
+    # avoid division by zero
+    if math.fabs(total_demand) < 0.01:
       return
 
     for i in xrange(len(rechargables)):
-      rechargables[i].recharge(supplies[i])
+      rechargables[i].recharge(supply * demands[i] / total_demand,
+          ignore_recharge_rates)
 
   def damage(self, damage, speed = None):
     """
@@ -627,7 +637,6 @@ class AdvancedPlayerShip(PlayerShip):
     Ship.update(self)
 
     self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
-
       
 
 class Weapon(AGObject):
@@ -708,14 +717,16 @@ class EnergyWeapon(Weapon):
 
     return self.maximum - self.current
 
-  def recharge(self, supply):
+  def recharge(self, supply, ignore_recharge_rate = False):
     """
     Recharge energy. Amount of energy recharged depends on amount
     of energy supplied and recharge rate. It is assumed that supply is
     never larger than demand. If there is any excess it is lost.
     """
 
-    supply = supply if supply <= self.recharge_rate else self.recharge_rate
+    if not ignore_recharge_rate:
+      supply = supply if supply <= self.recharge_rate else self.recharge_rate
+
     self.current += supply
 
     if self.current > self.maximum:
@@ -1138,19 +1149,20 @@ class Shield(AGSprite):
     return self.maximum - self.current
 
 
-  def recharge(self, supply):
+  def recharge(self, supply, ignore_recharge_rate):
     """
     Recharge shield energy. Amount of energy recharged depends on amount
     of energy supplied and recharge rate. It is assumed that supply is
     never larger than demand. If there is any excess it is lost.
     """
 
-    supply = supply if supply <= self.recharge_rate else self.recharge_rate
+    if not ignore_recharge_rate:
+      supply = supply if supply <= self.recharge_rate else self.recharge_rate
+
     self.current += supply
 
     if self.current > self.maximum:
       self.current = self.maximum
-
     
 class AutoShield(Shield):
   """
@@ -1292,7 +1304,12 @@ class Reactor(AGObject):
   Base class for all ship reactors. Reactor is responsible for providing
   energy to all energy consuming components of a ship (i.e. shields, 
   energy weapons).
+
+  @type power: float
+  @ivar power: Amount of energy produced per second.
   """
+
+  power = 0
 
   def __init__(self):
     """
@@ -1303,21 +1320,12 @@ class Reactor(AGObject):
     self.cfg = DBManager().get(self.__class__.__name__)['props']
     self._setattrs('power', self.cfg)
 
-  def supply(self, demands):
+  def supply(self):
     """
-    Return all energy available at this moment distribited in accordance
-    to provided demands.
+    Return all energy available at this moment.
     """
 
-    total_demand = float(sum(demands))
-    if math.fabs(total_demand) < 0.1:
-      return None
-
-    supplies = []
-    for i in xrange(len(demands)):
-      supplies.append(self.power * demands[i] / total_demand)
-
-    return supplies
+    return self.power * Clock().frame_span() / 1000.
 
 
 class BasicReactor(Reactor):
@@ -1445,7 +1453,8 @@ class Projectile(AGSprite):
   def update(self):
     self._update_position()
     self._detect_collisions()
-    if self.rect.top < 0:
+    # tmp
+    if self.rect.top < 0 or self.rect.bottom > 600:
       self.kill()
       del self
 
@@ -1454,7 +1463,8 @@ class Projectile(AGSprite):
     del self
 
   def _detect_collisions(self):
-    for sprite in self.g_coll.sprites():
+    sprites = self.g_coll.sprites()
+    for sprite in sprites:
       if sprite.rect.collidepoint(self.rect.centerx, self.rect.top):
         self.explode()
         sprite.damage(self.damage, self.max_speed)
@@ -1476,8 +1486,8 @@ class Bullet(Projectile):
 
   def explode(self):
     self.g_expl.add( BulletExplosion(self.pos) )
-    self.kill()
-    del self
+
+    Projectile.explode(self)
 
 class Shell(Projectile):
   offset = 6
@@ -1522,8 +1532,8 @@ class Shell(Projectile):
 
   def explode(self, pos):
     self.g_expl.add( ShellExplosion(pos) )
-    self.kill()
-    del self
+
+    Projectile.explode(self)
 
 class EnergyProjectile(Projectile):
   def __init__(self, pos, dir, g_coll, *groups):
@@ -1558,5 +1568,77 @@ class EnergyProjectile(Projectile):
 
   def explode(self):
     self.g_expl.add( EnergyProjectileExplosion(self.rect.center) )
-    self.kill()
-    del self
+
+    Projectile.explode(self)
+
+
+class Bonus(AGSprite):
+  """
+  Base class for bonuses/powerups that can be collected by players. Bonuses
+  collide with objects belonging to group 'ship'.
+
+  W momencie kolizji wywolywana jest metoda, ktorej argumentem jest 
+  referencja do obiektu, z ktorym nastapila kolizja. Ta metoda ma 
+  za zadanie wywolac jakis pozytywny dla obiektu efekt.
+  """
+
+  def __init__(self, pos, *groups):
+    """
+    Create bonus instance. Initialize its C{image} and C{rect}.
+    """
+
+    AGSprite.__init__(self, pos, *groups)
+
+    size = self.gfx['bonus']['w'], self.gfx['bonus']['h']
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['bonus']['image'])
+
+    self._blit_state('bonus', 'def')
+    self._initialize_position(pos, 'center', size)
+
+    self.mover = mover.CircularMover(pos, self.max_speed)
+
+  def _detect_collisions(self):
+    """
+    Detect collisions and return single colliding ship or None.
+    """
+
+    ships = GroupManager().get('ship').sprites()
+    i = self.rect.collidelist(ships)
+    return None if i == -1 else ships[i]
+
+  def update(self):
+    self.pos = self._update_position()
+
+    ship = self._detect_collisions()
+    if ship is not None:
+      self._use(ship)
+      self.kill()
+      del self
+
+  def _use(self, ship):
+    """
+    Use bonus on C{ship}. Classes derived from C{Bonus} need to override
+    this method.
+    """
+  
+    pass
+
+
+class RechargeBonus(Bonus):
+  """
+  This bonus recharges player ship's shields and energy weapons.
+  """
+
+  power = 100
+
+  def __init__(self, pos, *groups):
+    Bonus.__init__(self, pos, *groups)
+    self._setattrs('power', self.cfg)
+
+  def _use(self, ship):
+    """
+    Recharge C{ship}'s shields and energy weapons.
+    """
+
+    ship.recharge(self.power, True)
