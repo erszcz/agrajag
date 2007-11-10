@@ -1,0 +1,10 @@
+<content>
+  <gfx>
+    <resource name='bonus' file='bonus.png' state_w='23' state_h='26'>
+      <state name='def' x_off='0'   y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='max_speed'   type='int' value='100' />
+  </properties>
+</content>

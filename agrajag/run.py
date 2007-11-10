@@ -9,7 +9,7 @@ from gfxmanager import GfxManager
 from stagemanager import StageManager
 from groupmanager import GroupManager
 from spaceship import PlayerShip, AdvancedPlayerShip, EnemyShip, \
-    EnemyInterceptor
+    EnemyInterceptor, RechargeBonus
 from background import SpaceBackground
 from obstacle import Obstacle, MovingObstacle
 import mover
@@ -58,11 +58,14 @@ def run():
   g_beams = groupmanager.add('beams')
   g_explosions = groupmanager.add('explosions')
   g_shields = groupmanager.add('shields')
+  g_bonuses = groupmanager.add('bonuses')
 
   hud = Hud(viewport_size)
 
   g_enemies.add(Obstacle((60, 30)))
   g_enemies.add(MovingObstacle((160, 80)))
+
+  g_bonuses.add(RechargeBonus((300, 200)))
 
   ship = ref( AdvancedPlayerShip((175, viewport_size[1] - 60), g_ship) )
   hud.setup_connections(ship())
@@ -129,7 +132,7 @@ def run():
       if pressed_keys[pygame.K_z]:
         if ship(): ship().shoot()
 
-      screen.fill(black)
+      back.clear(screen, clear_bg)
       back.update()
       back.draw(screen)
 
@@ -138,11 +141,22 @@ def run():
       #  ship().damage(1)
       #
 
+      g_enemies.clear(screen, clear_bg)
+      g_ship.clear(screen, clear_bg)
+      g_beams.clear(screen, clear_bg)
+      g_enemy_projectiles.clear(screen, clear_bg)
+      g_player_projectiles.clear(screen, clear_bg)
+      g_bonuses.clear(screen, clear_bg)
+      g_shields.clear(screen, clear_bg)
+      g_explosions.clear(screen, clear_bg)
+      hud.clear(screen, clear_bg)
+
       g_enemies.update()
       g_beams.update()
       g_explosions.update()
       g_ship.update()
       g_enemy_projectiles.update()
+      g_bonuses.update()
       g_player_projectiles.update()
       g_shields.update()
       hud.update()
@@ -152,6 +166,7 @@ def run():
       g_beams.draw(screen)
       g_enemy_projectiles.draw(screen)
       g_player_projectiles.draw(screen)
+      g_bonuses.draw(screen)
       g_shields.draw(screen)
       g_explosions.draw(screen)
       hud.draw(screen)
@@ -165,6 +180,10 @@ def run():
       #print g_ship.sprites()
       #if ship():
       #  print sys.getrefcount(ship())
+
+def clear_bg(surf, rect):
+  surf.fill((0, 0, 0), rect)
+
 
 if __name__ == '__main__':
   run()

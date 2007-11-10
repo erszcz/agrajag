@@ -2,6 +2,6 @@
   <gfx>
   </gfx>
   <properties>
-    <prop name='power' value='2' type='int' />
+    <prop name='power' value='50' type='int' />
   </properties>
 </content>

@@ -147,6 +147,11 @@ class SpaceBackground():
       x, y = random.randint(0, self.dims[0]), 0
       self.closer_star_clusters.add(CloserStarCluster((x,y), self.dims[1]))
 
+  def clear(self, surface, callback):
+    self.distant_stars.clear(surface, callback)
+    self.closer_stars.clear(surface, callback)
+    self.closer_star_clusters.clear(surface, callback)
+
   def update(self):
     self.distant_stars_update()
     self.closer_stars_update()
