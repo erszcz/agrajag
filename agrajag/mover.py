@@ -76,7 +76,7 @@ class RandomMover(Mover):
 
   period = 1500
 
-  def __init__(self, pos, speed, params):
+  def __init__(self, pos, speed, params = {}):
     """
     Create instance of RandomMover.
     
@@ -138,7 +138,7 @@ class ZigZagMover(Mover):
 
   radius = 25
 
-  def __init__(self, pos, speed, params):
+  def __init__(self, pos, speed, params = {}):
     """
     Create mover instance.
 
@@ -211,7 +211,7 @@ class CircularMover(Mover):
 
   radius = 20
 
-  def __init__(self, pos, speed, params):
+  def __init__(self, pos, speed, params = {}):
     """
     Create CircularMover instance.
 
@@ -270,7 +270,7 @@ class LinearMover(Mover):
 
   dir = 0
 
-  def __init__(self, pos, speed, params):
+  def __init__(self, pos, speed, params = {}):
     """
     Create mover instance.
 
@@ -316,7 +316,7 @@ class LinearPlayerTargetingMover(Mover):
 
   vertical_div = math.pi / 3.
 
-  def __init__(self, pos, speed, params):
+  def __init__(self, pos, speed, params = {}):
     Mover.__init__(self)
     self._setattrs('vertical_div', params)
 
