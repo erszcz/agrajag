@@ -725,7 +725,8 @@ class EnergyWeapon(Weapon):
     """
 
     if not ignore_recharge_rate:
-      supply = supply if supply <= self.recharge_rate else self.recharge_rate
+      recharge = self.recharge_rate * Clock().frame_span() / 1000.
+      supply = supply if supply <= recharge else recharge
 
     self.current += supply
 
@@ -1062,7 +1063,10 @@ class Shield(AGSprite):
   @ivar current: Amount of damage the shield can absorb at this moment.
 
   @type recharge_rate: float
-  @ivar recharge_rate: Maximum number of energy points recharged per second.
+  @ivar recharge_rate: Maximum amount of energy recharged per second.
+
+  @type cost: float
+  @ivar cost: Amount of energy used per second when shield is active.
 
   @type active: bool
   @ivar active: Tells whether shield is working or not.
@@ -1071,6 +1075,7 @@ class Shield(AGSprite):
   maximum = 0
   current = 0
   recharge_rate = 0
+  cost = 0
 
   owner = None
   active = False
@@ -1078,9 +1083,9 @@ class Shield(AGSprite):
   def __init__(self, owner):
     AGSprite.__init__(self, owner.rect.center)
     self._check_gfx(['shield'])
-    self._check_cfg(['maximum', 'recharge_rate'])
+    self._check_cfg(['maximum', 'recharge_rate', 'cost'])
 
-    self._setattrs('maximum, recharge_rate', self.cfg)
+    self._setattrs('maximum, recharge_rate, cost', self.cfg)
 
     self.owner = owner
     self.current = self.maximum
@@ -1096,6 +1101,11 @@ class Shield(AGSprite):
 
   def update(self):
     if self.active:
+      self.current -= self.cost * Clock().frame_span() / 1000.
+      if self.current <= 0:
+        self.current = 0
+        self.activate(False)
+
       size = self.gfx['shield']['w'], self.gfx['shield']['h']
 
       pos = self.owner.center
@@ -1117,7 +1127,7 @@ class Shield(AGSprite):
       self.image.fill((0, 0, 0, 0))
 
 
-  def absorb(self, damage, efficiency):
+  def absorb(self, damage, efficiency = 1.0, speed = None):
     """
     If shield is active absorb specified amount of raw C{damage} caused with
     C{efficiency} and return remaining raw damage to be absorbed. Turn shield
@@ -1157,7 +1167,8 @@ class Shield(AGSprite):
     """
 
     if not ignore_recharge_rate:
-      supply = supply if supply <= self.recharge_rate else self.recharge_rate
+      recharge = self.recharge_rate * Clock().frame_span() / 1000.
+      supply = supply if supply <= recharge else recharge
 
     self.current += supply
 
@@ -1215,17 +1226,18 @@ class AutoShield(Shield):
 
     Shield.activate(self, on)
 
-  def absorb(self, damage, efficiency, speed):
+  def absorb(self, damage, efficiency = 1.0, speed = None):
     """
-    If shield is not active and C{speed} is lower than C{self.critical_speed}
-    activate it and absorb damage. Return remaining raw damage.
+    If shield is not active and C{speed} is not higher than 
+    C{self.critical_speed} activate it and absorb damage. Return remaining
+    raw damage.
     """
 
     if self.active is False and speed is not None and \
-        speed < self.critical_speed:
+        speed <= self.critical_speed:
       self.activate(True, True)
 
-    return Shield.absorb(self, damage, efficiency)    
+    return Shield.absorb(self, damage, efficiency, speed)    
 
 
   def update(self):

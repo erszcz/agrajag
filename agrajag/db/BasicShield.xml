@@ -7,6 +7,6 @@
   <properties>
     <prop name='maximum' value='100' type='int' />
     <prop name='recharge_rate' value='9' type='int' />
-    <prop name='cost' value='20' type='int' />
+    <prop name='cost' value='12' type='int' />
   </properties>
 </content>
