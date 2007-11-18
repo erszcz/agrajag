@@ -33,8 +33,11 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
   @ivar max_speed: Maximal speed object can by moved with expressed in
   pixels per second.
 
-  @type pos: tuple or list
+  @type pos: sequence
   @ivar pos: Current position of arbitrary object's point.
+
+  @type center: sequence
+  @ivar center: Current position of object's center.
 
   @type align: string or tuple
   @ivar align: Name or names of properties used to align object's C{rect}
@@ -84,8 +87,20 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
         raise Exception("Required gfx resource '%s' not defined" % g);
 
   def _blit_state(self, image, state, pos = (0, 0)):
-    '''Blit selected image state aquired from GfxManager on image
-    representing current instance'''
+    '''
+    Blit selected image state aquired from GfxManager on image
+    representing current instance
+    
+    @type  image: string
+    @param image: Name of resource in object's C{gfx} dictionary.
+
+    @type  state: string
+    @param state: Name of resource's state.
+
+    @type  pos: sequence
+    @param pos: Position of upper-left corner of the image to be blit in 
+    object's C{image} coordinate space.
+    '''
 
     area = self.gfx[image]['states'][state]['x_off'], \
            self.gfx[image]['states'][state]['y_off'], \
@@ -126,6 +141,8 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
       print size
       raise
 
+    self.center = self.rect.center
+  
   def _update_position(self):
     """
     Set new position of the object. New position is determined by
@@ -141,6 +158,8 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
         setattr(self.rect, self.align[1], self.pos[1])
       elif type(self.align) is str:
         setattr(self.rect, self.align, self.pos)
+
+      self.center = self.rect.center
 
 
 class Destructible(AGSprite):
@@ -162,6 +181,7 @@ class Destructible(AGSprite):
 
   durability = 0
   explosion_cls_name = None
+  destroyed = False
 
   def __init__(self, pos, *groups):
     """
@@ -195,6 +215,7 @@ class Destructible(AGSprite):
 
       GroupManager().get('explosions').add( explosion )
 
+    self.destroyed = True
     self.kill()
     del self
 
@@ -205,10 +226,6 @@ class Ship(Destructible):
   
   @type rect: C{pygame.Rect}
   @ivar rect: Rectangle describing position and size of the ship.
-
-  @type center: sequence
-  @ivar center: Position of ships center (ship itself, without exhaust
-  and such). Needed to properly position C{L{Shield}}s.
 
   @type weapons: sequence
   @ivar weapons: A sequence of C{L{Weapon}}s available on the ship.
@@ -246,17 +263,6 @@ class Ship(Destructible):
     self.armour = None
     self.reactor = None
 
-  def _initialize_position(self, pos, align, size):
-    """
-    """
-
-    Destructible._initialize_position(self, pos, align, size)
-    self.center = self.rect.center
-
-  def _update_position(self):
-    Destructible._update_position(self)
-    self.center = self.rect.center
-
   def update(self):
     """
     Update ship state (center, weapons, shield, armour, reactor, etc.)
@@ -270,7 +276,7 @@ class Ship(Destructible):
 
     if self.shield is not None:
       self.shield.update()
-      
+
   def recharge(self, supply, ignore_recharge_rates = False):
     """
     Recharge energy consuming items with C{supply} units of energy.
@@ -529,7 +535,7 @@ class EnemyShip(Ship):
   def update(self):
     Ship.update(self)
 
-    self._update_position();
+    self._update_position()
     self.shoot()
 
 
@@ -563,7 +569,7 @@ class AdvancedPlayerShip(PlayerShip):
 
     self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
 
-    self.weapons = [BasicBeamer(self), BasicProjectileEnergyWeapon(self),
+    self.weapons = [BasicBeamer(self), BasicTPEW(self),
         BasicPAW(self)]
     self._current_weapon = 0
     self.cooldown = None
@@ -999,34 +1005,154 @@ class BasicBeam(InstantEnergyBeam):
 class ProjectileEnergyWeapon(EnergyWeapon):
   """
   Base class for C{L{EnergyWeapon}}s that shoot energy in the form of
-  projectiles moving with finite speed.
+  projectiles moving with finite speed. 
+
+  @type targeted: bool
+  @ivar targeted: Indicates whether weapon automatically finds target
+  and shoots projectiles towards it or not.
+
+  @type target: 
+  @ivar target: Reference to selected target or None.
+
+  @type targeting_angle: float
+  @ivar targeting_angle: Half of the shooting arc in radians.
   """
+
+  targeted = False
+  target = None
+  targeting_angle = 60
 
   def __init__(self, owner):
     EnergyWeapon.__init__(self, owner)
-    self._setattrs('projectile_cls_name', self.cfg)
+    self._setattrs('projectile_cls_name, targeted', self.cfg)
+
+    self._find_target()
+
+  @staticmethod
+  def _compare_target_pos(a, b):
+    if a['dist'] < b['dist']:
+      return -1
+    elif a['dist'] == b['dist']:
+      return 0
+    else:
+      return 1
+
+  def _find_target(self):
+    """
+    Find random object within the shooting arc and target it (if weapon is not
+    targeted do nothing).
+    """
+
+    if self.targeted:
+      if isinstance(self.owner, EnemyShip):
+        targets = GroupManager().get('ship').sprites()
+      else:
+        targets = GroupManager().get('enemies').sprites()
+
+      for t in targets:
+        if self._target_dir(t) is None:
+          targets.remove(t)
+
+      target = self._closest_target(targets)
+      if target is not None:
+        self.target = target
+
+    return self.target
+
+  def _closest_target(self, targets):
+    """
+    Return object selected from C{targets} closest to C{owner}. Return 
+    C{None} if C{targets} is empty.
+    """
+
+    if len(targets) == 0:
+      return None
+
+    dists = []
+    for t in targets:
+      d = { 'dist' : math.fabs(self.owner.center[0] - t.center[0]) + \
+                      math.fabs(self.owner.center[1] - t.center[1]),
+            'index': targets.index(t) }
+
+      dists.append(d)
+
+    dists.sort(cmp = self._compare_target_pos)
+    return targets[dists[0]['index']]
+
+  def _target_dir(self, target):
+    """
+    Return target direction measured in degrees. If weapon is not targeted
+    it shoots straight on. If shot cannot be performed for some reason 
+    (target not within shooting arc or no target at all) return None.
+
+    @type  target:
+    @param target:
+    """
+
+    if not self.targeted:
+      return 0 if isinstance(self.owner, EnemyShip) else -180
+
+    if target is None:
+      return None
+
+    dx = self.owner.center[0] - target.center[0]
+    dy = self.owner.center[1] - target.center[1]
+
+    if dy == 0:
+      return 0 if isinstance(self.owner, EnemyShip) else -180
+
+    if isinstance(self.owner, EnemyShip):
+      if dy > 0:
+        return None
+    else:
+      if dy < 0:
+        return None
+
+    tg = dx / float(dy)
+    if math.fabs(tg) > math.radians(self.targeting_angle):
+      return None
+
+    dir = math.degrees(math.atan(tg))
+    if isinstance(self.owner, PlayerShip):
+      dir += 180
+
+    return dir
 
   def shoot(self, pos):
     """
     Perform shot if the weapon has cooled and there is enough energy. Create
     projectile instance.
+
+    In case of targeted weapons projectile is shot towards the target if
+    target is still in shooting arc. New target is chosen if current
+    target is no longer in shooting arc (or there is no current target).
     """
-  
+ 
     if self.remaining_cooldown > 0:
       return
 
     if self.current < self.cost:
       return
 
+    if self.target is not None and self.target.destroyed:
+      self.target = None
+      return
+
+    dir = self._target_dir(self.target)
+    if dir is None:
+      self._find_target()
+      dir = self._target_dir(self.target)
+
+    if dir is None:
+      return
+
     self.remaining_cooldown = self.cooldown
     self.current -= self.cost
 
     if isinstance(self.owner, EnemyShip):
-      dir = 0
       g_proj = GroupManager().get('enemy_projectiles')
       g_coll = GroupManager().get('ship')
     else:
-      dir = -180
       g_proj = GroupManager().get('player_projectiles')
       g_coll = GroupManager().get('enemies')
 
@@ -1041,6 +1167,15 @@ class ProjectileEnergyWeapon(EnergyWeapon):
 class BasicProjectileEnergyWeapon(ProjectileEnergyWeapon):
   """
   The least powerful, yet energy effective projectile energy weapon.
+  """
+
+  def __init__(self, owner):
+    ProjectileEnergyWeapon.__init__(self, owner)
+
+
+class BasicTPEW(ProjectileEnergyWeapon):
+  """
+  Targeted version of C{L{BasicProjectileEnergyWeapon}}.
   """
 
   def __init__(self, owner):
