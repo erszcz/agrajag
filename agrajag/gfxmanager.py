@@ -18,11 +18,13 @@ class GfxManager:
       for res in gfx:
         f = os.path.join(gfx_dir, gfx[res]['file'])
 
-        GfxManager.content[class_name][res] = { \
-            'image' : pygame.image.load(f).convert_alpha(), \
-            'states' : gfx[res]['states'], \
-            'w' : gfx[res]['state_w'], \
-            'h' : gfx[res]['state_h'] \
+        size = gfx[res]['state_w'], gfx[res]['state_h']
+        GfxManager.content[class_name][res] = {
+            'image' : pygame.image.load(f).convert_alpha(),
+            'states' : gfx[res]['states'],
+            'w' : size[0],
+            'h' : size[1],
+            'size' : size 
           }
 
   def get(self, class_name = None):
