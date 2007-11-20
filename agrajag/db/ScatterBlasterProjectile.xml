@@ -1,0 +1,19 @@
+<content>
+  <gfx>
+    <resource name='energy' file='energy.png' state_w='10' state_h='10'>
+      <state name='frame0' x_off='0'    y_off='0' />
+      <state name='frame1' x_off='10'   y_off='0' />
+      <state name='frame2' x_off='20'   y_off='0' />
+      <state name='frame3' x_off='30'   y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='max_speed'    type='int' value='120' />
+    <prop name='damage'       type='int' value='50' />
+    <prop name='cooldown'     type='int' value='60' />
+    <prop name='lifetime'     type='float' value='1' />
+    <prop name='child_cnt'    type='int' value='5' />
+    <prop name='child_cls_name'          value='EnergyProjectile' />
+    <prop name='explosion_cls_name'      value='EnergyProjectileExplosion' />
+  </properties>
+</content>

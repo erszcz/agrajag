@@ -65,6 +65,12 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
 
     self.mover = None
 
+  def set_mover(self, mover):
+    """
+    """
+
+    self.mover = mover
+
   def _check_cfg(self, required_props):
     """
     Auxiliary function that may be used to check if object's C{cfg} attribute
@@ -380,9 +386,6 @@ class PlayerShip(Ship):
     self._initialize_position(pos, ('centerx', 'top'), size)
 
     self.exhaust(False) 
-    self.weapons = [Bullet, EnergyProjectile, Shell]
-    self._current_weapon = 0 
-    self.cooldown = 0
 
   def exhaust(self, on):
     """
@@ -569,8 +572,8 @@ class AdvancedPlayerShip(PlayerShip):
 
     self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
 
-    self.weapons = [BasicBeamer(self), BasicTPEW(self),
-        BasicPAW(self)]
+    self.weapons = [BasicProjectileEnergyWeapon(self), BasicBeamer(self),
+        BasicTPEW(self), BasicPAW(self)]
     self._current_weapon = 0
     self.cooldown = None
 
@@ -807,9 +810,7 @@ class ProjectileAmmoWeapon(AmmoWeapon):
       g_coll = GroupManager().get('enemies')
 
     projectile_cls = eval(self.projectile_cls_name)
-    projectile = projectile_cls(pos, dir, g_coll)
-
-    g_proj.add(projectile)
+    projectile = projectile_cls(pos, dir, g_coll, g_proj)
 
     AmmoWeapon.shoot(self)
 
@@ -1024,7 +1025,7 @@ class ProjectileEnergyWeapon(EnergyWeapon):
 
   def __init__(self, owner):
     EnergyWeapon.__init__(self, owner)
-    self._setattrs('projectile_cls_name, targeted', self.cfg)
+    self._setattrs('projectile_cls_name, targeted, targeting_angle', self.cfg)
 
     self._find_target()
 
@@ -1157,9 +1158,7 @@ class ProjectileEnergyWeapon(EnergyWeapon):
       g_coll = GroupManager().get('enemies')
 
     projectile_cls = eval(self.projectile_cls_name)
-    projectile = projectile_cls(pos, dir, g_coll)
-
-    g_proj.add(projectile)
+    projectile = projectile_cls(pos, dir, g_coll, g_proj)
 
     EnergyWeapon.shoot(self)
 
@@ -1577,20 +1576,20 @@ class EnergyProjectileExplosion(Explosion):
 class Projectile(AGSprite):
   damage = 0
   cooldown = 0
-  offset = 0
 
   def __init__(self, pos, dir, g_coll, *groups):
     """
-    Create projectile moving in direction C{dir} and add it to group C{g_coll}.
+    Create projectile moving in direction C{dir} colliding with
+    objects from group C{g_coll}. Add created projectile to C{groups}.
 
     @type  dir: float
     @param dir: Approximate direction in which the projectile is shoot. This
-    may be used but also may be ignored by projectile's mover.
+    should be used but may be ignored by projectile's mover.
     """
 
     AGSprite.__init__(self, pos, *groups)
  
-    self._setattrs('damage, cooldown', self.cfg)
+    self._setattrs('damage, cooldown, explosion_cls_name', self.cfg)
 
     self.g_coll = g_coll
     self.g_expl = GroupManager().get('explosions')
@@ -1606,6 +1605,9 @@ class Projectile(AGSprite):
       del self
 
   def explode(self):
+    explosion_cls = eval(self.explosion_cls_name)
+
+    self.g_expl.add( explosion_cls(self.pos) )
     self.kill()
     del self
 
@@ -1615,12 +1617,98 @@ class Projectile(AGSprite):
       hit[0].damage(self.damage, self.max_speed)
       self.explode()
 
-class Bullet(Projectile):
-  offset = 6
+
+class ScatteringProjectile(Projectile):
+  """
+  At the moment of explosion or after a C{lifetime} seconds   
+  C{ScatteringProjectile}s explode and spawn C{child_cnt} of C{child_cls_name}
+  projectiles moving in random directions.
+
+  @type time: float
+  @ivar time: Time since spawning projectile expressed in seconds.
+
+  @type lifetime: float
+  @ivar lifetime: Time before projectile's self-destruction expressed
+  in seconds.
+
+  @type child_cnt: int
+  @ivar child_cnt: Number of child projectiles.
+
+  @type child_cls_name: string
+  @ivar child_cls_name: Classname of child projectile.
+
+  @type scatter_type: string
+  @ivar scatter_type: Determines direction of child projectiles ('forward', 
+  'random', 'regular' - defaults to 'forward')
+  """
+
+  time = 0.
+
+  lifetime = 2
+  child_cnt = 2
+  child_cls_name = None
+
+  scatter_type = 'forward'
 
   def __init__(self, pos, dir, g_coll, *groups):
     Projectile.__init__(self, pos, dir, g_coll, *groups)
+
+    self._setattrs('lifetime, child_cnt, child_cls_name', self.cfg)
+    if self.child_cls_name is None:
+      raise ValueError("Unknown child class name")
+
+  def _spawn_children(self):
+    """
+    Spawn children and add them to proper groups.
+    """
+
+    child_cls = eval(self.child_cls_name)
+    for i in xrange(self.child_cnt):
+      if self.scatter_type == 'random':
+        dir = 360 * random.random()
+      elif self.scatter_type == 'regular':
+        dir = self.mover.get_dir() + 360. * i / self.child_cnt
+      else:
+        dir = self.mover.get_dir() + 90. * i / (self.child_cnt - 1) - 45
+
+      child = child_cls(self.pos, dir, self.g_coll, self.groups())
+
+  def update(self):
+    self.time += Clock().frame_span() / 1000.
+    if self.time >= self.lifetime:
+      self.explode()
+      return
+
+    Projectile.update(self)
+
+  def explode(self):
+    """
+    Spawn children and explode.
+    """
     
+    self._spawn_children()
+
+    Projectile.explode(self)
+
+
+class SeekingProjectile(Projectile):
+  """
+  Base class for projectiles following chosen target.
+  """
+
+  def __init__(self, pos, dir, g_coll, *groups):
+    Projectile.__init__(self, pos, dir, g_coll, *groups)
+
+    self._setattrs('ang_speed', self.cfg)
+
+    mover_params = {'dir' : dir, 'ang_speed' : self.ang_speed}
+    self.mover = mover.SeekingMover(pos, self.max_speed, mover_params)
+
+
+class Bullet(Projectile):
+  def __init__(self, pos, dir, g_coll, *groups):
+    Projectile.__init__(self, pos, dir, g_coll, *groups)
+
     size = 1, 2
 
     self.image = pygame.Surface(size)
@@ -1629,56 +1717,6 @@ class Bullet(Projectile):
 
     self._initialize_position(pos, 'center', size)
 
-  def explode(self):
-    self.g_expl.add( BulletExplosion(self.pos) )
-
-    Projectile.explode(self)
-
-class Shell(Projectile):
-  offset = 6
-
-  @staticmethod
-  def comp(x, y):
-    if   x.rect.bottom > y.rect.bottom:
-      return -1
-    elif x.rect.bottom == y.rect.bottom:
-      return 0
-    else:
-      return 1
-
-  def __init__(self, pos, dir, g_coll, *groups):
-    Projectile.__init__(self, pos, dir, g_coll, *groups)
-    
-    self.image = pygame.Surface((1, 1))
-    self.image.fill((110, 110, 110))
-    self.image.set_colorkey((110, 110, 110))
-
-    self._initialize_position((pos[0], 0), ('left', 'top'), (1, pos[1]))
-
-    self.ship_top = pos[1]
-
-  def update(self):
-    self._detect_collisions()
-
-  def _detect_collisions(self):
-    l_gc = self.g_coll.sprites()
-    l_gc.sort(cmp = Shell.comp)
-    ind = self.rect.collidelist(l_gc)
-    if ind != -1:
-      if l_gc[ind].rect.bottom < self.ship_top:
-        self.explode((self.rect.centerx, l_gc[ind].rect.bottom))
-        l_gc[ind].damage(self.damage)
-      else:
-        l_gc = l_gc[(ind + 1):]
-        ind = self.rect.collidelist(l_gc)
-        if ind != -1:
-          self.explode((self.rect.centerx, l_gc[ind].rect.bottom))
-          l_gc[ind].damage(self.damage)
-
-  def explode(self, pos):
-    self.g_expl.add( ShellExplosion(pos) )
-
-    Projectile.explode(self)
 
 class EnergyProjectile(Projectile):
   def __init__(self, pos, dir, g_coll, *groups):
@@ -1690,7 +1728,7 @@ class EnergyProjectile(Projectile):
         self.gfx['energy']['image'])
     self._blit_state('energy', 'frame2')
 
-    self._initialize_position(pos, ('centerx', 'top'), size)
+    self._initialize_position(pos, 'center', size)
 
     #self.period = 400
     self.period = (100, 200, 300, 400, 800)[random.randint(0, 4)]
@@ -1707,14 +1745,43 @@ class EnergyProjectile(Projectile):
         self.image.fill((0, 0, 0, 0))
         self._blit_state('energy', 'frame' + str(frame))
         break
+
     self.time += self.clock.frame_span()
     
     Projectile.update(self)
 
-  def explode(self):
-    self.g_expl.add( EnergyProjectileExplosion(self.rect.center) )
 
-    Projectile.explode(self)
+class ScatterBlasterProjectile(ScatteringProjectile):
+  """
+  Projectile intended to be shot by C{L{ScatterBlaster}}.
+  """
+
+  def __init__(self, pos, dir, g_coll, *groups):
+    ScatteringProjectile.__init__(self, pos, dir, g_coll, *groups)
+
+    size = self.gfx['energy']['size']
+
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['energy']['image'])
+    self._blit_state('energy', 'frame2')
+
+    self._initialize_position(pos, 'center', size)
+
+
+class SeekingEnergyProjectile(SeekingProjectile):
+  """
+  """
+
+  def __init__(self, pos, dir, g_coll, *groups):
+    SeekingProjectile.__init__(self, pos, dir, g_coll, *groups)
+
+    size = self.gfx['energy']['size']
+
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['energy']['image'])
+    self._blit_state('energy', 'frame2')
+
+    self._initialize_position(pos, 'center', size)
 
 
 class Bonus(AGSprite):

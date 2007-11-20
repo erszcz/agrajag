@@ -9,8 +9,9 @@
   </gfx>
   <properties>
     <prop name='max_speed'    type='int' value='320' />
-    <prop name='damage'       type='int' value='10' />
-    <prop name='cooldown'     type='int' value='20' />
+    <prop name='ang_speed'    type='int' value='120' />
+    <prop name='damage'       type='int' value='0' />
+    <prop name='cooldown'     type='int' value='30' />
     <prop name='explosion_cls_name'     value='EnergyProjectileExplosion' />
   </properties>
 </content>
