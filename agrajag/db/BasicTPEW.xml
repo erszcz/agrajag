@@ -8,5 +8,6 @@
     <prop name='cost' value='5' type='int' />
     <prop name='cooldown' value='8' type='int' />
     <prop name='targeted' value='1' type='bool' />
+    <prop name='targeting_angle' value='120' type='float' />
   </properties>
 </content>
