@@ -22,7 +22,7 @@ from base import AGObject
 from clock import Clock
 from groupmanager import GroupManager
 
-from functions import deg2rad, rad2deg
+from functions import sgn, deg2rad, rad2deg, normalize_rad
 
 class Mover(AGObject):
   """
@@ -292,6 +292,13 @@ class LinearMover(Mover):
     self._setattrs(('dir'), params)
     self.dir = deg2rad(self.dir)
 
+  def get_dir(self):
+    """
+    Return current direction in degrees.
+    """
+
+    return rad2deg(self.dir)
+
   def update(self):
     try:
       delta_pos = self.clock.frame_span() * self.speed / 1000.
@@ -312,6 +319,9 @@ class LinearPlayerTargetingMover(Mover):
   @type vertical_div: float
   @ivar vertical_div: Angular divergence from default (vertical) direction (in
   radians).
+
+  @type target:
+  @ivar target: Object in front of which owner is positioned.
   """
 
   vertical_div = math.pi / 3.
@@ -339,3 +349,89 @@ class LinearPlayerTargetingMover(Mover):
     self.pos[1] += math.fabs(delta_pos * math.cos(dir))
 
     return round(self.pos[0]), round(self.pos[1])
+
+class SeekingMover(Mover):
+  """
+  This mover makes its owner chase its C{target}. Trajectory of owner
+  is determined by its C{speed} and C{ang_speed}.
+
+  Interface for setting C{target} needs to be defined.
+
+  @type speed: float
+  @ivar speed: Object's maximal linear speed in pixels per second
+
+  @type ang_speed: float
+  @ivar ang_speed: Object's direction cannot be changed by more than
+  C{ang_speed} radians per second.
+
+  @type target:
+  @ivar target: Targeted object.
+
+  @type pos: sequence
+  @ivar pos: Current position.
+
+  @type dir: float
+  @ivar dir: Current direction in radians.
+  """
+
+  def __init__(self, pos, speed, params = {}):
+    """
+    """
+
+    Mover.__init__(self)
+    self._setattrs('dir, ang_speed', params)
+
+    self.pos = list(pos)
+    self.speed = speed
+    self.dir = deg2rad(self.dir)
+    self.ang_speed = deg2rad(self.ang_speed)
+
+    targets = GroupManager().get('enemies').sprites()
+    self.target = None if len(targets) == 0 else targets[0]
+
+  def _update_dir(self):
+    """
+    Update C{dir} based on C{target} position. Do nothing if there is no
+    C{target}.
+    """
+   
+    if self.target is None:
+      return
+
+    target_pos = self.target.center
+
+    dx = self.pos[0] - self.target.center[0]
+    dy = self.pos[1] - self.target.center[1]
+
+    try:
+      tan = dx / float(dy)
+    except ZeroDivisionError:
+      tan = 0
+
+    new_dir = normalize_rad(math.atan(tan) + 2 * math.pi)
+    if dy > 0:
+      new_dir = normalize_rad(new_dir + math.pi)
+ 
+    delta_dir = new_dir - self.dir
+    max_delta_dir = self.ang_speed * self.clock.frame_span() / 1000.
+    if math.fabs(delta_dir) > max_delta_dir:
+      if math.fabs(delta_dir) < math.pi:
+        delta_dir = sgn(delta_dir) * max_delta_dir
+      else:
+        delta_dir = -sgn(delta_dir) * max_delta_dir
+
+    self.dir = normalize_rad(self.dir + delta_dir)
+
+  def update(self):
+    if hasattr(self.target, 'destroyed') and self.target.destroyed:
+      self.target = None
+
+    delta_pos = self.clock.frame_span() * self.speed / 1000.
+    
+    self._update_dir()
+
+    self.pos[0] += delta_pos * math.sin(self.dir)
+    self.pos[1] += delta_pos * math.cos(self.dir)
+      
+    return round(self.pos[0]), round(self.pos[1])
+
