@@ -13,7 +13,7 @@
     <prop name='cooldown'     type='int' value='60' />
     <prop name='lifetime'     type='float' value='1' />
     <prop name='child_cnt'    type='int' value='5' />
-    <prop name='child_cls_name'          value='EnergyProjectile' />
+    <prop name='child_cls_name'          value='SeekingEnergyProjectile' />
     <prop name='explosion_cls_name'      value='EnergyProjectileExplosion' />
   </properties>
 </content>
