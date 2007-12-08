@@ -42,9 +42,15 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
   @type align: string or tuple
   @ivar align: Name or names of properties used to align object's C{rect}
   attribute.
+
+  @type _base_image: C{pygame.Surface}
+  @ivar _base_image: Image without animation effects.
   '''
 
   max_speed = 0
+
+  _base_image = None
+  _animations = []
 
   def __init__(self, pos, *groups):
     '''
@@ -114,6 +120,47 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
            self.gfx[image]['h']
     self.image.blit(self.gfx[image]['image'], pos, area)
 
+  def _init_animation(self, image, pos = (0, 0)):
+    """
+    """
+
+    size = self.gfx[image]['w'], self.gfx[image]['h']
+    anim = {
+        'period' : 1,
+        'time'   : 0,
+        'image'  : image,
+        'states' : self.gfx[image]['states'].keys(),
+        'size'   : size,
+        'pos'    : pos
+        }
+
+    self._animations.append(anim)
+
+  def _update_animations(self):
+    """
+    """
+    
+    if len(self._animations) == 0:
+      return
+
+    self.image.blit(self._base_image, (0, 0))
+
+    frame_span = self.clock.frame_span() / 1000.
+    for anim in self._animations:
+      if anim['time'] >= anim['period']:
+        self._animations.remove(anim)
+
+        rect = pygame.Rect(anim['pos'], anim['size'])
+        self.image.fill((0, 0, 0, 0), rect)
+        self.image.blit(self._base_image, anim['pos'], rect)
+        continue
+
+      i = int(math.floor(anim['time'] * len(anim['states']) / anim['period']))
+
+      self._blit_state(anim['image'], anim['states'][i], anim['pos'])
+      anim['time'] += frame_span
+
+
   def _initialize_position(self, pos, align, size):
     """
     Initializes object's C{rect} attribute which is required by pygame
@@ -166,6 +213,55 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
         setattr(self.rect, self.align, self.pos)
 
       self.center = self.rect.center
+
+  def distance(self, peer):
+    """
+    Return distance (city) between self and peer.
+
+    @type  peer: AGSprite
+    @param peer: 
+    """
+
+    return math.fabs(self.center[0] - peer.center[0]) + \
+        math.fabs(self.center[1] - peer.center[1])
+
+  @staticmethod
+  def _closest_compare_dists(a, b):
+    """
+    For dictionaries C{a} and {b} return -1, 0, 1 depending on 
+    values for C{dict} keys.
+
+    This method is used by C{AGSprite.closest(peers)}.
+    """
+
+    if a['dist'] < b['dist']:
+      return -1
+    elif a['dist'] == b['dist']:
+      return 0
+    else:
+      return 1
+
+  def closest(self, peers):
+    """
+    Return object selected from C{peers} closest to C{self}. Return 
+    C{None} if C{peers} is empty.
+
+    @type  peers: sequence of C{L{AGSprite}}s
+    @param peers:
+    """
+
+    if len(peers) == 0:
+      return None
+
+    dists = []
+    for p in peers:
+      d = { 'dist' : self.distance(p),
+            'index': peers.index(p) }
+
+      dists.append(d)
+
+    dists.sort(cmp = self._closest_compare_dists)
+    return peers[dists[0]['index']]
 
 
 class Destructible(AGSprite):
@@ -402,6 +498,8 @@ class PlayerShip(Ship):
                      (self.gfx['ship']['w']/2 - self.gfx['exhaust']['w']/2,
                       self.gfx['ship']['h']))
 
+    self._base_image = self.image.copy()
+
   # moving
   def fly_up(self, on):
     """
@@ -572,7 +670,7 @@ class AdvancedPlayerShip(PlayerShip):
 
     self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
 
-    self.weapons = [BasicProjectileEnergyWeapon(self), BasicBeamer(self),
+    self.weapons = [SeekingPEW(self), BasicBeamer(self),
         BasicTPEW(self), BasicPAW(self)]
     self._current_weapon = 0
     self.cooldown = None
@@ -621,6 +719,8 @@ class AdvancedPlayerShip(PlayerShip):
 
     if self._current_weapon is not None:
       self.weapons[self._current_weapon].shoot(self.pos)
+      self._init_animation('expl', (self.rect.centerx - self.rect.left,
+        self.rect.centery - self.rect.top))
 
   def activate_shield(self, on):
     if self.shield is not None:
@@ -646,6 +746,7 @@ class AdvancedPlayerShip(PlayerShip):
     Ship.update(self)
 
     self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
+    self._update_animations()
       
 
 class Weapon(AGObject):
@@ -1029,15 +1130,6 @@ class ProjectileEnergyWeapon(EnergyWeapon):
 
     self._find_target()
 
-  @staticmethod
-  def _compare_target_pos(a, b):
-    if a['dist'] < b['dist']:
-      return -1
-    elif a['dist'] == b['dist']:
-      return 0
-    else:
-      return 1
-
   def _find_target(self):
     """
     Find random object within the shooting arc and target it (if weapon is not
@@ -1054,31 +1146,11 @@ class ProjectileEnergyWeapon(EnergyWeapon):
         if self._target_dir(t) is None:
           targets.remove(t)
 
-      target = self._closest_target(targets)
+      target = self.owner.closest(targets)
       if target is not None:
         self.target = target
 
     return self.target
-
-  def _closest_target(self, targets):
-    """
-    Return object selected from C{targets} closest to C{owner}. Return 
-    C{None} if C{targets} is empty.
-    """
-
-    if len(targets) == 0:
-      return None
-
-    dists = []
-    for t in targets:
-      d = { 'dist' : math.fabs(self.owner.center[0] - t.center[0]) + \
-                      math.fabs(self.owner.center[1] - t.center[1]),
-            'index': targets.index(t) }
-
-      dists.append(d)
-
-    dists.sort(cmp = self._compare_target_pos)
-    return targets[dists[0]['index']]
 
   def _target_dir(self, target):
     """
@@ -1122,7 +1194,7 @@ class ProjectileEnergyWeapon(EnergyWeapon):
   def shoot(self, pos):
     """
     Perform shot if the weapon has cooled and there is enough energy. Create
-    projectile instance.
+    and return projectile instance.
 
     In case of targeted weapons projectile is shot towards the target if
     target is still in shooting arc. New target is chosen if current
@@ -1157,10 +1229,13 @@ class ProjectileEnergyWeapon(EnergyWeapon):
       g_proj = GroupManager().get('player_projectiles')
       g_coll = GroupManager().get('enemies')
 
+
+    EnergyWeapon.shoot(self)
+
     projectile_cls = eval(self.projectile_cls_name)
     projectile = projectile_cls(pos, dir, g_coll, g_proj)
 
-    EnergyWeapon.shoot(self)
+    return projectile
 
 
 class BasicProjectileEnergyWeapon(ProjectileEnergyWeapon):
@@ -1179,6 +1254,27 @@ class BasicTPEW(ProjectileEnergyWeapon):
 
   def __init__(self, owner):
     ProjectileEnergyWeapon.__init__(self, owner)
+
+
+class SeekingPEW(ProjectileEnergyWeapon):
+  """
+  Blaster shooting C{L{SeekingProjectile}}s (attempts to
+  shoot projectiles not derived from C{SeekingProjectile}
+  will fail).
+  """
+
+  def __init__(self, owner):
+    ProjectileEnergyWeapon.__init__(self, owner)
+
+  def shoot(self, pos):
+    p = ProjectileEnergyWeapon.shoot(self, pos)
+    if p is not None:
+      if isinstance(self.owner, EnemyShip):
+        targets = GroupManager().get('ship').sprites()
+      else:
+        targets = GroupManager().get('enemies').sprites()
+
+      p.set_target(self.owner.closest(targets))
 
 
 class Shield(AGSprite):
@@ -1703,6 +1799,13 @@ class SeekingProjectile(Projectile):
 
     mover_params = {'dir' : dir, 'ang_speed' : self.ang_speed}
     self.mover = mover.SeekingMover(pos, self.max_speed, mover_params)
+
+  def set_target(self, target):
+    """
+    Set target the projectile has to follow.
+    """
+
+    self.mover.set_target(target)
 
 
 class Bullet(Projectile):
