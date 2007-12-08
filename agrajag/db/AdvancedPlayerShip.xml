@@ -7,6 +7,15 @@
       <state name='on'  x_off='0'  y_off='0' />
       <state name='off' x_off='12' y_off='0' />
     </resource>
+    <resource name='expl' file='expl_big_blue.png' state_w='47' state_h='47'>
+      <state name='frame0' x_off='1'   y_off='1' />
+      <state name='frame1' x_off='49'  y_off='1' />
+      <state name='frame2' x_off='97'  y_off='1' />
+      <state name='frame3' x_off='145' y_off='1' />
+      <state name='frame4' x_off='1'   y_off='49' />
+      <state name='frame5' x_off='49'  y_off='49' />
+      <state name='frame6' x_off='97'  y_off='49' />
+    </resource>
   </gfx>
   <properties>
     <prop name='durability'       value='100' type='int' />

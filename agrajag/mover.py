@@ -386,8 +386,14 @@ class SeekingMover(Mover):
     self.dir = deg2rad(self.dir)
     self.ang_speed = deg2rad(self.ang_speed)
 
-    targets = GroupManager().get('enemies').sprites()
-    self.target = None if len(targets) == 0 else targets[0]
+    self.target = None
+
+  def set_target(self, target):
+    """
+    Set target to follow.
+    """
+
+    self.target = target
 
   def _update_dir(self):
     """
