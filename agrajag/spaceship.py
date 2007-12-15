@@ -880,11 +880,88 @@ class ProjectileAmmoWeapon(AmmoWeapon):
   """
   Base class for all ammo weapons that shoot projectiles moving with finite
   speed.
+
+  @type targeted: bool
+  @ivar targeted: Indicates whether weapon automatically finds target
+  and shoots projectiles towards it or not.
+
+  @type target: 
+  @ivar target: Reference to selected target or None.
+
+  @type targeting_angle: float
+  @ivar targeting_angle: Half of the shooting arc in radians.
   """
+
+  targeted = False
+  target = None
+  targeting_angle = 60
 
   def __init__(self, owner):
     AmmoWeapon.__init__(self, owner)
-    self._setattrs('projectile_cls_name', self.cfg)
+    self._setattrs('projectile_cls_name, targeted, targeting_angle', self.cfg)
+
+    self._find_target()
+
+  def _find_target(self):
+    """
+    Find random object within the shooting arc and target it (if weapon is not
+    targeted do nothing).
+    """
+
+    if self.targeted:
+      if isinstance(self.owner, EnemyShip):
+        targets = GroupManager().get('ship').sprites()
+      else:
+        targets = GroupManager().get('enemies').sprites()
+
+      for t in targets:
+        if self._target_dir(t) is None:
+          targets.remove(t)
+
+      target = self.owner.closest(targets)
+      if target is not None:
+        self.target = target
+
+    return self.target
+
+  def _target_dir(self, target):
+    """
+    Return target direction measured in degrees. If weapon is not targeted
+    it shoots straight on. If shot cannot be performed for some reason 
+    (target not within shooting arc or no target at all) return None.
+
+    @type  target:
+    @param target:
+    """
+
+    if not self.targeted:
+      return 0 if isinstance(self.owner, EnemyShip) else -180
+
+    if target is None:
+      return None
+
+    dx = self.owner.center[0] - target.center[0]
+    dy = self.owner.center[1] - target.center[1]
+
+    if dy == 0:
+      return 0 if isinstance(self.owner, EnemyShip) else -180
+
+    if isinstance(self.owner, EnemyShip):
+      if dy > 0:
+        return None
+    else:
+      if dy < 0:
+        return None
+
+    tg = dx / float(dy)
+    if math.fabs(tg) > math.radians(self.targeting_angle):
+      return None
+
+    dir = math.degrees(math.atan(tg))
+    if isinstance(self.owner, PlayerShip):
+      dir += 180
+
+    return dir
 
   def shoot(self, pos):
     """
@@ -898,15 +975,25 @@ class ProjectileAmmoWeapon(AmmoWeapon):
     if self.current < 1:
       return
 
+    if self.target is not None and self.target.destroyed:
+      self.target = None
+      return
+
+    dir = self._target_dir(self.target)
+    if dir is None:
+      self._find_target()
+      dir = self._target_dir(self.target)
+
+    if dir is None:
+      return
+
     self.remaining_cooldown = self.cooldown
     self.current -= 1
 
     if isinstance(self.owner, EnemyShip):
-      dir = 0
       g_proj = GroupManager().get('enemy_projectiles')
       g_coll = GroupManager().get('ship')
     else:
-      dir = -180
       g_proj = GroupManager().get('player_projectiles')
       g_coll = GroupManager().get('enemies')
 
@@ -921,7 +1008,9 @@ class BasicPAW(ProjectileAmmoWeapon):
   Basic type of C{L{ProjectileAmmoWeapon}}.
   """
 
-  pass
+  def __init__(self, owner):
+    ProjectileAmmoWeapon.__init__(self, owner)
+
 
 class InstantEnergyWeapon(EnergyWeapon):
   """
