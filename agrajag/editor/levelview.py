@@ -23,7 +23,9 @@ class LevelView(QGraphicsView):
     self.setMaximumSize(size)
 
   def snapshot(self):
-    image = QImage(self.scene.width(), self.scene.height(), QImage.Format_ARGB32)
+    image = QImage(self.scene.width(),
+                   self.scene.height(),
+                   QImage.Format_ARGB32)
     painter = QPainter(image)
     self.scene.render(painter)
 
@@ -37,13 +39,10 @@ class LevelView(QGraphicsView):
   def mousePressEvent(self, event):
     if event.button() == Qt.LeftButton \
     and self.items(event.pos()):
-      self.dragStartPos = event.pos()
-    elif event.button() == Qt.RightButton \
-    and self.items(event.pos()):
       self.dragStartPos = self.dragHotSpot = event.pos()
 
   def mouseMoveEvent(self, event):
-    if event.buttons() & (Qt.LeftButton | Qt.RightButton) \
+    if event.buttons() & Qt.LeftButton \
     and self.dragStartPos is not None \
     and event.pos() - self.dragStartPos >= QApplication.startDragDistance():
       item = self.itemAt(self.dragStartPos)
@@ -61,11 +60,8 @@ class LevelView(QGraphicsView):
       drag.setMimeData(mimeData)
       drag.setPixmap(pixmap)
       
-      hs = self.mapToScene(self.dragHotSpot) if self.dragHotSpot else None
-      self.dragHotSpot = item.mapFromScene(hs).toPoint() \
-                         if self.dragHotSpot \
-                         else QPoint(pixmap.width() / 2,
-                                     pixmap.height() / 2)
+      hs = self.mapToScene(self.dragHotSpot)
+      self.dragHotSpot = item.mapFromScene(hs).toPoint()
       drag.setHotSpot(self.dragHotSpot)
 
       self.scene.removeItem(item)
