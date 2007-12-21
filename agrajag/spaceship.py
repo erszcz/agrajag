@@ -5,7 +5,7 @@ import pygame, math, random
 import sys
 
 import mover
-from base import AGObject
+from base import AGObject, AGRect, Overlay
 from dbmanager import DBManager
 from gfxmanager import GfxManager
 from groupmanager import GroupManager
@@ -34,22 +34,24 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
   pixels per second.
 
   @type pos: sequence
-  @ivar pos: Current position of arbitrary object's point.
+  @ivar pos: Current position of arbitrary object's point in global
+  coordinate system.
 
   @type center: sequence
-  @ivar center: Current position of object's center.
+  @ivar center: Current position of object's center in global coordinate
+  system.
 
   @type align: string or tuple
   @ivar align: Name or names of properties used to align object's C{rect}
   attribute.
 
-  @type _base_image: C{pygame.Surface}
-  @ivar _base_image: Image without animation effects.
+  @type _overlay: C{L{Overlay}}
+  @ivar _overlay: Object used to display auxiliary animations.
   '''
 
   max_speed = 0
 
-  _base_image = None
+  _overlay = None
   _animations = []
 
   def __init__(self, pos, *groups):
@@ -70,6 +72,11 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
     self._initialize_position(pos, 'center', (0, 0))
 
     self.mover = None
+    self._overlay = Overlay()
+
+    g_draw = GroupManager().get('draw')
+    g_draw.add(self)
+    g_draw.add(self._overlay)
 
   def set_mover(self, mover):
     """
@@ -98,6 +105,23 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
       if not self.gfx[r]:
         raise Exception("Required gfx resource '%s' not defined" % g);
 
+  def _state_area(self, image, state):
+    """
+    Return C{pygame.Rect} containing information on position and area
+    of graphic resource representing selected state.
+
+    @type  image: string
+    @param image: Name of graphic resource.
+
+    @type  state: string
+    @param state: Name of state.
+    """
+
+    return self.gfx[image]['states'][state]['x_off'], \
+           self.gfx[image]['states'][state]['y_off'], \
+           self.gfx[image]['w'], \
+           self.gfx[image]['h']
+
   def _blit_state(self, image, state, pos = (0, 0)):
     '''
     Blit selected image state aquired from GfxManager on image
@@ -114,24 +138,38 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
     object's C{image} coordinate space.
     '''
 
-    area = self.gfx[image]['states'][state]['x_off'], \
-           self.gfx[image]['states'][state]['y_off'], \
-           self.gfx[image]['w'], \
-           self.gfx[image]['h']
+    area = self._state_area(image, state)
     self.image.blit(self.gfx[image]['image'], pos, area)
 
-  def _init_animation(self, image, pos = (0, 0)):
+  def _init_animation(self, res, pos = (0, 0), align = 'center'):
     """
+    Initialize animation of resource C{res} on object's overlay.
+    If object's overlay is not initialized, do it.
+
+    @type  res: string
+    @param res: Name of graphic resource contained by C{self.gfx}
+
+    @type  pos: sequence
+    @param pos: Position of a point relative to which image drawn is aligned.
+    Point cooridinates itself must be relative to C{self.center}.
+
+    @type  align: string or sequence
+    @param align: String or sequence used to align drawn images relative
+    to C{pos} (as when aligning C{L{AGRect}}.
     """
 
-    size = self.gfx[image]['w'], self.gfx[image]['h']
+    if not self._overlay.has_image():
+      self._overlay.init_image(self.image)
+
+    size = self.gfx[res]['w'], self.gfx[res]['h']
     anim = {
-        'period' : 1,
-        'time'   : 0,
-        'image'  : image,
-        'states' : self.gfx[image]['states'].keys(),
-        'size'   : size,
-        'pos'    : pos
+        'period'    : 0.45,
+        'time'      : 0,
+        'resource'  : res,
+        'states'    : self.gfx[res]['states'].keys(),
+        'size'      : size,
+        'pos'       : pos,
+        'align'     : align
         }
 
     self._animations.append(anim)
@@ -143,21 +181,24 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
     if len(self._animations) == 0:
       return
 
-    self.image.blit(self._base_image, (0, 0))
+    self._overlay.align(self.center)
 
     frame_span = self.clock.frame_span() / 1000.
     for anim in self._animations:
+      dest = AGRect((0, 0), anim['size'])
+      dest.align(anim['pos'], anim['align'])
+
       if anim['time'] >= anim['period']:
         self._animations.remove(anim)
-
-        rect = pygame.Rect(anim['pos'], anim['size'])
-        self.image.fill((0, 0, 0, 0), rect)
-        self.image.blit(self._base_image, anim['pos'], rect)
+        self._overlay.clear(dest)
         continue
 
       i = int(math.floor(anim['time'] * len(anim['states']) / anim['period']))
 
-      self._blit_state(anim['image'], anim['states'][i], anim['pos'])
+      res = anim['resource']
+      area = self._state_area(res, anim['states'][i])
+
+      self._overlay.blit(self.gfx[res]['image'], dest, area)
       anim['time'] += frame_span
 
 
@@ -179,21 +220,9 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
 
     self.pos = pos
     self.align = align
-    self.rect = pygame.Rect((0, 0), size)
+    self.rect = AGRect((0, 0), size)
 
-    try:
-      if type(align) is tuple or type(align) is list:
-        setattr(self.rect, align[0], pos[0])
-        setattr(self.rect, align[1], pos[1])
-      elif type(align) is str:
-        setattr(self.rect, align, pos)
-      else:
-        raise ValueError("Invalid align value")
-    except Exception:
-      print align
-      print size
-      raise
-
+    self.rect.align(pos, align)
     self.center = self.rect.center
   
   def _update_position(self):
@@ -205,13 +234,7 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
 
     if self.mover is not None:
       self.pos = self.mover.update()
-
-      if type(self.align) is tuple:
-        setattr(self.rect, self.align[0], self.pos[0])
-        setattr(self.rect, self.align[1], self.pos[1])
-      elif type(self.align) is str:
-        setattr(self.rect, self.align, self.pos)
-
+      self.rect.align(self.pos, self.align)
       self.center = self.rect.center
 
   def distance(self, peer):
@@ -498,8 +521,6 @@ class PlayerShip(Ship):
                      (self.gfx['ship']['w']/2 - self.gfx['exhaust']['w']/2,
                       self.gfx['ship']['h']))
 
-    self._base_image = self.image.copy()
-
   # moving
   def fly_up(self, on):
     """
@@ -719,8 +740,6 @@ class AdvancedPlayerShip(PlayerShip):
 
     if self._current_weapon is not None:
       self.weapons[self._current_weapon].shoot(self.pos)
-      self._init_animation('expl', (self.rect.centerx - self.rect.left,
-        self.rect.centery - self.rect.top))
 
   def activate_shield(self, on):
     if self.shield is not None:

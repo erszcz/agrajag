@@ -3,6 +3,7 @@
 
 import os, sys, random
 import pygame
+from profilehooks import profile
 
 from dbmanager import DBManager
 from gfxmanager import GfxManager
@@ -25,7 +26,7 @@ def run():
   random.seed()
   
   display_size = 800, 600
-  viewport_size = display_size[0], 500
+  viewport_size = display_size[0], 600
   black = 0, 0, 0
   red = 255, 70, 70
   green = 70, 255, 70
@@ -51,6 +52,7 @@ def run():
 
   groupmanager = GroupManager()
 
+  g_draw = groupmanager.add('draw', 'OrderedUpdates')
   g_ship = groupmanager.add('ship')
   g_enemies = groupmanager.add('enemies')
   g_enemy_projectiles = groupmanager.add('enemy_projectiles')
@@ -141,41 +143,15 @@ def run():
       #  ship().damage(1)
       #
 
-      g_enemies.clear(screen, clear_bg)
-      g_ship.clear(screen, clear_bg)
-      g_beams.clear(screen, clear_bg)
-      g_enemy_projectiles.clear(screen, clear_bg)
-      g_player_projectiles.clear(screen, clear_bg)
-      g_bonuses.clear(screen, clear_bg)
-      g_shields.clear(screen, clear_bg)
-      g_explosions.clear(screen, clear_bg)
+      g_draw.clear(screen, clear_bg)
       hud.clear(screen, clear_bg)
 
-      g_enemies.update()
-      g_beams.update()
-      g_explosions.update()
-      g_ship.update()
-      g_enemy_projectiles.update()
-      g_bonuses.update()
-      g_player_projectiles.update()
-      g_shields.update()
+      g_draw.update()
       hud.update()
 
-      g_enemies.draw(screen)
-      g_ship.draw(screen)
-      g_beams.draw(screen)
-      g_enemy_projectiles.draw(screen)
-      g_player_projectiles.draw(screen)
-      g_bonuses.draw(screen)
-      g_shields.draw(screen)
-      g_explosions.draw(screen)
+      g_draw.draw(screen)
       hud.draw(screen)
 
-      screen.fill(red,
-                  pygame.Rect((0, viewport_size[1]),
-                              (display_size[0],
-                               display_size[1] - viewport_size[1]))
-                 )
       pygame.display.flip()
       #print g_ship.sprites()
       #if ship():
