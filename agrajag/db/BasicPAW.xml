@@ -4,6 +4,6 @@
   <properties>
     <prop name='projectile_cls_name' value='Bullet' />
     <prop name='maximum' value='300' type='int' />
-    <prop name='cooldown' value='2' type='int' />
+    <prop name='cooldown' value='0.1' type='float' />
   </properties>
 </content>

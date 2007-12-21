@@ -6,7 +6,7 @@
     <prop name='maximum' value='500' type='int' />
     <prop name='recharge_rate' value='9' type='int' />
     <prop name='cost' value='5' type='int' />
-    <prop name='cooldown' value='8' type='int' />
+    <prop name='cooldown' value='1' type='float' />
     <prop name='targeted' value='0' type='bool' />
     <prop name='targeting_angle' value='120' type='float' />
   </properties>

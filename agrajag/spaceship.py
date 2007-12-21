@@ -694,7 +694,6 @@ class AdvancedPlayerShip(PlayerShip):
     self.weapons = [SeekingPEW(self), BasicBeamer(self),
         BasicTPEW(self), BasicPAW(self)]
     self._current_weapon = 0
-    self.cooldown = None
 
     self.shield = BasicAutoShield(self)
     self.armour = BasicArmour()
@@ -775,12 +774,12 @@ class Weapon(AGObject):
   @type cfg: dict
   @ivar cfg: Class configuration provided by C{L{DBManager}}.
 
-  @type cooldown: integer
-  @ivar cooldown: Minimal number of iterations between subsequent shots.
+  @type cooldown: float
+  @ivar cooldown: Time between subsequent shots in seconds.
 
-  @type remaining_cooldown: integer
-  @ivar remaining_cooldown: Number of iterations that need to pass before
-  weapon may shoot again.
+  @type remaining_cooldown: float
+  @ivar remaining_cooldown: Time that need to pass before
+  weapon may shoot again (in seconds).
 
   @type last_shot_time: float
   @ivar last_shot_time: Previous shot time.
@@ -804,7 +803,7 @@ class Weapon(AGObject):
 
   def update(self):
     if self.remaining_cooldown > 0:
-      self.remaining_cooldown -= 1
+      self.remaining_cooldown -= Clock().frame_span() / 1000.
 
 
 class EnergyWeapon(Weapon):
@@ -1779,7 +1778,6 @@ class EnergyProjectileExplosion(Explosion):
 
 class Projectile(AGSprite):
   damage = 0
-  cooldown = 0
 
   def __init__(self, pos, dir, g_coll, *groups):
     """
@@ -1793,7 +1791,7 @@ class Projectile(AGSprite):
 
     AGSprite.__init__(self, pos, *groups)
  
-    self._setattrs('damage, cooldown, explosion_cls_name', self.cfg)
+    self._setattrs('damage, explosion_cls_name', self.cfg)
 
     self.g_coll = g_coll
     self.g_expl = GroupManager().get('explosions')
