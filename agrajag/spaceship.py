@@ -802,9 +802,21 @@ class Weapon(AGObject):
     self.weapon_state_updated = Signal()
 
   def update(self):
+    """
+    Update weapon state (cooldown).
+    """
+
     if self.remaining_cooldown > 0:
       self.remaining_cooldown -= Clock().frame_span() / 1000.
 
+  def shoot(self):
+    """
+    Try to perform shot. Return projectile / beam / whatever if
+    successfull, C{False} or C{None} otherwise.
+    """
+
+    pass
+    
 
 class EnergyWeapon(Weapon):
   """
@@ -1005,6 +1017,8 @@ class ProjectileAmmoWeapon(AmmoWeapon):
     if dir is None:
       return
 
+    AmmoWeapon.shoot(self)
+
     self.remaining_cooldown = self.cooldown
     self.current -= 1
 
@@ -1016,9 +1030,7 @@ class ProjectileAmmoWeapon(AmmoWeapon):
       g_coll = GroupManager().get('enemies')
 
     projectile_cls = eval(self.projectile_cls_name)
-    projectile = projectile_cls(pos, dir, g_coll, g_proj)
-
-    AmmoWeapon.shoot(self)
+    return projectile_cls(pos, dir, g_coll, g_proj)
 
 
 class BasicPAW(ProjectileAmmoWeapon):
@@ -1125,6 +1137,8 @@ class InstantEnergyWeapon(EnergyWeapon):
 
       return 
 
+    EnergyWeapon.shoot(self)
+
     if isinstance(self.owner, EnemyShip):
       t_pos = pos[0], target.rect.top
       beam.set_position(t_pos, pos)
@@ -1138,8 +1152,7 @@ class InstantEnergyWeapon(EnergyWeapon):
     GroupManager().get('explosions').add(expl)
 
     target.damage(self.damage)
-
-    EnergyWeapon.shoot(self)
+    return beam
 
 
 class BasicBeamer(InstantEnergyWeapon):
