@@ -7,7 +7,7 @@ import pygame
 class GroupManager:
   content = {}
 
-  def add(self, name):
+  def add(self, name, cls_name = 'Group'):
     """
     Create new C{pygame.sprite.Group} and store reference pointing to it.
     Return that reference.
@@ -16,7 +16,9 @@ class GroupManager:
     @param name: Name of the group to be created.
     """
 
-    GroupManager.content[name] = pygame.sprite.Group()
+    cls = eval('pygame.sprite.' + cls_name)
+
+    GroupManager.content[name] = cls()
     return GroupManager.content[name]
 
   def get(self, name):
