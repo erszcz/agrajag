@@ -8,6 +8,6 @@
     <prop name='maximum' value='500' type='int' />
     <prop name='recharge_rate' value='9' type='int' />
     <prop name='cost' value='20' type='int' />
-    <prop name='cooldown' value='8' type='int' />
+    <prop name='cooldown' value='0.5' type='float' />
   </properties>
 </content>
