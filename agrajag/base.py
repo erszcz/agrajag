@@ -101,6 +101,8 @@ class Overlay(pygame.sprite.Sprite):
     if rect is None:
       rect = AGRect((0, 0), self.image.get_size())
     else:
+      rect = AGRect(rect)
+      
       rect[0] += self.rect.width / 2.
       rect[1] += self.rect.height / 2.
 
