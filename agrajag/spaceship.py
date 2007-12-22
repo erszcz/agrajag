@@ -47,6 +47,9 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
 
   @type _overlay: C{L{Overlay}}
   @ivar _overlay: Object used to display auxiliary animations.
+
+  @type _animations: sequence
+  @ivar _animations: Parameters of animations in progress.
   '''
 
   max_speed = 0
@@ -141,13 +144,16 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
     area = self._state_area(image, state)
     self.image.blit(self.gfx[image]['image'], pos, area)
 
-  def _init_animation(self, res, pos = (0, 0), align = 'center'):
+  def _init_animation(self, res, period, pos = (0, 0), align = 'center'):
     """
     Initialize animation of resource C{res} on object's overlay.
     If object's overlay is not initialized, do it.
 
     @type  res: string
     @param res: Name of graphic resource contained by C{self.gfx}
+
+    @type  period: float
+    @param period: Animation time in seconds.
 
     @type  pos: sequence
     @param pos: Position of a point relative to which image drawn is aligned.
@@ -163,10 +169,11 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
 
     size = self.gfx[res]['w'], self.gfx[res]['h']
     anim = {
-        'period'    : 0.45,
+        'period'    : period,
         'time'      : 0,
         'resource'  : res,
         'states'    : self.gfx[res]['states'].keys(),
+        'previous_state' : None,
         'size'      : size,
         'pos'       : pos,
         'align'     : align
@@ -194,12 +201,18 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
         continue
 
       i = int(math.floor(anim['time'] * len(anim['states']) / anim['period']))
+      anim['time'] += frame_span
+
+      if anim['previous_state'] == i:
+        continue
+
+      anim['previous_state'] = i
 
       res = anim['resource']
       area = self._state_area(res, anim['states'][i])
 
+      self._overlay.clear(dest)
       self._overlay.blit(self.gfx[res]['image'], dest, area)
-      anim['time'] += frame_span
 
 
   def _initialize_position(self, pos, align, size):
@@ -688,6 +701,7 @@ class AdvancedPlayerShip(PlayerShip):
     """
 
     PlayerShip.__init__(self, pos, *groups)
+    self._setattrs('shot_anim_period', self.cfg)
 
     self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
 
@@ -738,7 +752,9 @@ class AdvancedPlayerShip(PlayerShip):
     """
 
     if self._current_weapon is not None:
-      self.weapons[self._current_weapon].shoot(self.pos)
+      if self.weapons[self._current_weapon].shoot(self.pos):
+        self._init_animation('shot', self.shot_anim_period,
+            (0, -self.gfx['ship']['h'] / 2))
 
   def activate_shield(self, on):
     if self.shield is not None:
@@ -812,7 +828,7 @@ class Weapon(AGObject):
   def shoot(self):
     """
     Try to perform shot. Return projectile / beam / whatever if
-    successfull, C{False} or C{None} otherwise.
+    successfull, C{False} or C{None} otherwise. 
     """
 
     pass
@@ -1135,7 +1151,7 @@ class InstantEnergyWeapon(EnergyWeapon):
       else:
         beam.set_position(pos, (pos[0], 0))
 
-      return 
+      return beam
 
     EnergyWeapon.shoot(self)
 
@@ -1339,6 +1355,8 @@ class ProjectileEnergyWeapon(EnergyWeapon):
     if dir is None:
       return
 
+    EnergyWeapon.shoot(self)
+
     self.remaining_cooldown = self.cooldown
     self.current -= self.cost
 
@@ -1349,13 +1367,8 @@ class ProjectileEnergyWeapon(EnergyWeapon):
       g_proj = GroupManager().get('player_projectiles')
       g_coll = GroupManager().get('enemies')
 
-
-    EnergyWeapon.shoot(self)
-
     projectile_cls = eval(self.projectile_cls_name)
-    projectile = projectile_cls(pos, dir, g_coll, g_proj)
-
-    return projectile
+    return projectile_cls(pos, dir, g_coll, g_proj)
 
 
 class BasicProjectileEnergyWeapon(ProjectileEnergyWeapon):
@@ -1395,6 +1408,8 @@ class SeekingPEW(ProjectileEnergyWeapon):
         targets = GroupManager().get('enemies').sprites()
 
       p.set_target(self.owner.closest(targets))
+
+    return p
 
 
 class Shield(AGSprite):
