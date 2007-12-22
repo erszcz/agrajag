@@ -110,7 +110,7 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
 
   def _state_area(self, image, state):
     """
-    Return C{pygame.Rect} containing information on position and area
+    Return C{AGRect} containing information on position and area
     of graphic resource representing selected state.
 
     @type  image: string
@@ -120,10 +120,10 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
     @param state: Name of state.
     """
 
-    return self.gfx[image]['states'][state]['x_off'], \
-           self.gfx[image]['states'][state]['y_off'], \
-           self.gfx[image]['w'], \
-           self.gfx[image]['h']
+    return AGRect(self.gfx[image]['states'][state]['x_off'], 
+                  self.gfx[image]['states'][state]['y_off'], 
+                  self.gfx[image]['w'],
+                  self.gfx[image]['h'])
 
   def _blit_state(self, image, state, pos = (0, 0)):
     '''
