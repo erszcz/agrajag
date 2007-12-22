@@ -6,6 +6,7 @@ This module contains base definitions needed by different modules.
 """
 
 import pygame
+from math import fabs
 
 from dbmanager import DBManager
 
@@ -73,14 +74,11 @@ class Overlay(pygame.sprite.Sprite):
   def __init__(self, *groups):
     pygame.sprite.Sprite.__init__(self, *groups)
 
-    #tmp
-    self.size = 200, 200
-
-    self.rect = AGRect((0, 0), self.size)
+    self.rect = AGRect((0, 0), (0, 0))
     self.image = pygame.Surface((0, 0), pygame.SRCALPHA)
 
   def init_image(self, owner_image):
-    self.image = pygame.Surface(self.size, pygame.SRCALPHA, owner_image)
+    self.image = pygame.Surface((0, 0), pygame.SRCALPHA, owner_image)
 
   def has_image(self):
     return self.image.get_size() != (0, 0)
@@ -101,6 +99,7 @@ class Overlay(pygame.sprite.Sprite):
     if rect is None:
       rect = AGRect((0, 0), self.image.get_size())
     else:
+      self.resize(rect.size)
       rect = AGRect(rect)
       
       rect[0] += self.rect.width / 2.
@@ -135,16 +134,41 @@ class Overlay(pygame.sprite.Sprite):
     @param area: Image fragment to be blit.
     """
 
-    dest = list(dest)
+    self.resize((fabs(dest[0]) + area.width, fabs(dest[1]) + area.height))
 
+    dest = list(dest)
     dest[0] += self.rect.width / 2.
     dest[1] += self.rect.height / 2.
 
     self.image.blit(image, dest, area)
 
+  def resize(self, dest):
+    """
+    If needed resize overlay to fit C{dest}.
+
+    Warning. Overlay content is not preserved (yet) which may
+    cause filcker or other negative effects.
+
+    @type  dest: sequence
+    @param dest: Area needed for new blit.
+    """
+
+    if 2 * dest[0] <= self.rect.width and 2 * dest[1] <= self.rect.height:
+      return
+
+    center = self.rect.center
+
+    self.rect.inflate_ip(2 * dest[0], 2 * dest[1])
+    self.rect.center = center
+
+    self.image = pygame.Surface(self.rect.size, pygame.SRCALPHA, self.image)
+
   def align(self, pos, align = 'center'):
     """
     Position overlay.
+
+    @type  pos: sequence
+    @param pos: Position in global coordinate system.
     """
 
     self.rect.align(pos, align)
