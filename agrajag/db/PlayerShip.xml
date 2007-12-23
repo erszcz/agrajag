@@ -1,15 +1,23 @@
 <content>
   <gfx>
-    <resource name='ship' file='ship.png' state_w='38' state_h='44'>
+    <resource name='ship' file='ship.png' state_w='37' state_h='44'>
       <state name='def'  x_off='0'  y_off='0' />
     </resource>
     <resource name='exhaust' file='exhaust.png' state_w='12' state_h='17'>
       <state name='on'  x_off='0'  y_off='0' />
       <state name='off' x_off='12' y_off='0' />
     </resource>
+    <resource name='shot' file='shot.png' state_w='9' state_h='9'>
+      <state name='frame0' x_off='0'  y_off='0' />
+      <state name='frame1' x_off='9'  y_off='0' />
+      <state name='frame2' x_off='18' y_off='0' />
+      <state name='frame3' x_off='27' y_off='0' />
+    </resource>
   </gfx>
   <properties>
+    <prop name='durability'       value='100' type='int' />
     <prop name='max_speed'       value='160' type='int' />
-    <prop name='explosion_cls_name' value='SpaceshipExplosion' />
+    <prop name='explosion_cls_name' value='EnergyProjectileExplosion' />
+    <prop name='shot_anim_period' value='0.2' type='float' />
   </properties>
 </content>

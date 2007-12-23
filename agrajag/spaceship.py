@@ -54,9 +54,6 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
 
   max_speed = 0
 
-  _overlay = None
-  _animations = []
-
   def __init__(self, pos, *groups):
     '''
     @type  pos: pair of integers
@@ -76,6 +73,7 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
 
     self.mover = None
     self._overlay = Overlay()
+    self._animations = []
 
     g_draw = GroupManager().get('draw')
     g_draw.add(self)
@@ -250,6 +248,14 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
       self.rect.align(self.pos, self.align)
       self.center = self.rect.center
 
+  def update(self):
+    """
+    Update position and animations.
+    """
+
+    self._update_position()
+    self._update_animations()
+
   def distance(self, peer):
     """
     Return distance (city) between self and peer.
@@ -406,6 +412,8 @@ class Ship(Destructible):
     Update ship state (center, weapons, shield, armour, reactor, etc.)
     """
 
+    Destructible.update(self)
+
     if self.reactor is not None:
       self.recharge(self.reactor.supply())
 
@@ -492,22 +500,24 @@ class Ship(Destructible):
 
 class PlayerShip(Ship):
   """
-  Represents the player's ship (not necessarily a spaceship).
+  Represents the player's ship in way similiar to described in project's
+  wiki (but simpler). In later stage some funcionality of this class may
+  be moved to not yet existant class Hull.
   """
 
   def __init__(self, pos, *groups):
     """
-    @type  pos: pair of integers
+    @type  pos: sequence
     @param pos: Initial position of the ship. This pair defines position
-    of the ship nose.
+    of ship nose.
 
     @type  groups: pygame.sprite.Group
     @param groups: A sequence of groups the object will be added to.
     """
 
     Ship.__init__(self, pos, *groups)
-    self._check_gfx(['ship', 'exhaust'])
-    self._check_cfg(['max_speed'])
+    self._setattrs('shot_anim_period', self.cfg)
+    self._check_gfx(['ship', 'exhaust', 'shot'])
 
     size = self.gfx['ship']['w'], \
            self.gfx['ship']['h'] + self.gfx['exhaust']['h']
@@ -516,8 +526,25 @@ class PlayerShip(Ship):
         self.gfx['ship']['image'])
 
     self._initialize_position(pos, ('centerx', 'top'), size)
+    self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h'] / 2
 
     self.exhaust(False) 
+
+    self.weapons = [SeekingPEW(self), BasicBeamer(self),
+        BasicTPEW(self), BasicPAW(self)]
+    self._current_weapon = 0
+
+    self.shield = BasicAutoShield(self)
+    self.armour = BasicArmour()
+    self.reactor = BasicReactor()
+
+    # signals
+    self.shield_updated = Signal()
+    self.armour_updated = Signal()
+    self.weapon_updated = Signal()
+    self.shield.shield_state_updated.connect(self.shield_updated)
+    self.weapons[self._current_weapon].weapon_state_updated.connect(self.weapon_updated)
+
 
   def exhaust(self, on):
     """
@@ -550,6 +577,7 @@ class PlayerShip(Ship):
       if self.rect.top >= -delta_y:  # '-' because: delta_y < 0
         self.rect.move_ip(0, delta_y)
         self.pos = self.pos[0], self.pos[1] + delta_y
+        self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h'] / 2
     else:
       self.exhaust(False)
 
@@ -566,7 +594,7 @@ class PlayerShip(Ship):
     if self.rect.bottom <= boundary + delta_y:
       self.rect.move_ip(0, delta_y)
       self.pos = self.pos[0], self.pos[1] + delta_y
-      
+      self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h'] / 2
       
   def fly_left(self):
     """
@@ -577,6 +605,7 @@ class PlayerShip(Ship):
     if self.rect.left >= -delta_x:  # '-' because: delta_x < 0
       self.rect.move_ip(delta_x, 0)
       self.pos = self.pos[0] + delta_x, self.pos[1]
+      self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h'] / 2
 
   def fly_right(self, boundary):
     """
@@ -591,20 +620,81 @@ class PlayerShip(Ship):
     if self.rect.right <= boundary - delta_x:
       self.rect.move_ip(delta_x, 0)
       self.pos = self.pos[0] + delta_x, self.pos[1]
+      self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h'] / 2
+
+  def get_current_weapon(self):
+    if self._current_weapon is None:
+      return None
+
+    return self.weapons[self._current_weapon]
+  current_weapon = property(get_current_weapon)
 
   def next_weapon(self):
     """Select next weapon."""
-    if self._current_weapon == self.weapons.__len__() - 1:
+    self.current_weapon.weapon_state_updated.disconnect(self.weapon_updated)
+    
+    if self._current_weapon == len(self.weapons) - 1 or \
+        self._current_weapon is None:
       self._current_weapon = 0
     else:
       self._current_weapon += 1
 
+    self.current_weapon.weapon_state_updated.connect(self.weapon_updated)
+    if isinstance(self.current_weapon, AmmoWeapon):
+      self.weapon_updated('ammo', self.current_weapon.current)
+    elif isinstance(self.current_weapon, EnergyWeapon):
+      self.weapon_updated('energy', self.current_weapon.current, self.current_weapon.maximum)
+
   def previous_weapon(self):
     """Select previous weapon."""
-    if self._current_weapon == 0:
-      self._current_weapon = self.weapons.__len__() - 1
+    self.current_weapon.weapon_state_updated.disconnect(self.weapon_updated)
+
+    if self._current_weapon == 0 or \
+        self._current_weapon is None:
+      self._current_weapon = len(self.weapons) - 1
     else:
       self._current_weapon -= 1
+
+    self.current_weapon.weapon_state_updated.connect(self.weapon_updated)
+    if isinstance(self.current_weapon, AmmoWeapon):
+      self.weapon_updated('ammo', self.current_weapon.current)
+    elif isinstance(self.current_weapon, EnergyWeapon):
+      self.weapon_updated('energy', self.current_weapon.current, self.current_weapon.maximum)
+
+  def shoot(self):
+    """
+    Shot from currently selected weapon. Do nothing if there is no 
+    weapon selected.
+    """
+
+    if self._current_weapon is not None:
+      if self.weapons[self._current_weapon].shoot(self.pos):
+        self._init_animation('shot', self.shot_anim_period,
+            (0, -self.gfx['ship']['h'] / 2.))
+
+  def activate_shield(self, on):
+    if self.shield is not None:
+      self.shield.activate(on)
+
+  def damage(self, damage, speed = None):
+    """
+    Deal damage and check whether the object ceases to exist. If so, call
+    C{L{explode}}.
+
+    @type  damage: integer
+    @param damage: Amount of raw damage the ship takes.
+    """
+
+    Ship.damage(self, damage, speed)
+    self.armour_updated(self.durability + self.armour.current)
+
+  def update(self):
+    """
+    Update ship state (center, weapons, shield, armour, reactor, etc.)
+    """
+
+    Ship.update(self)
+
 
 class EnemyShip(Ship):
   """
@@ -681,107 +771,6 @@ class EnemyInterceptor(EnemyShip):
   def __init__(self, pos, *groups):
     EnemyShip.__init__(self, pos, *groups)
 
-
-class AdvancedPlayerShip(PlayerShip):
-  """
-  Represents the player's ship in more advanced version described in project's
-  wiki. In later stage some funcionality of this class may be moved to not
-  yet existant class Hull.
-
-  """
-
-  def __init__(self, pos, *groups):
-    """
-    @type  pos: sequence
-    @param pos: Initial position of the ship. This pair defines position
-    of ship nose.
-
-    @type  groups: pygame.sprite.Group
-    @param groups: A sequence of groups the object will be added to.
-    """
-
-    PlayerShip.__init__(self, pos, *groups)
-    self._setattrs('shot_anim_period', self.cfg)
-
-    self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
-
-    self.weapons = [SeekingPEW(self), BasicBeamer(self),
-        BasicTPEW(self), BasicPAW(self)]
-    self._current_weapon = 0
-
-    self.shield = BasicAutoShield(self)
-    self.armour = BasicArmour()
-    self.reactor = BasicReactor()
-
-    # signals
-    self.shield_updated = Signal()
-    self.armour_updated = Signal()
-    self.weapon_updated = Signal()
-    self.shield.shield_state_updated.connect(self.shield_updated)
-    self.weapons[self._current_weapon].weapon_state_updated.connect(self.weapon_updated)
-
-  def get_current_weapon(self):
-    return self.weapons[self._current_weapon]
-  current_weapon = property(get_current_weapon)
-
-  def next_weapon(self):
-    """Select next weapon."""
-    self.current_weapon.weapon_state_updated.disconnect(self.weapon_updated)
-    PlayerShip.next_weapon(self)
-    self.current_weapon.weapon_state_updated.connect(self.weapon_updated)
-    if isinstance(self.current_weapon, AmmoWeapon):
-      self.weapon_updated('ammo', self.current_weapon.current)
-    elif isinstance(self.current_weapon, EnergyWeapon):
-      self.weapon_updated('energy', self.current_weapon.current, self.current_weapon.maximum)
-      
-
-  def previous_weapon(self):
-    """Select previous weapon."""
-    self.current_weapon.weapon_state_updated.disconnect(self.weapon_updated)
-    PlayerShip.previous_weapon(self)
-    self.current_weapon.weapon_state_updated.connect(self.weapon_updated)
-    if isinstance(self.current_weapon, AmmoWeapon):
-      self.weapon_updated('ammo', self.current_weapon.current)
-    elif isinstance(self.current_weapon, EnergyWeapon):
-      self.weapon_updated('energy', self.current_weapon.current, self.current_weapon.maximum)
-
-  def shoot(self):
-    """
-    Shot from currently selected weapon. Do nothing if there is no 
-    weapon selected.
-    """
-
-    if self._current_weapon is not None:
-      if self.weapons[self._current_weapon].shoot(self.pos):
-        self._init_animation('shot', self.shot_anim_period,
-            (0, -self.gfx['ship']['h'] / 2))
-
-  def activate_shield(self, on):
-    if self.shield is not None:
-      self.shield.activate(on)
-
-  def damage(self, damage, speed = None):
-    """
-    Deal damage and check whether the object ceases to exist. If so, call
-    C{L{explode}}.
-
-    @type  damage: integer
-    @param damage: Amount of raw damage the ship takes.
-    """
-
-    Ship.damage(self, damage, speed)
-    self.armour_updated(self.durability + self.armour.current)
-
-  def update(self):
-    """
-    Update ship state (center, weapons, shield, armour, reactor, etc.)
-    """
-
-    Ship.update(self)
-
-    self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h']/2
-    self._update_animations()
-      
 
 class Weapon(AGObject):
   """
