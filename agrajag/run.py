@@ -9,7 +9,7 @@ from dbmanager import DBManager
 from gfxmanager import GfxManager
 from stagemanager import StageManager
 from groupmanager import GroupManager
-from spaceship import PlayerShip, AdvancedPlayerShip, EnemyShip, \
+from spaceship import PlayerShip, PlayerShip, EnemyShip, \
     EnemyInterceptor, RechargeBonus
 from background import SpaceBackground
 from obstacle import Obstacle, MovingObstacle
@@ -69,7 +69,7 @@ def run():
 
   g_bonuses.add(RechargeBonus((300, 200)))
 
-  ship = ref( AdvancedPlayerShip((175, viewport_size[1] - 60), g_ship) )
+  ship = ref( PlayerShip((175, viewport_size[1] - 60), g_ship) )
   hud.setup_connections(ship())
 
   back = SpaceBackground(viewport_size)
