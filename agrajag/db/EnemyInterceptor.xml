@@ -7,7 +7,7 @@
   <properties>
     <prop name='explosion_cls_name' value='EnergyProjectileExplosion' />
     <prop name='weapons_cls_names' value='BasicTPEW' type='tuple' />
-    <prop name='shield_cls_name' value='EnemyShipShield' />
+    <prop name='shield_cls_name' value='BasicShield' />
     <prop name='reactor_cls_name' value='BasicReactor' />
     <prop name='durability' value='30' type='int' />
     <prop name='max_speed' value='80' type='int' />
