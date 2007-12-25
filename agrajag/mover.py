@@ -429,9 +429,6 @@ class SeekingMover(Mover):
     self.dir = normalize_rad(self.dir + delta_dir)
 
   def update(self):
-    if hasattr(self.target, 'destroyed') and self.target.destroyed:
-      self.target = None
-
     delta_pos = self.clock.frame_span() * self.speed / 1000.
     
     self._update_dir()

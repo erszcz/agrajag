@@ -79,6 +79,10 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
     g_draw.add(self)
     g_draw.add(self._overlay)
 
+    #signals
+    self.killed = Signal()
+    
+
   def set_mover(self, mover):
     """
     """
@@ -256,6 +260,14 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
     self._update_position()
     self._update_animations()
 
+  def kill(self):
+    """
+    Emit signal and kill sprite.
+    """
+
+    self.killed()
+    pygame.sprite.Sprite.kill(self)
+
   def distance(self, peer):
     """
     Return distance (city) between self and peer.
@@ -325,7 +337,6 @@ class Destructible(AGSprite):
 
   durability = 0
   explosion_cls_name = None
-  destroyed = False
 
   def __init__(self, pos, *groups):
     """
@@ -359,7 +370,6 @@ class Destructible(AGSprite):
 
       GroupManager().get('explosions').add( explosion )
 
-    self.destroyed = True
     self.kill()
     del self
 
@@ -937,6 +947,30 @@ class ProjectileAmmoWeapon(AmmoWeapon):
 
     self._find_target()
 
+  def set_target(self, target):
+    """
+    Set target and connect to its killed-signal in order to allow
+    it to be garbage-collected.
+    """
+
+    if self.target is not None:
+      self.target.killed.disconnect(self.clear_target)
+
+    self.target = target
+    self.target.killed.connect(self.clear_target)
+
+  def clear_target(self, disconnect = False):
+    """
+    Unset target. Optionally disconnect from target's
+    signal (never disconnect when clear_target is called on signal).
+    """
+
+    if self.target is not None:
+      if disconnect:
+        self.target.killed.disconnect(self.clear_target)
+
+      self.target = None
+
   def _find_target(self):
     """
     Find random object within the shooting arc and target it (if weapon is not
@@ -955,7 +989,7 @@ class ProjectileAmmoWeapon(AmmoWeapon):
 
       target = self.owner.closest(targets)
       if target is not None:
-        self.target = target
+        self.set_target(target)
 
     return self.target
 
@@ -1008,10 +1042,6 @@ class ProjectileAmmoWeapon(AmmoWeapon):
       return
 
     if self.current < 1:
-      return
-
-    if self.target is not None and self.target.destroyed:
-      self.target = None
       return
 
     dir = self._target_dir(self.target)
@@ -1255,6 +1285,30 @@ class ProjectileEnergyWeapon(EnergyWeapon):
 
     self._find_target()
 
+  def set_target(self, target):
+    """
+    Set target and connect to its killed-signal in order to allow
+    it to be garbage-collected.
+    """
+
+    if self.target is not None:
+      self.target.killed.disconnect(self.clear_target)
+
+    self.target = target
+    self.target.killed.connect(self.clear_target)
+
+  def clear_target(self, disconnect = False):
+    """
+    Unset target. Optionally disconnect from target's
+    signal (never disconnect when clear_target is called on signal).
+    """
+
+    if self.target is not None:
+      if disconnect:
+        self.target.killed.disconnect(self.clear_target)
+
+      self.target = None
+
   def _find_target(self):
     """
     Find random object within the shooting arc and target it (if weapon is not
@@ -1273,7 +1327,7 @@ class ProjectileEnergyWeapon(EnergyWeapon):
 
       target = self.owner.closest(targets)
       if target is not None:
-        self.target = target
+        self.set_target(target)
 
     return self.target
 
@@ -1330,10 +1384,6 @@ class ProjectileEnergyWeapon(EnergyWeapon):
       return
 
     if self.current < self.cost:
-      return
-
-    if self.target is not None and self.target.destroyed:
-      self.target = None
       return
 
     dir = self._target_dir(self.target)
@@ -1928,8 +1978,23 @@ class SeekingProjectile(Projectile):
     Set target the projectile has to follow.
     """
 
-    self.mover.set_target(target)
+    if self.mover.target is not None:
+      self.mover.target.killed.disconnect(self.clear_target)
 
+    self.mover.set_target(target)
+    self.mover.target.killed.connect(self.clear_target)
+
+  def clear_target(self, disconnect = False):
+    """
+    Clear projectile target. Optionally disconnect from target's
+    signal (never disconnect when clear_target is called on signal).
+    """
+
+    if self.mover.target is not None:
+      if disconnect:
+        self.mover.target.killed.disconnect(self.clear_target)
+        
+      self.mover.set_target(None)
 
 class Bullet(Projectile):
   def __init__(self, pos, dir, g_coll, *groups):
