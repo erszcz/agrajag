@@ -5,7 +5,7 @@
     </resource>
   </gfx>
   <properties>
-    <prop name='explosion_cls_name' value='EnergyProjectileExplosion' />
+    <prop name='explosion_cls_name' value='MediumExplosion' />
     <prop name='weapons_cls_names' value='BasicTPEW' type='tuple' />
     <prop name='shield_cls_name' value='BasicShield' />
     <prop name='reactor_cls_name' value='BasicReactor' />

@@ -1,0 +1,23 @@
+<content>
+  <gfx>
+    <resource name='mine' file='mine.png' state_w='10' state_h='10'>
+      <state name='frame0'  x_off='1'    y_off='1' />
+      <state name='frame1'  x_off='12'   y_off='1' />
+      <state name='frame2'  x_off='23'   y_off='1' />
+      <state name='frame3'  x_off='34'   y_off='1' />
+      <state name='frame4'  x_off='45'   y_off='1' />
+      <state name='frame5'  x_off='56'   y_off='1' />
+      <state name='frame6'  x_off='67'   y_off='1' />
+      <state name='frame7'  x_off='78'   y_off='1' />
+      <state name='frame8'  x_off='89'   y_off='1' />
+      <state name='frame9'  x_off='100'  y_off='1' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='explosion_cls_name' value='MediumExplosion' />
+    <prop name='durability' value='5' type='int' />
+    <prop name='max_speed' value='60' type='int' />
+    <prop name='explosion_range' value='40' type='int' />
+    <prop name='explosion_damage' value='30' type='int' />
+  </properties>
+</content>

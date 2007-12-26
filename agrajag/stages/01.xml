@@ -33,4 +33,64 @@
     <mover_param name='period' value='130' type='int' />
     <group name='enemies' />
   </spawn>
+  <spawn time='5000' x='50' y='0' object_cls_name='EnemyMine'
+    mover_cls_name='LinearMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='dir' value='0' type='int' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='5000' x='100' y='0' object_cls_name='EnemyMine'
+    mover_cls_name='LinearMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='dir' value='0' type='int' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='5000' x='150' y='0' object_cls_name='EnemyMine'
+    mover_cls_name='LinearMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='dir' value='0' type='int' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='5000' x='200' y='0' object_cls_name='EnemyMine'
+    mover_cls_name='LinearMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='dir' value='0' type='int' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='5000' x='250' y='0' object_cls_name='EnemyMine'
+    mover_cls_name='LinearMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='dir' value='0' type='int' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='5000' x='300' y='0' object_cls_name='EnemyMine'
+    mover_cls_name='LinearMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='dir' value='0' type='int' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='5000' x='350' y='0' object_cls_name='EnemyMine'
+    mover_cls_name='LinearMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='dir' value='0' type='int' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='5000' x='400' y='0' object_cls_name='EnemyMine'
+    mover_cls_name='LinearMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='dir' value='0' type='int' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='5000' x='450' y='0' object_cls_name='EnemyMine'
+    mover_cls_name='LinearMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='dir' value='0' type='int' />
+    <group name='enemies' />
+  </spawn>
+  <spawn time='5000' x='500' y='0' object_cls_name='EnemyMine'
+    mover_cls_name='LinearMover'>
+    <object_param name='zxc' value='zxc' />
+    <mover_param name='dir' value='0' type='int' />
+    <group name='enemies' />
+  </spawn>
 </events>
