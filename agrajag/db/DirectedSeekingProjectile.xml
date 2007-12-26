@@ -1,0 +1,22 @@
+<content>
+  <gfx>
+    <resource name='projectile' file='directed_seeking_projectile.png' state_w='11' state_h='11'>
+      <state name='nw' x_off='0'    y_off='0' />
+      <state name='n'  x_off='12'   y_off='0' />
+      <state name='ne' x_off='24'   y_off='0' />
+      <state name='e'  x_off='24'   y_off='12' />
+      <state name='se' x_off='24'   y_off='24' />
+      <state name='s'  x_off='12'   y_off='24' />
+      <state name='sw' x_off='0'    y_off='24' />
+      <state name='w'  x_off='0'    y_off='12' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='max_speed'    type='int' value='320' />
+    <prop name='ang_speed'    type='int' value='120' />
+    <prop name='damage'       type='int' value='8' />
+    <prop name='cooldown'     type='int' value='30' />
+    <prop name='explosion_cls_name'     value='EnergyProjectileExplosion' />
+    <prop name='period'       type='int' value='150' />
+  </properties>
+</content>
