@@ -395,6 +395,13 @@ class SeekingMover(Mover):
 
     self.target = target
 
+  def get_dir(self):
+    """
+    Return current direction in degrees.
+    """
+
+    return rad2deg(self.dir)
+
   def _update_dir(self):
     """
     Update C{dir} based on C{target} position. Do nothing if there is no
