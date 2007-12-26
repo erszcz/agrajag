@@ -1,0 +1,17 @@
+<content>
+  <gfx>
+    <resource name='expl' file='big_projectile_expl.png' state_w='42' state_h='48'>
+      <state name='frame0' x_off='1'   y_off='1' />
+      <state name='frame1' x_off='45'  y_off='1' />
+      <state name='frame2' x_off='89'  y_off='1' />
+      <state name='frame3' x_off='133' y_off='1' />
+      <state name='frame4' x_off='177' y_off='1' />
+      <state name='frame5' x_off='221' y_off='1' />
+      <state name='frame6' x_off='265' y_off='1' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='frame_length' value='30' type='int' />
+    <prop name='frame_count' value='7' type='int' />
+  </properties>
+</content>

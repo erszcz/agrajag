@@ -782,6 +782,88 @@ class EnemyInterceptor(EnemyShip):
     EnemyShip.__init__(self, pos, *groups)
 
 
+class EnemyMine(Destructible):
+  """
+  """
+
+  target = None
+
+  def __init__(self, pos, *groups):
+    Destructible.__init__(self, pos, *groups)
+    self._setattrs('explosion_damage, explosion_range', self.cfg)
+
+    size = self.gfx['mine']['size']
+
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['mine']['image'])
+
+    self._current_frame = 0
+    
+    self._blit_state('mine', 'frame' + str(self._current_frame))
+    self._initialize_position(pos, 'center', size)
+
+    self.period = 1000.
+    self.frame_count = 10  # const
+    self.time = random.randint(0, self.period)
+    self.frame_length = self.period / self.frame_count
+
+    self.set_target(GroupManager().get('ship').sprites()[0])
+
+  def set_target(self, target):
+    """
+    Set target and connect to its killed-signal in order to allow
+    it to be garbage-collected.
+    """
+
+    if self.target is not None:
+      self.target.killed.disconnect(self.clear_target)
+
+    self.target = target
+    self.target.killed.connect(self.clear_target)
+
+  def clear_target(self, disconnect = False):
+    """
+    Unset target. Optionally disconnect from target's
+    signal (never disconnect when clear_target is called on signal).
+    """
+
+    if self.target is not None:
+      if disconnect:
+        self.target.killed.disconnect(self.clear_target)
+
+      self.target = None
+
+  def is_target_close(self):
+    """
+    Return C{True} if C{target} is within range. Otherwise return C{False}.
+    """
+  
+    if self.target is None:
+      return False
+
+    return self.target.distance(self) < self.explosion_range
+
+  def update(self):
+    if self.is_target_close():
+      self.target.damage(self.explosion_damage)
+      self.explode()
+      return
+
+    while self.time >= self.period:
+      self.time -= self.period
+
+    i = math.floor(self.time / self.period * (self.frame_count - 1))
+    if self._current_frame != i:
+      self._current_frame = int(i)
+
+      self.image.fill((0, 0, 0, 0))
+      self._blit_state('mine', 'frame' + str(self._current_frame))
+  
+    self.time += Clock().frame_span()
+    
+    Destructible.update(self)
+
+
 class Weapon(AGObject):
   """
   Base class for all weapons.
@@ -1761,6 +1843,14 @@ class Explosion(AGSprite):
     self.frame_count = self.cfg['frame_count']
 
 
+    size = self.gfx['expl']['size']
+
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['expl']['image'])
+    self._blit_state('expl', 'frame0')
+
+    self._initialize_position(pos, 'center', size)
+
   def update(self):
   # improving this method to increase the animation look wouldn't hurt
     if self.time >= self.frame_count * self.frame_length:
@@ -1781,55 +1871,20 @@ class Explosion(AGSprite):
 
 
 class BulletExplosion(Explosion):
-  def __init__(self, pos, *groups):
-    Explosion.__init__(self, pos, *groups)
-
-    size = self.gfx['expl']['w'], self.gfx['expl']['h']
-
-    self.image = pygame.Surface(size, pygame.SRCALPHA,
-        self.gfx['expl']['image'])
-    self._blit_state('expl', 'frame0')
-
-    self._initialize_position(pos, ('centerx', 'centery'), size)
+  pass
 
 
 class ShellExplosion(Explosion):
-  def __init__(self, pos, *groups):
-    Explosion.__init__(self, pos, *groups)
-
-    size = self.gfx['expl']['w'], self.gfx['expl']['h']
-
-    self.image = pygame.Surface(size, pygame.SRCALPHA,
-        self.gfx['expl']['image'])
-    self._blit_state('expl', 'frame0')
-
-    self._initialize_position(pos, 'center', size)
+  pass
 
 
 class BasicBeamExplosion(Explosion):
-  def __init__(self, pos, *groups):
-    Explosion.__init__(self, pos, *groups)
-
-    size = self.gfx['expl']['w'], self.gfx['expl']['h']
-
-    self.image = pygame.Surface(size, pygame.SRCALPHA,
-        self.gfx['expl']['image'])
-    self._blit_state('expl', 'frame0')
-
-    self._initialize_position(pos, 'center', size)
+  pass
 
 
 class ObstacleExplosion(Explosion):
-  def __init__(self, pos, *groups):
-    Explosion.__init__(self, pos, *groups)
+  pass
 
-    size = self.gfx['expl']['w'], self.gfx['expl']['h']
-
-    self.image = pygame.Surface(size, pygame.SRCALPHA,
-        self.gfx['expl']['image'])
-    self._blit_state('expl', 'frame0')
-
-    self._initialize_position(pos, ('centerx', 'centery'), size)
 
 class EnergyProjectileExplosion(Explosion):
   def __init__(self, pos, *groups):
@@ -1842,6 +1897,15 @@ class EnergyProjectileExplosion(Explosion):
     self._blit_state('expl', 'frame4')
 
     self._initialize_position(pos, ('centerx', 'centery'), size)
+
+
+class MediumExplosion(Explosion):
+  pass
+
+
+class BigProjectileExplosion(Explosion):
+  pass
+
 
 class Projectile(AGSprite):
   damage = 0
@@ -2021,7 +2085,6 @@ class EnergyProjectile(Projectile):
 
     self._initialize_position(pos, 'center', size)
 
-    #self.period = 400
     self.period = (100, 200, 300, 400, 800)[random.randint(0, 4)]
     self.frame_count = 4  # const
     self.time = random.randint(0, self.period)
@@ -2040,6 +2103,52 @@ class EnergyProjectile(Projectile):
     self.time += self.clock.frame_span()
     
     Projectile.update(self)
+
+
+class StarProjectile(Projectile):
+  def __init__(self, pos, dir, g_coll, *groups):
+    Projectile.__init__(self, pos, dir, g_coll, *groups)
+
+    size = self.gfx['star']['size']
+
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['star']['image'])
+    self._blit_state('star', 'frame2')
+
+    self._initialize_position(pos, 'center', size)
+
+    self.period = 300
+    self.frame_count = 3  # const
+    self.time = random.randint(0, self.period)
+    self.frame_length = self.period / self.frame_count
+
+  def update(self):
+    while self.time >= self.period:
+      self.time -= self.period
+
+    for frame in range(0, self.frame_count):
+      if self.time in range(frame * self.frame_length,
+                            (frame + 1) * self.frame_length):
+        self.image.fill((0, 0, 0, 0))
+        self._blit_state('star', 'frame' + str(frame))
+        break
+
+    self.time += self.clock.frame_span()
+    
+    Projectile.update(self)
+
+
+class BigProjectile(Projectile):
+  def __init__(self, pos, dir, g_coll, *groups):
+    Projectile.__init__(self, pos, dir, g_coll, *groups)
+
+    size = self.gfx['big']['size']
+
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx['big']['image'])
+    self._blit_state('big', 'def')
+
+    self._initialize_position(pos, 'center', size)
 
 
 class ScatterBlasterProjectile(ScatteringProjectile):

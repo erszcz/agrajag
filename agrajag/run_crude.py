@@ -10,7 +10,7 @@ from gfxmanager import GfxManager
 from stagemanager import StageManager
 from groupmanager import GroupManager
 from spaceship import PlayerShip, EnemyShip, \
-    EnemyInterceptor, RechargeBonus
+    EnemyInterceptor, RechargeBonus, EnemyMine
 from background import SpaceBackground, BackgroundImage
 from obstacle import Obstacle, MovingObstacle
 import mover
