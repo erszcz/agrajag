@@ -12,7 +12,7 @@ from groupmanager import GroupManager
 from clock import Clock
 from signals import Signal
 
-from functions import deg2rad
+from functions import deg2rad, normalize_deg
 
 
 class AGSprite(AGObject, pygame.sprite.Sprite):
@@ -1982,8 +1982,8 @@ class Projectile(AGSprite):
     """
     Update projectile looks based on anything you wish. This method
     may be overriden by subclasses. By default subsequent stages from
-    C{'frame0'} to C{'frameN'} of resource C{'projectile'} are
-    cycled (C{N} is .
+    'frame0' to 'frameN' of resource named C{base_res_name} are
+    cycled (N is equal to C{frame_count}.
     """
 
     if self.period == 0 or self.frame_count == 1:
@@ -2135,6 +2135,75 @@ class SeekingProjectile(Projectile):
         self.mover.target.killed.disconnect(self.clear_target)
         
       self.mover.set_target(None)
+
+
+class DirectedSeekingProjectile(SeekingProjectile):
+  """
+  This class differs from its parent in that displayed image changes
+  depending on projectile direction. Gfx resource used by this projectile
+  should contain nine states. Each state is associated with certain direction
+  angle range. This projectiles are not animated like C{Projectile}s.
+
+  Required states: 'ne', 'n', 'nw', 'w', 'sw', 's', 'se', 'e'.
+
+  @type _previous_state: str or None
+  @ivar _previous_state: Name of last blit state (used to check whether
+  refresh is needed).
+  """
+
+  _previous_state = None
+
+  def _get_dir_state(self, dir):
+    """
+    Return name of the state associated with C{dir}.
+
+    @type  dir: int
+    @param dir: Direction in degrees.
+    """
+
+    dir = normalize_deg(dir)
+    if dir >= 0 and dir < 22.5:
+      return 's'
+    elif dir >= 22.5 and dir < 67.5:
+      return 'se'
+    elif dir >= 67.5 and dir < 112.5:
+      return 'e'
+    elif dir >= 112.5 and dir < 157.5:
+      return 'ne'
+    elif dir >= 157.5 and dir < 202.5:
+      return 'n'
+    elif dir >= 202.5 and dir < 247.5:
+      return 'nw'
+    elif dir >= 247.5 and dir < 292.5:
+      return 'e'
+    elif dir >= 292.5 and dir < 337.5:
+      return 'sw'
+    elif dir >= 337.5:
+      return 's'
+    else:
+      raise ValueError, "Direction out of range [0, 360) degrees."
+
+  def _initialize_image(self):
+    """Initialize projectile's C{image}."""
+
+    self.frame_count = None
+    self.frame_length = None
+
+    size = self.gfx[self.base_res_name]['size']
+    self.image = pygame.Surface(size, pygame.SRCALPHA,
+        self.gfx[self.base_res_name]['image'])
+
+  def _update_image(self):
+    """Update projectile looks based on current direction."""
+
+    if self.period == 0 or self.frame_count == 1:
+      return
+
+    state = self._get_dir_state(self.mover.get_dir())
+    if self._previous_state is None or self._previous_state != state:
+      self.image.fill((0, 0, 0, 0))
+      self._blit_state(self.base_res_name, state)
+      self._previous_state = state
 
 
 class Bullet(Projectile):
