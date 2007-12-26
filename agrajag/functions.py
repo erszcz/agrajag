@@ -47,3 +47,10 @@ def normalize_rad(rad):
   """
 
   return rad % (2 * pi)
+
+def normalize_deg(deg):
+  """
+  Return angle in degrees translated to [0, 360).
+  """
+
+  return deg % 360
