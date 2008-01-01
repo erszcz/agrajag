@@ -1,0 +1,17 @@
+<content>
+  <gfx>
+    <resource name='projectile' file='heavy_cannon_projectile.png' state_w='17'
+      state_h='18'>
+      <state name='frame0' x_off='0'    y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='max_speed'    type='int' value='200' />
+    <prop name='damage'       type='int' value='18' />
+    <prop name='explosion_cls_name'     value='MediumExplosion' />
+    <prop name='lifetime'     type='int' value='1000' />
+    <prop name='scatter_type'            value='regular' />
+    <prop name='child_cnt'    type='int' value='6' />
+    <prop name='child_cls_name'          value='HeavyCannonProjectileFragment' />
+  </properties>
+</content>

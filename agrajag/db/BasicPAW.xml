@@ -2,7 +2,7 @@
   <gfx>
   </gfx>
   <properties>
-    <prop name='projectile_cls_name' value='Bullet' />
+    <prop name='projectile_cls_name' value='MiniCannonProjectile' />
     <prop name='maximum' value='300' type='int' />
     <prop name='cooldown' value='0.1' type='float' />
   </properties>

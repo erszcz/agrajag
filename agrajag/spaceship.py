@@ -537,8 +537,9 @@ class PlayerShip(Ship):
 
     self.exhaust(False) 
 
-    self.weapons = [SeekingPEW(self), BasicBeamer(self),
-        BasicTPEW(self), BasicPAW(self)]
+    self.weapons = [MultiCannon(self), SeekerCannon(self), HeavyCannon(self), 
+        BasicBeamer(self)]
+
     self._current_weapon = 0
 
     self.shield = BasicShield(self)
@@ -904,8 +905,8 @@ class Weapon(AGObject):
 
   def shoot(self):
     """
-    Try to perform shot. Return projectile / beam / whatever if
-    successfull, C{False} or C{None} otherwise. 
+    Try to perform shot. Return projectile / beam / list of projectiles / 
+    whatever if successfull, C{False} or C{None} otherwise. 
     """
 
     pass
@@ -1012,7 +1013,7 @@ class ProjectileAmmoWeapon(AmmoWeapon):
   @ivar target: Reference to selected target or None.
 
   @type targeting_angle: float
-  @ivar targeting_angle: Half of the shooting arc in radians.
+  @ivar targeting_angle: Half of the shooting arc in degrees.
   """
 
   targeted = False
@@ -1112,8 +1113,8 @@ class ProjectileAmmoWeapon(AmmoWeapon):
 
   def shoot(self, pos):
     """
-    Perform shot if the weapon has cooled and there is ammo left. Create
-    projectile instance.
+    Perform shot if the weapon has cooled and there is ammo left. Create and
+    return projectile instance.
     """
  
     if self.remaining_cooldown > 0:
@@ -1146,13 +1147,126 @@ class ProjectileAmmoWeapon(AmmoWeapon):
     return projectile_cls(pos, dir, g_coll, g_proj)
 
 
+class SeekingPAW(ProjectileAmmoWeapon):
+  """
+  Ammo weapon shooting C{L{SeekingProjectile}}s (attempts to
+  shoot projectiles not derived from C{SeekingProjectile}
+  will fail).
+
+  This class should be treated as abstract class (except debugging).
+  """
+
+  def shoot(self, pos):
+    p = ProjectileAmmoWeapon.shoot(self, pos)
+    if p is not None:
+      if isinstance(self.owner, EnemyShip):
+        targets = GroupManager().get('ship').sprites()
+      else:
+        targets = GroupManager().get('enemies').sprites()
+
+      p.set_target(self.owner.closest(targets))
+
+    return p
+
+
+
 class BasicPAW(ProjectileAmmoWeapon):
+  """C{L{ProjectileAmmoWeapon}} used in testing."""
+
+  pass
+
+
+class MiniCannon(ProjectileAmmoWeapon):
+  """Basic C{L{ProjectileAmmoWeapon}} used commonly by weak enemies."""
+
+  pass
+
+
+class AutoCannon(ProjectileAmmoWeapon):
   """
-  Basic type of C{L{ProjectileAmmoWeapon}}.
+  More advanced version of C{L{MiniCannon}} with shorter cooldown time and
+  auto-targeting mechanism (wide angle).
   """
+
+  pass
+
+class MultiCannon(ProjectileAmmoWeapon):
+  """
+  Cannon shooting multiple projectiles at once. Each shot consumes only one
+  piece of ammo.
+  
+  @type shooting_angle: int
+  @ivar shooting_angle: Half of the shooting arc in degrees.
+
+  @type shoot_cnt: int
+  @ivar shoot_cnt: Number of projectiles. Must be greater than one.
+  """
+
+  shooting_angle = 15
+  shoot_cnt = 3
 
   def __init__(self, owner):
     ProjectileAmmoWeapon.__init__(self, owner)
+    self._setattrs('shooting_angle, shoot_cnt', self.cfg)
+
+    if self.shoot_cnt < 2:
+      raise ValueError, "MultiCannon should shoot at least 2 projectiles at \
+          once"
+
+  def shoot(self, pos):
+    """
+    Perform shot if the weapon has cooled and there is ammo left. Create
+    projectile instances and return them as a list.
+    """
+ 
+    if self.remaining_cooldown > 0:
+      return
+
+    if self.current < 1:
+      return
+
+    dir = self._target_dir(self.target)
+    if dir is None:
+      self._find_target()
+      dir = self._target_dir(self.target)
+
+    if dir is None:
+      return
+
+    AmmoWeapon.shoot(self)
+
+    self.remaining_cooldown = self.cooldown
+    self.current -= 1
+
+    if isinstance(self.owner, EnemyShip):
+      g_proj = GroupManager().get('enemy_projectiles')
+      g_coll = GroupManager().get('ship')
+    else:
+      g_proj = GroupManager().get('player_projectiles')
+      g_coll = GroupManager().get('enemies')
+
+    projectile_cls = eval(self.projectile_cls_name)
+
+    p = []
+    for i in xrange(self.shoot_cnt):
+      shoot_dir = dir + (2 * i / (self.shoot_cnt - 1.) - 1) * \
+          self.shooting_angle
+
+      p.append(projectile_cls(pos, shoot_dir, g_coll, g_proj))
+
+    return p
+
+
+class SeekerCannon(SeekingPAW):
+  """Cannon shooting small small seeking projectiles."""
+
+  pass
+
+
+class HeavyCannon(ProjectileAmmoWeapon):
+  """Heavy cannon shooting scattering projectiles."""
+
+  pass
 
 
 class InstantEnergyWeapon(EnergyWeapon):
@@ -1350,7 +1464,7 @@ class ProjectileEnergyWeapon(EnergyWeapon):
   @ivar target: Reference to selected target or None.
 
   @type targeting_angle: float
-  @ivar targeting_angle: Half of the shooting arc in radians.
+  @ivar targeting_angle: Half of the shooting arc in degrees.
   """
 
   targeted = False
@@ -1511,6 +1625,8 @@ class SeekingPEW(ProjectileEnergyWeapon):
   Blaster shooting C{L{SeekingProjectile}}s (attempts to
   shoot projectiles not derived from C{SeekingProjectile}
   will fail).
+
+  This class should be treated as abstract class (except debugging).
   """
 
   def __init__(self, owner):
@@ -2119,7 +2235,9 @@ class ScatteringProjectile(Projectile):
   def __init__(self, pos, dir, g_coll, *groups):
     Projectile.__init__(self, pos, dir, g_coll, *groups)
 
-    self._setattrs('lifetime, child_cnt, child_cls_name', self.cfg)
+    self._setattrs('lifetime, child_cnt, child_cls_name, scatter_type',
+        self.cfg)
+
     if self.child_cls_name is None:
       raise ValueError("Unknown child class name")
 
@@ -2256,27 +2374,11 @@ class DirectedSeekingProjectile(SeekingProjectile):
   def _update_image(self):
     """Update projectile looks based on current direction."""
 
-    if self.period == 0 or self.frame_count == 1:
-      return
-
     state = self._get_dir_state(self.mover.get_dir())
     if self._previous_state is None or self._previous_state != state:
       self.image.fill((0, 0, 0, 0))
       self._blit_state(self.base_res_name, state)
       self._previous_state = state
-
-
-class Bullet(Projectile):
-  def __init__(self, pos, dir, g_coll, *groups):
-    Projectile.__init__(self, pos, dir, g_coll, *groups)
-
-    size = 1, 2
-
-    self.image = pygame.Surface(size)
-    self.image.set_colorkey((0, 0, 0))
-    self.image.fill((255, 210, 0))
-
-    self._initialize_position(pos, 'center', size)
 
 
 class EnergyProjectile(Projectile):
@@ -2305,6 +2407,43 @@ class SeekingEnergyProjectile(SeekingProjectile):
   """
   Energy projectile that follows chosen target.
   """
+
+  pass
+
+
+class MiniCannonProjectile(Projectile):
+  """Projectile shot by C{L{MiniCannon}}."""
+
+  pass
+
+
+class AutoCannonProjectile(Projectile):
+  """Projectile shot by C{L{AutoCannon}}."""
+
+  pass
+
+
+
+class MultiCannonProjectile(Projectile):
+  """Projectile shot by C{L{MultiCannon}}."""
+
+  pass
+
+
+class SeekerCannonProjectile(DirectedSeekingProjectile):
+  """Projectile shot by C{L{SeekerCannon}}."""
+
+  pass
+
+
+class HeavyCannonProjectile(ScatteringProjectile):
+  """Scattering projectile shot by C{L{HeavyCannon}}."""
+
+  pass
+
+
+class HeavyCannonProjectileFragment(Projectile):
+  """Projectile generated when C{L{HeavyCannonProjectile}} explodes."""
 
   pass
 

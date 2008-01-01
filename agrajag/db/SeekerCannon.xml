@@ -1,0 +1,10 @@
+<content>
+  <gfx>
+  </gfx>
+  <properties>
+    <prop name='projectile_cls_name' value='SeekerCannonProjectile' />
+    <prop name='maximum' value='300' type='int' />
+    <prop name='cooldown' value='0.35' type='float' />
+    <prop name='targeted' value='0' type='bool' />
+  </properties>
+</content>
