@@ -537,7 +537,7 @@ class PlayerShip(Ship):
 
     self.exhaust(False) 
 
-    self.weapons = [MultiCannon(self), SeekerCannon(self), HeavyCannon(self), 
+    self.weapons = [AutoCannon(self), MultiCannon(self), SeekerCannon(self), HeavyCannon(self), 
         BasicBeamer(self)]
 
     self._current_weapon = 0

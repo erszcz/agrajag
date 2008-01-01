@@ -1,7 +1,7 @@
 <content>
   <gfx>
-    <resource name='projectile' file='auto_cannon_projectile.png' state_w='3'
-      state_h='3'>
+    <resource name='projectile' file='auto_cannon_projectile.png' state_w='5'
+      state_h='5'>
       <state name='frame0' x_off='0'    y_off='0' />
     </resource>
   </gfx>
