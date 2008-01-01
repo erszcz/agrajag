@@ -9,8 +9,9 @@ from dbmanager import DBManager
 from gfxmanager import GfxManager
 from stagemanager import StageManager
 from groupmanager import GroupManager
-from spaceship import PlayerShip, PlayerShip, EnemyShip, \
-    EnemyInterceptor, RechargeBonus, EnemyMine
+from spaceship import PlayerShip, EnemyShip, \
+    EnemyInterceptor, RechargeBonus, SuperShieldBonus, ShieldUpgradeBonus, \
+    EnemyMine
 from background import SpaceBackground
 from obstacle import Obstacle, MovingObstacle
 import mover
@@ -68,6 +69,9 @@ def run():
   g_enemies.add(MovingObstacle((160, 80)))
 
   g_bonuses.add(RechargeBonus((300, 200)))
+  g_bonuses.add(SuperShieldBonus((500, 300)))
+  g_bonuses.add(ShieldUpgradeBonus((500, 500)))
+  g_bonuses.add(ShieldUpgradeBonus((300, 500)))
 
   ship = ref( PlayerShip((175, viewport_size[1] - 60), g_ship) )
   hud.setup_connections(ship())
