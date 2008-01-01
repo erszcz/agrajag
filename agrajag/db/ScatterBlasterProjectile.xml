@@ -10,7 +10,6 @@
   <properties>
     <prop name='max_speed'    type='int' value='120' />
     <prop name='damage'       type='int' value='50' />
-    <prop name='cooldown'     type='int' value='60' />
     <prop name='lifetime'     type='int' value='1000' />
     <prop name='child_cnt'    type='int' value='5' />
     <prop name='child_cls_name'          value='SeekingEnergyProjectile' />

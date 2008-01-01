@@ -1,0 +1,11 @@
+<content>
+  <gfx>
+  </gfx>
+  <properties>
+    <prop name='projectile_cls_name' value='AutoCannonProjectile' />
+    <prop name='maximum' value='500' type='int' />
+    <prop name='cooldown' value='0.3' type='float' />
+    <prop name='targeted' value='1' type='bool' />
+    <prop name='targeting_angle' value='80' type='float' />
+  </properties>
+</content>

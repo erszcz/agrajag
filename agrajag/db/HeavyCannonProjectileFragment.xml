@@ -1,0 +1,13 @@
+<content>
+  <gfx>
+    <resource name='projectile' file='heavy_cannon_projectile.png' state_w='5'
+      state_h='5'>
+      <state name='frame0' x_off='0'    y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='max_speed'    type='int' value='280' />
+    <prop name='damage'       type='int' value='8' />
+    <prop name='explosion_cls_name'     value='BulletExplosion' />
+  </properties>
+</content>
