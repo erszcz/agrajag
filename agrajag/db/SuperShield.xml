@@ -1,0 +1,14 @@
+<content>
+  <gfx>
+    <resource name='shield' file='super_shield.png' state_w='45' state_h='52'>
+      <state name='def' x_off='0'   y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='maximum' value='200' type='int' />
+    <prop name='recharge_rate' value='13' type='int' />
+    <prop name='cost' value='4' type='int' />
+    <prop name='critical_speed' value='2000' type='float' />
+    <prop name='lifetime' value='600000' type='int' />
+  </properties>
+</content>

@@ -485,10 +485,7 @@ class Ship(Destructible):
     """
 
     if damage > 0 and self.shield is not None:
-      if isinstance(self.shield, AutoShield):
-        damage = self.shield.absorb(damage, 1, speed)
-      else:
-        damage = self.shield.absorb(damage, 1)
+      damage = self.shield.absorb(damage, 1, speed)
 
     if damage > 0 and self.armour is not None:
       damage = self.armour.absorb(damage, 1)
@@ -544,7 +541,7 @@ class PlayerShip(Ship):
         BasicTPEW(self), BasicPAW(self)]
     self._current_weapon = 0
 
-    self.shield = BasicAutoShield(self)
+    self.shield = BasicShield(self)
     self.armour = BasicArmour()
     self.reactor = BasicReactor()
 
@@ -554,7 +551,6 @@ class PlayerShip(Ship):
     self.weapon_updated = Signal()
     self.shield.shield_state_updated.connect(self.shield_updated)
     self.weapons[self._current_weapon].weapon_state_updated.connect(self.weapon_updated)
-
 
   def exhaust(self, on):
     """
@@ -1592,10 +1588,8 @@ class Shield(AGSprite):
         self.current = 0
         self.activate(False)
 
-      size = self.gfx['shield']['w'], self.gfx['shield']['h']
-
       pos = self.owner.center
-      self._initialize_position(pos, 'center', size)
+      self._initialize_position(pos, 'center', self.gfx['shield']['size'])
 
     self.shield_state_updated(self.current, self.maximum)
 
@@ -1735,19 +1729,85 @@ class AutoShield(Shield):
 
 
 class BasicShield(Shield):
-  def __init__(self, owner):
-    Shield.__init__(self, owner)
+  pass
+
+
+class MediumShield(Shield):
+  pass
 
 
 class BasicAutoShield(AutoShield):
-  def __init__(self, owner):
-    AutoShield.__init__(self, owner)
+  pass
 
 
 class EnemyShipShield(AutoShield):
-  def __init__(self, owner):
-    AutoShield.__init__(self, owner)
+  pass
  
+
+class SuperShield(AutoShield):
+  """
+  C{SuperShield} can be granted by a bonus. It temporarily replaces currently
+  used shield. When energy of C{SuperShield} is depleted or time limit passess
+  previously used shield is restored.
+
+  @type previous_shield: C{L{Shield}} or C{None}
+  @ivar previous_shield: Previously used shield.
+
+  @type lifetime: int
+  @ivar lifetime: Total shield lifetime in miliseconds.
+
+  @type time: int
+  @ivar time: Current lifetime in miliseconds.
+  """
+
+  def __init__(self, owner):
+    """
+    Init as normal C{AutoShield} and take over C{owner} grabbing reference
+    to shield it uses (if any) and replacing it. If that shield is active
+    deactivate it, but activate itself.
+    """
+
+    AutoShield.__init__(self, owner)
+    self._setattrs('lifetime', self.cfg)
+
+    self.time = 0
+    self.previous_shield = owner.shield
+    self.owner.shield = self
+    if self.previous_shield is not None:
+      if self.previous_shield.active:
+        self.previous_shield.activate(False, self.previous_shield.auto)
+        self.activate(True, self.previous_shield.auto)
+
+    self.owner.shield_updated(self.current, self.maximum)
+
+  def absorb(self, damage, efficiency = 1.0, speed = None):
+    """
+    Absorb damage as regular shield. If shield energy is depleted restore
+    previous shield.
+    """
+
+    damage = AutoShield.absorb(self, damage, efficiency, speed)
+    print self.current, self.maximum
+    if self.current <= 0:
+      self.shield_updated(self.current, self.maximum)
+      self.owner.shield = self.previous_shield
+
+      self.kill()
+      del self
+
+
+    return damage
+
+  def update(self):
+    self.time += self.clock.frame_span()
+    if self.time > self.lifetime:
+      self.owner.shield = self.previous_shield
+
+      self.kill()
+      del self
+    else:
+      AutoShield.update(self)
+
 
 class Armour(AGObject):
   """
@@ -2319,3 +2379,62 @@ class RechargeBonus(Bonus):
     """
 
     ship.recharge(self.power, True)
+
+class SuperShieldBonus(Bonus):
+  """
+  """
+
+  def _use(self, ship):
+    """
+    Set C{ship}'s shield to new C{SuperShield}.
+    """
+
+    SuperShield(ship)
+
+
+class ShieldUpgradeBonus(Bonus):
+  """
+  This bonus replaces player ship's shield with a better one. New
+  shield comes with full energy. If ships is already equipped with the best
+  shield its energy is restored to maximum. 
+
+  Shield chain must be defined in bonus's XML config.
+  """
+
+  def __init__(self, pos, *groups):
+    Bonus.__init__(self, pos, *groups)
+    self._setattrs('shield_chain', self.cfg)
+
+    if len(self.shield_chain) == 0:
+      raise ValueError, "Shield chain is empty!"
+
+  def _use(self, ship):
+    if ship.shield is not None:
+      current_cls_name = ship.shield.__class__.__name__
+
+      try:
+        index = self.shield_chain.index(current_cls_name)
+      except ValueError, e:
+        raise ValueError, "Class %s not found in \
+        ShieldUpgradeBonus.shield_chain" % current_cls_name
+
+      if index == len(self.shield_chain) - 1:
+        ship.shield.recharge(ship.shield.maximum, True)
+      else:
+        active = ship.shield.active
+        auto = ship.shield.auto if hasattr(ship.shield, 'auto') else None
+
+        new_cls_name = eval(self.shield_chain[index + 1])
+        
+        ship.shield.kill()
+        ship.shield = new_cls_name(ship)
+
+        if isinstance(ship.shield, AutoShield):
+          ship.shield.activate(active, auto)
+        else:
+          ship.shield.activate(active)
+
+    else:
+      new_cls_name = eval(self.shield_chain[0])
+      ship.shield = new_cls_name(ship)
+
