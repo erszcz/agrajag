@@ -1,0 +1,12 @@
+<content>
+  <gfx>
+  </gfx>
+  <properties>
+    <prop name='projectile_cls_name' value='MultiCannonProjectile' />
+    <prop name='maximum' value='230' type='int' />
+    <prop name='cooldown' value='0.4' type='float' />
+    <prop name='targeted' value='0' type='bool' />
+    <prop name='shooting_angle' value='15' type='int' />
+    <prop name='shoot_cnt' value='3' type='int' />
+  </properties>
+</content>
