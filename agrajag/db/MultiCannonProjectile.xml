@@ -8,6 +8,6 @@
   <properties>
     <prop name='max_speed'    type='int' value='240' />
     <prop name='damage'       type='int' value='7' />
-    <prop name='explosion_cls_name'     value='BulletExplosion' />
+    <prop name='explosion_cls_name'     value='SmallExplosion' />
   </properties>
 </content>

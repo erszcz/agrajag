@@ -2075,6 +2075,10 @@ class EnergyProjectileExplosion(Explosion):
     self._initialize_position(pos, ('centerx', 'centery'), size)
 
 
+class SmallExplosion(Explosion):
+  pass
+
+
 class MediumExplosion(Explosion):
   pass
 
