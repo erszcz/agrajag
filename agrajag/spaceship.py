@@ -2046,10 +2046,6 @@ class Explosion(AGSprite):
       self.time += self.clock.frame_span()
 
 
-class BulletExplosion(Explosion):
-  pass
-
-
 class ShellExplosion(Explosion):
   pass
 
