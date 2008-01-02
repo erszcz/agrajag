@@ -1,0 +1,17 @@
+<content>
+  <gfx>
+    <resource name='expl' file='expl_small_b.png' state_w='11' state_h='11'>
+      <state name='frame0' x_off='1'   y_off='1' />
+      <state name='frame1' x_off='13'  y_off='1' />
+      <state name='frame2' x_off='25'  y_off='1' />
+      <state name='frame3' x_off='37'  y_off='1' />
+      <state name='frame4' x_off='49'  y_off='1' />
+      <state name='frame5' x_off='61' y_off='1' />
+      <state name='frame6' x_off='73' y_off='1' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='frame_length' value='75' type='int' />
+    <prop name='frame_count' value='7' type='int' />
+  </properties>
+</content>
