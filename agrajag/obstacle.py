@@ -17,9 +17,6 @@ class Obstacle(Destructible):
 
     self._initialize_position(pos, ('left', 'top'), size)
 
-  def update(self):
-    pass
-
 class MovingObstacle(Obstacle):
   def __init__(self, pos, *groups):
     Obstacle.__init__(self, pos, *groups)
@@ -29,6 +26,3 @@ class MovingObstacle(Obstacle):
     #self.mover = CircularMover([pos[0], pos[1]], 1, {})
     #self.mover = LinearMover([pos[0], pos[1]], 1, {})
     #self.mover = LinearMover([pos[0], pos[1]], 60, {})
-
-  def update(self):
-    self._update_position()
