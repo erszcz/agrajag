@@ -1,0 +1,11 @@
+<content>
+  <gfx>
+  </gfx>
+  <properties>
+    <prop name='projectile_cls_name' value='MiniBlasterProjectile' />
+    <prop name='maximum' value='300' type='int' />
+    <prop name='recharge_rate' value='9' type='int' />
+    <prop name='cost' value='2' type='int' />
+    <prop name='cooldown' value='0.2' type='float' />
+  </properties>
+</content>
