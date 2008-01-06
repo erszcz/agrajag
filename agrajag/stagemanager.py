@@ -51,20 +51,20 @@ class StageManager(XMLManager):
 
       if dom_event.nodeName == 'spawn':
         time = int(dom_event.getAttribute('time'))
-        s = { \
-            'time' : time, \
-            'x' : int(dom_event.getAttribute('x')), \
-            'y' : int(dom_event.getAttribute('y')), \
+        s = {
+            'time' : time, 
+            'x' : int(dom_event.getAttribute('x')), 
+            'y' : int(dom_event.getAttribute('y')), 
             'object_cls_name' : dom_event.getAttribute('object_cls_name'),
-            'mover_cls_name' : dom_event.getAttribute('mover_cls_name') \
+            'mover_cls_name' : dom_event.getAttribute('mover_cls_name'),
+            'bonus_cls_name' : dom_event.getAttribute('bonus_cls_name')
             }
 
-        dom_object_params = dom_event.getElementsByTagName('object_param')
-        dom_mover_params = dom_event.getElementsByTagName('mover_param')
         dom_groups = dom_event.getElementsByTagName('group')
 
         s['object_params'] = self.get_props(dom_event, 'object_param')
         s['mover_params'] = self.get_props(dom_event, 'mover_param')
+        s['bonus_params'] = self.get_props(dom_event, 'bonus_param')
 
         s['groups'] = {}
         for dom_g in dom_groups:
