@@ -15,7 +15,7 @@ class DBManager(XMLManager):
   content = {}
 
   def import_db(self, dir):
-    '''Imports all files from specified directory and puts contents in static variable C{DBManager.content}'''
+    '''Import all files from specified directory and puts contents in static variable C{DBManager.content}'''
 
     if not dir:
       raise Exception('DBManager error: no drectory specified')
@@ -27,7 +27,7 @@ class DBManager(XMLManager):
         DBManager.content[f.rsplit('.', 1)[0]] = self.import_file(ff)
 
   def import_file(self, filepath):
-    '''Imports contents of a single file and returns them as a dictionary'''
+    '''Import contents of a single file and returns them as a dictionary'''
 
     dom = xml.dom.minidom.parse(filepath)
     dom_gfx = dom.getElementsByTagName('content')[0]. \
@@ -61,7 +61,10 @@ class DBManager(XMLManager):
     return { 'gfx' : gfx, 'props' : props }
 
   def get(self, class_name = None):
-    '''Returns config for a specific class or for all classes if no classname is given'''
+    '''
+    Return config for a specific class or for all classes if no
+    classname is given.
+    '''
 
     return DBManager.content[class_name] if class_name else DBManager.content
     
