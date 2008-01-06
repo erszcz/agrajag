@@ -9,9 +9,9 @@ from dbmanager import DBManager
 from gfxmanager import GfxManager
 from stagemanager import StageManager
 from groupmanager import GroupManager
-from spaceship import PlayerShip, EnemyShip, \
-    EnemyInterceptor, RechargeBonus, SuperShieldBonus, ShieldUpgradeBonus, \
-    EnemyMine
+from spaceship import BonusHolder
+from spaceship import PlayerShip, EnemyShip, EnemyInterceptor, EnemyMine
+from spaceship import RechargeBonus, SuperShieldBonus, ShieldUpgradeBonus
 from background import SpaceBackground
 from obstacle import Obstacle, MovingObstacle
 import mover
@@ -90,10 +90,17 @@ def run():
             object_cls = eval(spawn['object_cls_name'])
             object = object_cls(pos)
 
+            if spawn['bonus_cls_name']:
+              if isinstance(object, BonusHolder):
+                object.set_bonus(spawn['bonus_cls_name'], spawn['bonus_params'])
+              else:
+                raise ValueError, "Instances of %s can not hold bonuses." \
+                    % object.__class__.__name__
+
             if spawn['mover_cls_name']:
               mover_cls = eval("mover.%s" % spawn['mover_cls_name'])
               m = mover_cls(pos, object.max_speed, spawn['mover_params'])
-              object.mover = m
+              object.set_mover(m)
 
             for g in spawn['groups']:
               if g == 'enemies':

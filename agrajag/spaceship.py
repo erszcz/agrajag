@@ -417,7 +417,50 @@ class Destructible(AGSprite):
     self = None
 
 
-class Ship(Destructible):
+class BonusHolder(Destructible):
+  """
+  Class desribing an object that can hold a C{L{Bonus}} and release it
+  when destroyed.
+
+  @type _bonus_cls_name: str
+  @ivar _bonus_cls_name: Class name of the bonus item.
+
+  @type _bonus_params: dict
+  @ivar _bonus_params: Dictionary containing parameters to be passed to 
+  C{Bonus} constructor.
+  """
+
+  _bonus_cls_name = None
+  _bonus_params = {}
+
+  def set_bonus(self, cls_name, params):
+    """
+    Set bonus's class name and initialization parameters.
+    """
+
+    self._bonus_cls_name = cls_name
+    self._bonus_params = params
+
+  def _create_bonus(self):
+    """
+    Create instance of bonus item and add it to group 'bonuses'. 
+    Do nothing if C{_bonus_cls_name} is None.
+    """
+
+    if self._bonus_cls_name is None:
+      return None
+
+    bonus_cls = eval(self._bonus_cls_name)
+    bonus = bonus_cls(self.pos, self._bonus_params)
+    GroupManager().get('bonuses').add(bonus)
+
+  def kill(self):
+    self._create_bonus()
+
+    Destructible.kill(self)
+
+
+class Ship(BonusHolder):
   '''
   Base class for player's ship and enemy ships.
   
@@ -2502,15 +2545,15 @@ class Bonus(AGSprite):
   za zadanie wywolac jakis pozytywny dla obiektu efekt.
   """
 
-  def __init__(self, pos, *groups):
+  def __init__(self, pos, params = {}, *groups):
     """
     Create bonus instance. Initialize its C{image} and C{rect}.
     """
 
     AGSprite.__init__(self, pos, *groups)
 
-    size = self.gfx['bonus']['w'], self.gfx['bonus']['h']
-    self.image = pygame.Surface(size, pygame.SRCALPHA,
+    size = self.gfx['bonus']['size']
+    self.image = pygame.Surface(size, pygame.SRCALPHA, 
         self.gfx['bonus']['image'])
 
     self._blit_state('bonus', 'def')
@@ -2555,9 +2598,10 @@ class RechargeBonus(Bonus):
 
   power = 100
 
-  def __init__(self, pos, *groups):
-    Bonus.__init__(self, pos, *groups)
+  def __init__(self, pos, params = {}, *groups):
+    Bonus.__init__(self, pos, params, *groups)
     self._setattrs('power', self.cfg)
+    self._setattrs('power', params)
 
   def _use(self, ship):
     """
@@ -2587,7 +2631,7 @@ class ShieldUpgradeBonus(Bonus):
   Shield chain must be defined in bonus's XML config.
   """
 
-  def __init__(self, pos, *groups):
+  def __init__(self, pos, params = {}, *groups):
     Bonus.__init__(self, pos, *groups)
     self._setattrs('shield_chain', self.cfg)
 
