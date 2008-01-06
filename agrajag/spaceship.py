@@ -1977,8 +1977,13 @@ class SuperShield(AutoShield):
     self.owner.shield = self
     if self.previous_shield is not None:
       if self.previous_shield.active:
-        self.previous_shield.activate(False, self.previous_shield.auto)
-        self.activate(True, self.previous_shield.auto)
+
+        if isinstance(self.previous_shield, AutoShield):
+          self.previous_shield.activate(False, self.previous_shield.auto)
+          self.activate(True, self.previous_shield.auto)
+        else:
+          self.previous_shield.activate(False)
+          self.activate(True)
 
     self.owner.shield_updated(self.current, self.maximum)
 
