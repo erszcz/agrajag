@@ -1,0 +1,17 @@
+<content>
+  <gfx>
+    <resource name='projectile' file='mini_blaster_projectile.png' state_w='7'
+      state_h='7'>
+      <state name='frame0' x_off='0'   y_off='0' />
+      <state name='frame1' x_off='7'   y_off='0' />
+      <state name='frame2' x_off='14'  y_off='0' />
+      <state name='frame3' x_off='21'  y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='max_speed'    type='int' value='275' />
+    <prop name='damage'       type='int' value='3' />
+    <prop name='explosion_cls_name'     value='EnergyProjectileExplosion' />
+    <prop name='period'       type='int' value='500' />
+  </properties>
+</content>

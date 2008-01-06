@@ -1,0 +1,11 @@
+<content>
+  <gfx>
+  </gfx>
+  <properties>
+    <prop name='projectile_cls_name' value='ScatterBlasterProjectile' />
+    <prop name='maximum' value='200' type='int' />
+    <prop name='recharge_rate' value='9' type='int' />
+    <prop name='cost' value='5' type='int' />
+    <prop name='cooldown' value='0.45' type='float' />
+  </properties>
+</content>

@@ -623,7 +623,7 @@ class PlayerShip(Ship):
 
     self.exhaust(False) 
 
-    self.weapons = [AutoCannon(self), MultiCannon(self), SeekerCannon(self), HeavyCannon(self), 
+    self.weapons = [ScatterBlaster(self), AutoCannon(self), MultiCannon(self), SeekerCannon(self), HeavyCannon(self), 
         BasicBeamer(self)]
 
     self._current_weapon = 0
@@ -1731,6 +1731,56 @@ class SeekingPEW(ProjectileEnergyWeapon):
     return p
 
 
+class MiniBlaster(ProjectileEnergyWeapon):
+  """
+  Projectile energy weapon with following characteristics:
+
+    * very small projectile
+    * low damage
+    * low energy consumption
+    * medium cooldown 
+  """
+
+
+class Blaster(ProjectileEnergyWeapon):
+  """
+  Projectile energy weapon with following characteristics:
+
+    * small projectile
+    * medium damage
+    * medium energy consumption
+    * medium cooldown 
+  """
+
+  pass
+
+
+class DualBlaster(ProjectileEnergyWeapon):
+  """
+  Projectile energy weapon with following characteristics:
+
+    * medium projectile
+    * medium/high damage
+    * medium/high energy consumption
+    * medium cooldown 
+  """
+
+  pass
+
+
+class ScatterBlaster(ProjectileEnergyWeapon):
+  """
+  Projectile energy weapon with following characteristics:
+
+    * medium scattering projectile
+    * medium damage
+    * medium energy consumption
+    * medium cooldown 
+  """
+
+  pass
+
+
 class Shield(AGSprite):
   """
   Base class for all shield types used both by player ship and enemies. A
@@ -2477,6 +2527,30 @@ class EnergyProjectile(Projectile):
   pass
 
 
+class MiniBlasterProjectile(Projectile):
+  pass
+
+
+class DualBlasterProjectile(Projectile):
+  pass
+
+
+class BlasterProjectile(Projectile):
+  pass
+
+
+class ScatterBlasterProjectile(ScatteringProjectile):
+  pass
+
+
+class ScatterBlasterProjectileFragment(Projectile):
+  pass
+
+
+class DualBlasterProjectile(Projectile):
+  pass
+
+
 class StarProjectile(Projectile):
   """Star shaped energetic projectile."""
 
@@ -2484,14 +2558,6 @@ class StarProjectile(Projectile):
 
 
 class BigProjectile(Projectile):
-  pass
-
-
-class ScatterBlasterProjectile(ScatteringProjectile):
-  """
-  Projectile intended to be shot by C{L{ScatterBlaster}}.
-  """
-
   pass
 
 

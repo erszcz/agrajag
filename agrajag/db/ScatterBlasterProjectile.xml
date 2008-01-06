@@ -1,19 +1,21 @@
 <content>
   <gfx>
-    <resource name='projectile' file='energy.png' state_w='10' state_h='10'>
+    <resource name='projectile' file='scatter_blaster_projectile.png'
+      state_w='13' state_h='13'>
       <state name='frame0' x_off='0'    y_off='0' />
-      <state name='frame1' x_off='10'   y_off='0' />
-      <state name='frame2' x_off='20'   y_off='0' />
-      <state name='frame3' x_off='30'   y_off='0' />
+      <state name='frame1' x_off='13'   y_off='0' />
+      <state name='frame2' x_off='26'   y_off='0' />
+      <state name='frame3' x_off='39'   y_off='0' />
     </resource>
   </gfx>
   <properties>
     <prop name='max_speed'    type='int' value='120' />
-    <prop name='damage'       type='int' value='50' />
+    <prop name='damage'       type='int' value='30' />
     <prop name='lifetime'     type='int' value='1000' />
     <prop name='child_cnt'    type='int' value='5' />
-    <prop name='child_cls_name'          value='SeekingEnergyProjectile' />
+    <prop name='child_cls_name'
+      value='ScatterBlasterProjectileFragment' />
     <prop name='explosion_cls_name'      value='EnergyProjectileExplosion' />
-    <prop name='period'       type='int' value='150' />
+    <prop name='period'       type='int' value='450' />
   </properties>
 </content>
