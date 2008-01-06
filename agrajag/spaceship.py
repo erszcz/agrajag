@@ -25,7 +25,17 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
 
   @type gfx: dict
   @ivar gfx: The graphics resources provided by C{L{GfxManager}}.
-  
+
+  @type screen_size: sequence of two integers
+  @ivar screen_size: Size of the screen in pixels.
+
+  @type offscreen_time: int
+  @ivar offscreen_time: Amount of time since object left screen last time.
+
+  @type offscreen_lifetime: int or None
+  @ivar offscreen_lifetime: Maximum amount of time object can spend 
+  offscreen (may not apply to some objects).
+
   @type mover: None or class derived from C{Mover}
   @ivar mover: Object responsible for controlling sprite movement.
 
@@ -53,6 +63,8 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
   '''
 
   max_speed = 0
+  offscreen_lifetime = 5000
+  offscreen_time = 0
 
   def __init__(self, pos, *groups):
     '''
@@ -68,6 +80,9 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
     self.gfx = GfxManager().get(self.__class__.__name__)
     self._setattrs('max_speed', self.cfg)
     self.clock = Clock()
+
+    screen = pygame.display.get_surface()
+    self.screen_size = screen.get_size() if screen else (0, 0)
 
     self._initialize_position(pos, 'center', (0, 0))
 
@@ -88,6 +103,20 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
     """
 
     self.mover = mover
+
+  def is_offscreen(self):
+    """
+    Return C{True} if object is completely offscreen or C{False} otherwise.
+    Overlay does not count.
+    """
+
+    if self.rect.bottom < 0 or self.rect.top > self.screen_size[1]:
+      return True
+
+    if self.rect.left < 0 or self.rect.right > self.screen_size[0]:
+      return True
+
+    return False
 
   def _check_cfg(self, required_props):
     """
@@ -254,16 +283,30 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
 
   def update(self):
     """
-    Update position and animations.
+    Update position and animations. Kill object if it is off the
+    screen for too long.
     """
 
     self._update_position()
     self._update_animations()
 
+    if self.offscreen_lifetime is not None:
+      if self.is_offscreen():
+        self.offscreen_time += self.clock.frame_span()
+      else:
+        self.offscreen_time = 0
+
+      if self.offscreen_time > self.offscreen_lifetime:
+        self.kill()
+        self = None
+
   def kill(self):
     """
     Emit signal and kill sprite.
     """
+
+    if self._overlay is not None:
+      self._overlay.kill()
 
     self.killed()
     pygame.sprite.Sprite.kill(self)
@@ -371,7 +414,7 @@ class Destructible(AGSprite):
       GroupManager().get('explosions').add( explosion )
 
     self.kill()
-    del self
+    self = None
 
 
 class Ship(Destructible):
@@ -766,8 +809,9 @@ class EnemyShip(Ship):
 
   def update(self):
     Ship.update(self)
+    if self is None:
+      return
 
-    self._update_position()
     self.shoot()
 
 
@@ -782,7 +826,7 @@ class EnemyInterceptor(EnemyShip):
 class EnemyMine(Destructible):
   """
   """
-
+  
   target = None
 
   def __init__(self, pos, *groups):
@@ -1357,8 +1401,7 @@ class InstantEnergyWeapon(EnergyWeapon):
     target = self._find_target(pos)
     if target is None:
       if isinstance(self.owner, EnemyShip):
-        #tmp
-        beam.set_position((pos[0], 500), pos)
+        beam.set_position((pos[0], self.owner.screen_size[1]), pos)
       else:
         beam.set_position(pos, (pos[0], 0))
 
@@ -1439,7 +1482,7 @@ class InstantEnergyBeam(AGSprite):
       self.image.set_alpha(current_alpha - self.vanish_speed)
     else:
       self.kill()
-      del self
+      self = None
 
 
 class BasicBeam(InstantEnergyBeam):
@@ -1920,7 +1963,7 @@ class SuperShield(AutoShield):
       self.owner.shield = self.previous_shield
 
       self.kill()
-      del self
+      self = None
     else:
       AutoShield.update(self)
 
@@ -2031,7 +2074,7 @@ class Explosion(AGSprite):
   # improving this method to increase the animation look wouldn't hurt
     if self.time >= self.frame_count * self.frame_length:
       self.kill()
-      del self
+      self = None
     else:
       try:
         for frame in range(0, self.frame_count):
@@ -2181,15 +2224,14 @@ class Projectile(AGSprite):
     This method may be overriden provided it does all mentioned above.
     """
     
+    AGSprite.update(self)
+    if self is None:
+      return
+
     self._update_image()
-    self._update_position()
     self._detect_collisions()
-    # tmp
-    if self.rect.bottom < 0 or self.rect.top > 600:
-      self.kill()
-      del self
-    else:
-      self.time += self.clock.frame_span()
+
+    self.time += self.clock.frame_span()
 
   def explode(self):
     explosion_cls = eval(self.explosion_cls_name)
@@ -2300,7 +2342,9 @@ class SeekingProjectile(Projectile):
       self.mover.target.killed.disconnect(self.clear_target)
 
     self.mover.set_target(target)
-    self.mover.target.killed.connect(self.clear_target)
+
+    if target is not None:
+      self.mover.target.killed.connect(self.clear_target)
 
   def clear_target(self, disconnect = False):
     """
@@ -2484,13 +2528,16 @@ class Bonus(AGSprite):
     return None if i == -1 else ships[i]
 
   def update(self):
-    self.pos = self._update_position()
+    AGSprite.update(self)
+    if self is None:
+      return
 
     ship = self._detect_collisions()
     if ship is not None:
       self._use(ship)
       self.kill()
-      del self
+      self = None
+      return
 
   def _use(self, ship):
     """
