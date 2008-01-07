@@ -10,7 +10,8 @@ from gfxmanager import GfxManager
 from stagemanager import StageManager
 from groupmanager import GroupManager
 from spaceship import BonusHolder
-from spaceship import PlayerShip, EnemyShip, EnemyInterceptor, EnemyMine
+from spaceship import PlayerShip, EnemyShip, EnemyInterceptor, EnemyMine, \
+    MidgetBeamShip
 from spaceship import RechargeBonus, SuperShieldBonus, ShieldUpgradeBonus
 from background import SpaceBackground, BackgroundImage
 from obstacle import Obstacle, MovingObstacle
