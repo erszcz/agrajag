@@ -1,0 +1,13 @@
+<content>
+  <gfx>
+    <resource name='ship' file='midget_beamship.png' state_w='15' state_h='18'>
+      <state name='def'  x_off='0'  y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='explosion_cls_name' value='MediumExplosion' />
+    <prop name='weapons_cls_names' value='BasicBeamer' type='tuple' />
+    <prop name='durability' value='20' type='int' />
+    <prop name='max_speed' value='30' type='int' />
+  </properties>
+</content>

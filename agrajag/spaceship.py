@@ -862,8 +862,13 @@ class EnemyInterceptor(EnemyShip):
   """
   """
 
-  def __init__(self, pos, *groups):
-    EnemyShip.__init__(self, pos, *groups)
+  pass
+
+
+class MidgetBeamShip(EnemyShip):
+  """Very small ball-shaped enemy ship equipped with weak beam weapon."""
+
+  pass
 
 
 class EnemyMine(Destructible):
