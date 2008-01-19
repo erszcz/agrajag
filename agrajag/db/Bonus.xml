@@ -5,6 +5,7 @@
     </resource>
   </gfx>
   <properties>
+    <prop name='editor_enabled' />
     <prop name='max_speed'   type='int' value='100' />
   </properties>
 </content>

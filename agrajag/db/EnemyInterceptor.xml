@@ -5,6 +5,7 @@
     </resource>
   </gfx>
   <properties>
+    <prop name='editor_enabled' />
     <prop name='explosion_cls_name' value='MediumExplosion' />
     <prop name='weapons_cls_names' value='BasicTPEW' type='tuple' />
     <prop name='shield_cls_name' value='BasicShield' />
