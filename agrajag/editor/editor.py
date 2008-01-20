@@ -12,7 +12,13 @@ if __name__ == '__main__':
     os.chdir( os.path.dirname(__file__) )
 
   app = QApplication(sys.argv)
-  window = MainWindow()
+
+  # temp
+  sys.path.append('../')
+  from dbmanager import DBManager
+  #
+
+  window = MainWindow(DBManager())
   window.show()
 
   sys.exit(app.exec_())

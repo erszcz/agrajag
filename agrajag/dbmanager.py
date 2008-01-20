@@ -14,11 +14,23 @@ class DBManager(XMLManager):
 
   content = {}
 
-  def import_db(self, dir):
-    '''Import all files from specified directory and puts contents in static variable C{DBManager.content}'''
+  def import_db(self, dir, purge = False):
+    '''
+    Import all files from specified directory and put contents
+    in static variable C{DBManager.content}.
+
+    @type  dir: C{string}
+    @param dir: path where to look for xml config files
+
+    @type  purge: C{boolean}
+    @param purge: set to True to empty previous C{content}
+    '''
 
     if not dir:
       raise Exception('DBManager error: no drectory specified')
+
+    if purge:
+      self.reset()
     
     files = os.listdir(dir)
     for f in files:
@@ -27,7 +39,7 @@ class DBManager(XMLManager):
         DBManager.content[f.rsplit('.', 1)[0]] = self.import_file(ff)
 
   def import_file(self, filepath):
-    '''Import contents of a single file and returns them as a dictionary'''
+    '''Import contents of a single file and return them as a dictionary.'''
 
     dom = xml.dom.minidom.parse(filepath)
     dom_gfx = dom.getElementsByTagName('content')[0]. \
@@ -67,4 +79,22 @@ class DBManager(XMLManager):
     '''
 
     return DBManager.content[class_name] if class_name else DBManager.content
+
+  def get_editor(self):
+    '''
+    Return config for object types which are suitable for being
+    manipulated in the level editor (enemies, bonuses, anything else?).
+    '''
     
+    placeables = {}
+    for x in DBManager.content:
+      try:
+        if DBManager.content[x]['props']['editor_enabled']:
+          placeables[x] = DBManager.content[x]
+      except KeyError, e:
+        pass
+    return placeables
+
+  def reset(self):
+    '''Reset the inner classes' configuration dictionary.'''
+    DBManager.content = {}

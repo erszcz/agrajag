@@ -66,7 +66,7 @@
      <x>0</x>
      <y>0</y>
      <width>574</width>
-     <height>29</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -74,7 +74,7 @@
      <string>&amp;File</string>
     </property>
     <addaction name="actionNew_level" />
-    <addaction name="actionLoad_tiles" />
+    <addaction name="actionLoad" />
     <addaction name="separator" />
     <addaction name="actionSave_image" />
     <addaction name="actionSave_XML" />
@@ -96,9 +96,9 @@
     <string>E&amp;xit</string>
    </property>
   </action>
-  <action name="actionLoad_tiles" >
+  <action name="actionLoad" >
    <property name="text" >
-    <string>&amp;Load tiles...</string>
+    <string>&amp;Load...</string>
    </property>
   </action>
   <action name="actionAbout_Qt" >

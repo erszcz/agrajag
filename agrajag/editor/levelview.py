@@ -4,6 +4,23 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
+import pickle
+
+class AGItem(QGraphicsPixmapItem):
+  def __init__(self, pixmap, pos, props):
+    QGraphicsPixmapItem.__init__(self, pixmap)
+    self.setPos(QPointF(pos))
+
+    self.props = props
+
+  def pickledProperties(self):
+    return QString(pickle.dumps(self.props))
+
+
+class AGEvent(QGraphicsPixmapItem):
+  pass
+
+
 class LevelView(QGraphicsView):
   def __init__(self, parent=None):
     QGraphicsView.__init__(self, parent)
@@ -31,10 +48,14 @@ class LevelView(QGraphicsView):
 
     return image
 
-  def placeTile(self, pixmap, pos):
-    graphicsItem = QGraphicsPixmapItem(pixmap)
-    graphicsItem.setPos(QPointF(pos))
-    self.scene.addItem(graphicsItem)
+ #def placeItem(self, props, pos):
+ #  graphicsItem = QGraphicsPixmapItem(pixmap)
+ #  graphicsItem.setPos(QPointF(pos))
+ #  self.scene.addItem(graphicsItem)
+
+  def placeItem(self, pixmap, pos, props):
+    item = AGItem(pixmap, pos, props)
+    self.scene.addItem(item)
 
   def mousePressEvent(self, event):
     if event.button() == Qt.LeftButton \
@@ -51,7 +72,7 @@ class LevelView(QGraphicsView):
       dataStream = QDataStream(itemData, QIODevice.WriteOnly)
       pixmap = item.pixmap()
 
-      dataStream << pixmap  # << filename  # pozniej trzeba bedzie dodac
+      dataStream << pixmap << item.pickledProperties()
 
       mimeData = QMimeData()
       mimeData.setData('image/x-tile', itemData)
@@ -85,9 +106,11 @@ class LevelView(QGraphicsView):
     if event.mimeData().hasFormat('image/x-tile'):
       tileData = event.mimeData().data('image/x-tile')
       dataStream = QDataStream(tileData, QIODevice.ReadOnly)
+      
       pixmap = QPixmap()
-      filename = QString()
-      dataStream >> pixmap >> filename
+      pickledProps = QString()
+      dataStream >> pixmap >> pickledProps
+      props = pickle.loads(str(pickledProps))
 
       hotSpot = self.dragHotSpot if self.dragHotSpot else \
                 QPoint(pixmap.width() / 2, pixmap.height() / 2)
@@ -109,7 +132,7 @@ class LevelView(QGraphicsView):
       else:
         pos = QPoint(event.pos().x() - hotSpot.x(),
                      event.pos().y() - hotSpot.y())
-      self.placeTile(pixmap, self.mapToScene(pos))
+      self.placeItem(pixmap, self.mapToScene(pos), props)
 
       event.setDropAction(Qt.MoveAction)
       event.accept()

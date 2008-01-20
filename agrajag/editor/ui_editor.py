@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'editor.ui'
+# Form implementation generated from reading ui file './editor.ui'
 #
-# Created: Fri Nov  2 16:59:30 2007
-#      by: PyQt4 UI code generator 4.3
+# Created: Sat Jan 19 20:30:25 2008
+#      by: PyQt4 UI code generator 4.3.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -41,7 +41,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,574,29))
+        self.menubar.setGeometry(QtCore.QRect(0,0,574,28))
         self.menubar.setObjectName("menubar")
 
         self.menuFile = QtGui.QMenu(self.menubar)
@@ -58,8 +58,8 @@ class Ui_MainWindow(object):
         self.actionExit = QtGui.QAction(MainWindow)
         self.actionExit.setObjectName("actionExit")
 
-        self.actionLoad_tiles = QtGui.QAction(MainWindow)
-        self.actionLoad_tiles.setObjectName("actionLoad_tiles")
+        self.actionLoad = QtGui.QAction(MainWindow)
+        self.actionLoad.setObjectName("actionLoad")
 
         self.actionAbout_Qt = QtGui.QAction(MainWindow)
         self.actionAbout_Qt.setObjectName("actionAbout_Qt")
@@ -73,7 +73,7 @@ class Ui_MainWindow(object):
         self.actionSave_XML = QtGui.QAction(MainWindow)
         self.actionSave_XML.setObjectName("actionSave_XML")
         self.menuFile.addAction(self.actionNew_level)
-        self.menuFile.addAction(self.actionLoad_tiles)
+        self.menuFile.addAction(self.actionLoad)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionSave_image)
         self.menuFile.addAction(self.actionSave_XML)
@@ -92,7 +92,7 @@ class Ui_MainWindow(object):
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuHelp.setTitle(QtGui.QApplication.translate("MainWindow", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.actionExit.setText(QtGui.QApplication.translate("MainWindow", "E&xit", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionLoad_tiles.setText(QtGui.QApplication.translate("MainWindow", "&Load tiles...", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionLoad.setText(QtGui.QApplication.translate("MainWindow", "&Load...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAbout_Qt.setText(QtGui.QApplication.translate("MainWindow", "About &Qt", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave_image.setText(QtGui.QApplication.translate("MainWindow", "Save &image", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew_level.setText(QtGui.QApplication.translate("MainWindow", "&New level...", None, QtGui.QApplication.UnicodeUTF8))
