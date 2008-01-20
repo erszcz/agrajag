@@ -9,18 +9,19 @@ import pygame
 from math import fabs
 
 from dbmanager import DBManager
+from clock import Clock
 
 
 class AGObject:
   """
   Base class for all game objects.
+
+  @type clock: C{L{Clock}}
+  @ivar clock:
   """
-
+  
   def __init__(self):
-    """
-    """
-
-    pass
+    self.clock = Clock()
 
   def _setattrs(self, params, values):
     """

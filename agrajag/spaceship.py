@@ -9,8 +9,8 @@ from base import AGObject, AGRect, Overlay
 from dbmanager import DBManager
 from gfxmanager import GfxManager
 from groupmanager import GroupManager
-from clock import Clock
 from signals import Signal
+from clock import Clock
 
 from functions import deg2rad, normalize_deg
 
@@ -79,8 +79,7 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
     self.cfg = DBManager().get(self.__class__.__name__)['props']
     self.gfx = GfxManager().get(self.__class__.__name__)
     self._setattrs('max_speed', self.cfg)
-    self.clock = Clock()
-
+ 
     screen = pygame.display.get_surface()
     self.screen_size = screen.get_size() if screen else (0, 0)
 
@@ -623,8 +622,15 @@ class PlayerShip(Ship):
 
     self.exhaust(False) 
 
-    self.weapons = [ScatterBlaster(self), AutoCannon(self), MultiCannon(self), SeekerCannon(self), HeavyCannon(self), 
-        BasicBeamer(self)]
+    self.weapons = [
+        SeekerBlaster(self),
+        SeekerCannon(self),
+        MultiCannon(self),
+        ScatterBlaster(self),
+        AutoCannon(self),
+        HeavyCannon(self), 
+        BasicBeamer(self)
+      ]
 
     self._current_weapon = 0
 
@@ -953,6 +959,104 @@ class EnemyMine(Destructible):
     Destructible.update(self)
 
 
+class AmmoConsumingItem(AGSprite):
+  """
+  Base class for items that require ammo to operate.
+
+  @type maximum: integer
+  @ivar maximum: maximum number of ammo pieces in storage
+
+  @type current: integer
+  @ivar current: current number of ammo pieces in storage
+  """
+
+  def __init__(self):
+    AGObject.__init__(self)
+    self._setattrs('maximum', self.cfg)
+
+    self.current = self.maximum
+
+    # signals
+    self.state_updated = Signal()
+
+  def is_usable(self):
+    """Return C{True} if the item can be used, C{False} otherwise."""
+ 
+    return self.current >= 1
+
+  def use(self):
+    self.current -= 1
+
+    self.state_updated('ammo', self.current, self.maximum)
+
+
+class EnergyConsumingItem(AGObject):
+  """
+  Base class for items that require energy to operate.
+
+  @type maximum: float
+  @ivar maximum: Maximum amount of energy that item can store at a time.
+
+  @type current: float
+  @ivar current: Currently stored amount of energy.
+
+  @type recharge_rate: float
+  @ivar recharge_rate: Maximum number of energy points recharged per second.
+
+  @type cost: float
+  @ivar cost: Amount of energy needed for one use.
+  """
+
+  maximum = 0
+  recharge_rate = 0
+  cost = 0
+
+  def __init__(self):
+    AGObject.__init__(self)
+
+    self._setattrs('maximum, recharge_rate, cost', self.cfg)
+    self.current = self.maximum
+
+    # signals
+    self.state_updated = Signal()
+
+  def get_demand(self):
+    """
+    Return energy demand, that is difference between maximal and current 
+    energy level.
+    """
+
+    return self.maximum - self.current
+
+  def recharge(self, supply, ignore_recharge_rate = False):
+    """
+    Recharge energy. Amount of energy recharged depends on amount
+    of energy supplied and recharge rate. It is assumed that supply is
+    never larger than demand. If there is any excess it is lost.
+    """
+
+    if not ignore_recharge_rate:
+      recharge = self.recharge_rate * self.clock.frame_span() / 1000.
+      supply = supply if supply <= recharge else recharge
+
+    self.current += supply
+
+    if self.current > self.maximum:
+      self.current = self.maximum
+
+    self.state_updated('energy', self.current, self.maximum)
+
+  def is_usable(self):
+    """Return C{True} if the item can be used, C{False} otherwise."""
+ 
+    return self.current >= self.cost
+
+  def use(self):
+    self.current -= self.cost
+
+    self.state_updated('energy', self.current, self.maximum)
+
+
 class Weapon(AGObject):
   """
   Base class for all weapons.
@@ -993,18 +1097,34 @@ class Weapon(AGObject):
     """
 
     if self.remaining_cooldown > 0:
-      self.remaining_cooldown -= Clock().frame_span() / 1000.
+      self.remaining_cooldown -= self.clock.frame_span() / 1000.
 
-  def shoot(self):
+  def can_shoot(self):
+    """Return C{True} if weapon can shoot, C{False} otherwise."""
+
+    return self.remaining_cooldown <= 0
+
+  def _shoot(self, pos):
     """
-    Try to perform shot. Return projectile / beam / list of projectiles / 
-    whatever if successfull, C{False} or C{None} otherwise. 
+    Create and return projectile / beam / whatever instance. Used internally
+    by method C{shoot}.
     """
 
     pass
+
+
+  def shoot(self, pos):
+    """
+    Try to perform shot. Return projectile / beam / list of projectiles / 
+    whatever if successfull, C{False} or C{None} otherwise. Update
+    C{remaining_cooldown}.
+    """
+
+    self.remaining_cooldown = self.cooldown
+    self._shoot(pos)
     
 
-class EnergyWeapon(Weapon):
+class EnergyWeapon(Weapon, EnergyConsumingItem):
   """
   Base class for all weapons that consume energy to shoot.
 
@@ -1021,52 +1141,24 @@ class EnergyWeapon(Weapon):
   @ivar cost: Amount of energy needed for one shot.
   """
 
-  maximum = 0
-  current = 0
-  recharge_rate = 1
-  cost = 1
-
   def __init__(self, owner):
-    """
-    """
-
     Weapon.__init__(self, owner)
-    self._setattrs('maximum, recharge_rate, cost', self.cfg)
+    EnergyConsumingItem.__init__(self)
 
-    self.current = self.maximum
+    # tmp
+    self.state_updated.connect(self.weapon_state_updated)
 
-  def get_demand(self):
-    """
-    Return energy demand, that is difference between maximal and current 
-    energy level.
-    """
+  def can_shoot(self):
+    """Return C{True} if weapon can shoot, C{False} otherwise."""
+ 
+    return Weapon.can_shoot(self) and EnergyConsumingItem.is_usable(self)
 
-    return self.maximum - self.current
-
-  def recharge(self, supply, ignore_recharge_rate = False):
-    """
-    Recharge energy. Amount of energy recharged depends on amount
-    of energy supplied and recharge rate. It is assumed that supply is
-    never larger than demand. If there is any excess it is lost.
-    """
-
-    if not ignore_recharge_rate:
-      recharge = self.recharge_rate * Clock().frame_span() / 1000.
-      supply = supply if supply <= recharge else recharge
-
-    self.current += supply
-
-    if self.current > self.maximum:
-      self.current = self.maximum
-
-    self.weapon_state_updated('energy', self.current, self.maximum)
+  def shoot(self, pos):
+    Weapon.shoot(self, pos)
+    EnergyConsumingItem.use(self)
 
 
-  def shoot(self):
-    self.weapon_state_updated('energy', self.current, self.maximum)
-
-
-class AmmoWeapon(Weapon):
+class AmmoWeapon(Weapon, AmmoConsumingItem):
   """
   Base class for all weapons that need ammunition to shoot.
 
@@ -1079,23 +1171,24 @@ class AmmoWeapon(Weapon):
 
   def __init__(self, owner):
     Weapon.__init__(self, owner)
-    self._setattrs('maximum', self.cfg)
+    AmmoConsumingItem.__init__(self)
 
-    self.current = self.maximum
+    # tmp
+    self.state_updated.connect(self.weapon_state_updated)
 
-  def shoot(self):
-    self.weapon_state_updated('ammo', self.current)
+  def can_shoot(self):
+    """Return C{True} if weapon can shoot, C{False} otherwise."""
+ 
+    return Weapon.can_shoot(self) and AmmoConsumingItem.is_usable(self)
 
-class InstantAmmoWeapon(AmmoWeapon):
+  def shoot(self, pos):
+    Weapon.shoot(self, pos)
+    AmmoConsumingItem.use(self)
+
+
+class TargetedProjectileWeapon(AGObject):
   """
-  """
-
-  pass
-
-class ProjectileAmmoWeapon(AmmoWeapon):
-  """
-  Base class for all ammo weapons that shoot projectiles moving with finite
-  speed.
+  ...
 
   @type targeted: bool
   @ivar targeted: Indicates whether weapon automatically finds target
@@ -1112,9 +1205,9 @@ class ProjectileAmmoWeapon(AmmoWeapon):
   target = None
   targeting_angle = 60
 
-  def __init__(self, owner):
-    AmmoWeapon.__init__(self, owner)
-    self._setattrs('projectile_cls_name, targeted, targeting_angle', self.cfg)
+  def __init__(self):
+    AGObject.__init__(self)
+    self._setattrs('targeted, targeting_angle', self.cfg)
 
     self._find_target()
 
@@ -1148,34 +1241,30 @@ class ProjectileAmmoWeapon(AmmoWeapon):
     targeted do nothing).
     """
 
-    if self.targeted:
-      if isinstance(self.owner, EnemyShip):
-        targets = GroupManager().get('ship').sprites()
-      else:
-        targets = GroupManager().get('enemies').sprites()
+    if isinstance(self.owner, EnemyShip):
+      targets = GroupManager().get('ship').sprites()
+    else:
+      targets = GroupManager().get('enemies').sprites()
 
-      for t in targets:
-        if self._target_dir(t) is None:
-          targets.remove(t)
+    for t in targets:
+      if self._target_dir(t) is None:
+        targets.remove(t)
 
-      target = self.owner.closest(targets)
-      if target is not None:
-        self.set_target(target)
+    target = self.owner.closest(targets)
+    if target is not None:
+      self.set_target(target)
 
     return self.target
 
   def _target_dir(self, target):
     """
-    Return target direction measured in degrees. If weapon is not targeted
-    it shoots straight on. If shot cannot be performed for some reason 
-    (target not within shooting arc or no target at all) return None.
+    Return target direction measured in degrees. 
+    If shot cannot be performed for some reason (target not within
+    shooting arc or no target at all) return None.
 
     @type  target:
     @param target:
     """
-
-    if not self.targeted:
-      return 0 if isinstance(self.owner, EnemyShip) else -180
 
     if target is None:
       return None
@@ -1203,30 +1292,20 @@ class ProjectileAmmoWeapon(AmmoWeapon):
 
     return dir
 
-  def shoot(self, pos):
+  def _shoot(self, pos):
     """
-    Perform shot if the weapon has cooled and there is ammo left. Create and
-    return projectile instance.
-    """
- 
-    if self.remaining_cooldown > 0:
-      return
+    Create and return single projectile instance. Used internally
+    by method C{shoot}.
 
-    if self.current < 1:
-      return
+    The projectile is shot towards the target if target is still in
+    shooting arc. New target is chosen if current target is no longer
+    in shooting arc (or there is no current target).
+    """
 
     dir = self._target_dir(self.target)
     if dir is None:
       self._find_target()
       dir = self._target_dir(self.target)
-
-    if dir is None:
-      return
-
-    AmmoWeapon.shoot(self)
-
-    self.remaining_cooldown = self.cooldown
-    self.current -= 1
 
     if isinstance(self.owner, EnemyShip):
       g_proj = GroupManager().get('enemy_projectiles')
@@ -1239,27 +1318,150 @@ class ProjectileAmmoWeapon(AmmoWeapon):
     return projectile_cls(pos, dir, g_coll, g_proj)
 
 
-class SeekingPAW(ProjectileAmmoWeapon):
+class ProjectileAmmoWeapon(AmmoWeapon):
   """
-  Ammo weapon shooting C{L{SeekingProjectile}}s (attempts to
+  Base class for all ammo weapons that shoot projectiles moving with finite
+  speed.
+  """
+
+  def __init__(self, owner):
+    AmmoWeapon.__init__(self, owner)
+    self._setattrs('projectile_cls_name', self.cfg)
+
+  def _shoot(self, pos):
+    """
+    Create and return single projectile instance. Used internally
+    by method C{shoot}.
+    """
+
+    if isinstance(self.owner, EnemyShip):
+      g_proj = GroupManager().get('enemy_projectiles')
+      g_coll = GroupManager().get('ship')
+    else:
+      g_proj = GroupManager().get('player_projectiles')
+      g_coll = GroupManager().get('enemies')
+
+    dir = 0 if isinstance(self.owner, EnemyShip) else -180
+
+    projectile_cls = eval(self.projectile_cls_name)
+    return projectile_cls(pos, dir, g_coll, g_proj)
+
+  def shoot(self, pos):
+    """
+    Perform shot if the weapon has cooled and there is ammo left. Create and
+    return projectile instance.
+    """
+ 
+    if not self.can_shoot():
+      return
+
+    return AmmoWeapon.shoot(self, pos)
+
+
+class TargetedProjectileAmmoWeapon(TargetedProjectileWeapon,
+    ProjectileAmmoWeapon):
+  """
+  Base class for all projectile ammo weapons that automatically 
+  aim at selected target.
+  """
+
+  def __init__(self, owner):
+    ProjectileAmmoWeapon.__init__(self, owner)
+    TargetedProjectileWeapon.__init__(self)
+
+
+class SeekingProjectileWeapon:
+  """
+  Projectile weapon shooting C{L{SeekingProjectile}}s (attempts to
+  shoot projectiles not derived from C{SeekingProjectile}
+  will fail).
+
+  This is an add-on class to a projectile weapon class.
+  """
+
+  def _shoot(self, pos):
+    if isinstance(self.owner, EnemyShip):
+      g_proj = GroupManager().get('enemy_projectiles')
+      g_coll = GroupManager().get('ship')
+    else:
+      g_proj = GroupManager().get('player_projectiles')
+      g_coll = GroupManager().get('enemies')
+
+    dir = 0 if isinstance(self.owner, EnemyShip) else -180
+
+    projectile_cls = eval(self.projectile_cls_name)
+    projectile = projectile_cls(pos, dir, g_coll, g_proj)
+
+    if isinstance(self.owner, EnemyShip):
+      targets = GroupManager().get('ship').sprites()
+    else:
+      targets = GroupManager().get('enemies').sprites()
+
+    projectile.set_target(self.owner.closest(targets))
+
+    return projectile
+
+
+class MultiShotProjectileWeapon:
+  """
+  This class can be used to allow projectile weapons to shoot multiple
+  projectiles at once.
+
+  This is an add-on class to a projectile weapon class.
+  
+  @type shooting_angle: int
+  @ivar shooting_angle: Half of the shooting arc in degrees.
+
+  @type shoot_cnt: int
+  @ivar shoot_cnt: Number of projectiles. Must be greater than one.
+  """
+
+  shooting_angle = 15
+  shoot_cnt = 3
+
+  def __init__(self):
+    self._setattrs('shooting_angle, shoot_cnt', self.cfg)
+
+    if self.shoot_cnt < 2:
+      raise ValueError, "MultiShotProjectileWeapon should shoot at least 2 \
+          projectiles at once"
+
+  def _shoot(self, pos):
+    """
+    Create C{shoot_cnt} of projectile instances. Return them in a sequence.
+    """
+
+    if isinstance(self.owner, EnemyShip):
+      g_proj = GroupManager().get('enemy_projectiles')
+      g_coll = GroupManager().get('ship')
+    else:
+      g_proj = GroupManager().get('player_projectiles')
+      g_coll = GroupManager().get('enemies')
+
+    projectile_cls = eval(self.projectile_cls_name)
+
+    dir = 0 if isinstance(self.owner, EnemyShip) else -180
+
+    p = []
+    for i in xrange(self.shoot_cnt):
+      shoot_dir = dir + (2 * i / (self.shoot_cnt - 1.) - 1) * \
+          self.shooting_angle
+
+      p.append(projectile_cls(pos, shoot_dir, g_coll, g_proj))
+
+    return p
+
+
+class SeekingPAW(SeekingProjectileWeapon, ProjectileAmmoWeapon):
+  """
+  Projectile ammo weapon shooting C{L{SeekingProjectile}}s (attempts to
   shoot projectiles not derived from C{SeekingProjectile}
   will fail).
 
   This class should be treated as abstract class (except debugging).
   """
 
-  def shoot(self, pos):
-    p = ProjectileAmmoWeapon.shoot(self, pos)
-    if p is not None:
-      if isinstance(self.owner, EnemyShip):
-        targets = GroupManager().get('ship').sprites()
-      else:
-        targets = GroupManager().get('enemies').sprites()
-
-      p.set_target(self.owner.closest(targets))
-
-    return p
-
+  pass
 
 
 class BasicPAW(ProjectileAmmoWeapon):
@@ -1274,7 +1476,7 @@ class MiniCannon(ProjectileAmmoWeapon):
   pass
 
 
-class AutoCannon(ProjectileAmmoWeapon):
+class AutoCannon(TargetedProjectileAmmoWeapon):
   """
   More advanced version of C{L{MiniCannon}} with shorter cooldown time and
   auto-targeting mechanism (wide angle).
@@ -1282,71 +1484,16 @@ class AutoCannon(ProjectileAmmoWeapon):
 
   pass
 
-class MultiCannon(ProjectileAmmoWeapon):
+
+class MultiCannon(MultiShotProjectileWeapon, ProjectileAmmoWeapon):
   """
   Cannon shooting multiple projectiles at once. Each shot consumes only one
   piece of ammo.
-  
-  @type shooting_angle: int
-  @ivar shooting_angle: Half of the shooting arc in degrees.
-
-  @type shoot_cnt: int
-  @ivar shoot_cnt: Number of projectiles. Must be greater than one.
   """
-
-  shooting_angle = 15
-  shoot_cnt = 3
 
   def __init__(self, owner):
     ProjectileAmmoWeapon.__init__(self, owner)
-    self._setattrs('shooting_angle, shoot_cnt', self.cfg)
-
-    if self.shoot_cnt < 2:
-      raise ValueError, "MultiCannon should shoot at least 2 projectiles at \
-          once"
-
-  def shoot(self, pos):
-    """
-    Perform shot if the weapon has cooled and there is ammo left. Create
-    projectile instances and return them as a list.
-    """
- 
-    if self.remaining_cooldown > 0:
-      return
-
-    if self.current < 1:
-      return
-
-    dir = self._target_dir(self.target)
-    if dir is None:
-      self._find_target()
-      dir = self._target_dir(self.target)
-
-    if dir is None:
-      return
-
-    AmmoWeapon.shoot(self)
-
-    self.remaining_cooldown = self.cooldown
-    self.current -= 1
-
-    if isinstance(self.owner, EnemyShip):
-      g_proj = GroupManager().get('enemy_projectiles')
-      g_coll = GroupManager().get('ship')
-    else:
-      g_proj = GroupManager().get('player_projectiles')
-      g_coll = GroupManager().get('enemies')
-
-    projectile_cls = eval(self.projectile_cls_name)
-
-    p = []
-    for i in xrange(self.shoot_cnt):
-      shoot_dir = dir + (2 * i / (self.shoot_cnt - 1.) - 1) * \
-          self.shooting_angle
-
-      p.append(projectile_cls(pos, shoot_dir, g_coll, g_proj))
-
-    return p
+    MultiShotProjectileWeapon.__init__(self)
 
 
 class SeekerCannon(SeekingPAW):
@@ -1420,21 +1567,9 @@ class InstantEnergyWeapon(EnergyWeapon):
 
     return targets[0] if len(targets) > 0 else None
 
-  def shoot(self, pos):
+  def _shoot(self, pos):
     """
-    Perform shot if the weapon has cooled and there is enough energy. Find
-    closest colliding object and damage it. Create visual representation of
-    the beam.
     """
-  
-    if self.remaining_cooldown > 0:
-      return
-
-    if self.current < self.cost:
-      return
-
-    self.remaining_cooldown = self.cooldown
-    self.current -= self.cost
 
     beam_cls = eval(self.beam_cls_name)
     beam = beam_cls()
@@ -1455,8 +1590,6 @@ class InstantEnergyWeapon(EnergyWeapon):
 
       return beam
 
-    EnergyWeapon.shoot(self)
-
     if isinstance(self.owner, EnemyShip):
       t_pos = pos[0], target.rect.top
       beam.set_position(t_pos, pos)
@@ -1472,14 +1605,25 @@ class InstantEnergyWeapon(EnergyWeapon):
     target.damage(self.damage)
     return beam
 
+  def shoot(self, pos):
+    """
+    Perform shot if the weapon has cooled and there is enough energy. Find
+    closest colliding object and damage it. Create visual representation of
+    the beam.
+    """
+  
+    if not self.can_shoot():
+      return
+
+    EnergyWeapon.shoot(self, pos)
+
 
 class BasicBeamer(InstantEnergyWeapon):
   """
   The least powerful yet energy effective instant energy weapon.
   """
 
-  def __init__(self, owner):
-    InstantEnergyWeapon.__init__(self, owner)
+  pass
 
 
 class InstantEnergyBeam(AGSprite):
@@ -1538,149 +1682,24 @@ class BasicBeam(InstantEnergyBeam):
   Beam used by BasicBeamer gun.
   """
 
-  def __init__(self):
-    InstantEnergyBeam.__init__(self)
+  pass
 
 
 class ProjectileEnergyWeapon(EnergyWeapon):
   """
   Base class for C{L{EnergyWeapon}}s that shoot energy in the form of
   projectiles moving with finite speed. 
-
-  @type targeted: bool
-  @ivar targeted: Indicates whether weapon automatically finds target
-  and shoots projectiles towards it or not.
-
-  @type target: 
-  @ivar target: Reference to selected target or None.
-
-  @type targeting_angle: float
-  @ivar targeting_angle: Half of the shooting arc in degrees.
   """
-
-  targeted = False
-  target = None
-  targeting_angle = 60
 
   def __init__(self, owner):
     EnergyWeapon.__init__(self, owner)
-    self._setattrs('projectile_cls_name, targeted, targeting_angle', self.cfg)
+    self._setattrs('projectile_cls_name', self.cfg)
 
-    self._find_target()
-
-  def set_target(self, target):
+  def _shoot(self, pos):
     """
-    Set target and connect to its killed-signal in order to allow
-    it to be garbage-collected.
+    Create and return single projectile instance. Used internally
+    by method C{shoot}.
     """
-
-    if self.target is not None:
-      self.target.killed.disconnect(self.clear_target)
-
-    self.target = target
-    self.target.killed.connect(self.clear_target)
-
-  def clear_target(self, disconnect = False):
-    """
-    Unset target. Optionally disconnect from target's
-    signal (never disconnect when clear_target is called on signal).
-    """
-
-    if self.target is not None:
-      if disconnect:
-        self.target.killed.disconnect(self.clear_target)
-
-      self.target = None
-
-  def _find_target(self):
-    """
-    Find random object within the shooting arc and target it (if weapon is not
-    targeted do nothing).
-    """
-
-    if self.targeted:
-      if isinstance(self.owner, EnemyShip):
-        targets = GroupManager().get('ship').sprites()
-      else:
-        targets = GroupManager().get('enemies').sprites()
-
-      for t in targets:
-        if self._target_dir(t) is None:
-          targets.remove(t)
-
-      target = self.owner.closest(targets)
-      if target is not None:
-        self.set_target(target)
-
-    return self.target
-
-  def _target_dir(self, target):
-    """
-    Return target direction measured in degrees. If weapon is not targeted
-    it shoots straight on. If shot cannot be performed for some reason 
-    (target not within shooting arc or no target at all) return None.
-
-    @type  target:
-    @param target:
-    """
-
-    if not self.targeted:
-      return 0 if isinstance(self.owner, EnemyShip) else -180
-
-    if target is None:
-      return None
-
-    dx = self.owner.center[0] - target.center[0]
-    dy = self.owner.center[1] - target.center[1]
-
-    if dy == 0:
-      return 0 if isinstance(self.owner, EnemyShip) else -180
-
-    if isinstance(self.owner, EnemyShip):
-      if dy > 0:
-        return None
-    else:
-      if dy < 0:
-        return None
-
-    tg = dx / float(dy)
-    if math.fabs(tg) > math.radians(self.targeting_angle):
-      return None
-
-    dir = math.degrees(math.atan(tg))
-    if isinstance(self.owner, PlayerShip):
-      dir += 180
-
-    return dir
-
-  def shoot(self, pos):
-    """
-    Perform shot if the weapon has cooled and there is enough energy. Create
-    and return projectile instance.
-
-    In case of targeted weapons projectile is shot towards the target if
-    target is still in shooting arc. New target is chosen if current
-    target is no longer in shooting arc (or there is no current target).
-    """
- 
-    if self.remaining_cooldown > 0:
-      return
-
-    if self.current < self.cost:
-      return
-
-    dir = self._target_dir(self.target)
-    if dir is None:
-      self._find_target()
-      dir = self._target_dir(self.target)
-
-    if dir is None:
-      return
-
-    EnergyWeapon.shoot(self)
-
-    self.remaining_cooldown = self.cooldown
-    self.current -= self.cost
 
     if isinstance(self.owner, EnemyShip):
       g_proj = GroupManager().get('enemy_projectiles')
@@ -1689,8 +1708,33 @@ class ProjectileEnergyWeapon(EnergyWeapon):
       g_proj = GroupManager().get('player_projectiles')
       g_coll = GroupManager().get('enemies')
 
+    dir = 0 if isinstance(self.owner, EnemyShip) else -180
+
     projectile_cls = eval(self.projectile_cls_name)
     return projectile_cls(pos, dir, g_coll, g_proj)
+
+  def shoot(self, pos):
+    """
+    Perform shot if the weapon has cooled and there is ammo left. Create and
+    return projectile instance.
+    """
+ 
+    if not self.can_shoot():
+      return
+
+    return EnergyWeapon.shoot(self, pos)
+
+
+class TargetedProjectileEnergyWeapon(TargetedProjectileWeapon,
+    ProjectileEnergyWeapon):
+  """
+  Base class for all projectile energy weapons that automatically 
+  aim at selected target.
+  """
+
+  def __init__(self, owner):
+    ProjectileEnergyWeapon.__init__(self, owner)
+    TargetedProjectileWeapon.__init__(self)
 
 
 class BasicProjectileEnergyWeapon(ProjectileEnergyWeapon):
@@ -1698,42 +1742,27 @@ class BasicProjectileEnergyWeapon(ProjectileEnergyWeapon):
   The least powerful, yet energy effective projectile energy weapon.
   """
 
-  def __init__(self, owner):
-    ProjectileEnergyWeapon.__init__(self, owner)
+  pass
 
 
-class BasicTPEW(ProjectileEnergyWeapon):
+class BasicTPEW(TargetedProjectileEnergyWeapon):
   """
   Targeted version of C{L{BasicProjectileEnergyWeapon}}.
   """
 
-  def __init__(self, owner):
-    ProjectileEnergyWeapon.__init__(self, owner)
+  pass
 
 
-class SeekingPEW(ProjectileEnergyWeapon):
+class SeekingPEW(SeekingProjectileWeapon, ProjectileEnergyWeapon):
   """
-  Blaster shooting C{L{SeekingProjectile}}s (attempts to
+  Projectile energy weapon shooting C{L{SeekingProjectile}}s (attempts to
   shoot projectiles not derived from C{SeekingProjectile}
   will fail).
 
   This class should be treated as abstract class (except debugging).
   """
 
-  def __init__(self, owner):
-    ProjectileEnergyWeapon.__init__(self, owner)
-
-  def shoot(self, pos):
-    p = ProjectileEnergyWeapon.shoot(self, pos)
-    if p is not None:
-      if isinstance(self.owner, EnemyShip):
-        targets = GroupManager().get('ship').sprites()
-      else:
-        targets = GroupManager().get('enemies').sprites()
-
-      p.set_target(self.owner.closest(targets))
-
-    return p
+  pass
 
 
 class MiniBlaster(ProjectileEnergyWeapon):
@@ -1745,6 +1774,8 @@ class MiniBlaster(ProjectileEnergyWeapon):
     * low energy consumption
     * medium cooldown 
   """
+
+  pass
 
 
 class Blaster(ProjectileEnergyWeapon):
@@ -1781,6 +1812,13 @@ class ScatterBlaster(ProjectileEnergyWeapon):
     * medium damage
     * medium energy consumption
     * medium cooldown 
+  """
+
+  pass
+
+
+class SeekerBlaster(SeekingPEW):
+  """
   """
 
   pass
@@ -2556,21 +2594,13 @@ class DualBlasterProjectile(Projectile):
   pass
 
 
-class StarProjectile(Projectile):
-  """Star shaped energetic projectile."""
+class SeekerBlasterProjectile(SeekingProjectile):
+  """Star shaped seeking energetic projectile."""
 
   pass
 
 
 class BigProjectile(Projectile):
-  pass
-
-
-class SeekingEnergyProjectile(SeekingProjectile):
-  """
-  Energy projectile that follows chosen target.
-  """
-
   pass
 
 
