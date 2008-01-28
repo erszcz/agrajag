@@ -52,35 +52,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     if not size.isEmpty():
       self.levelView.newScene(size)
 
-#  def loadTiles(self, filenames = []):
-#    if not filenames:
-#      filenames = QFileDialog.getOpenFileNames(self,
-#                                    self.trUtf8('Load tiles'),
-#                                    './',
-#                                    'Image files(*.png *.tiff *.jpg *.bmp)')
-#
-#    unreadable = []
-#    for filename in filenames:
-#      if not filename.isEmpty():
-#        newImage = QPixmap()
-#        if not newImage.load(filename):
-#          unreadable.append(filename)
-#        else:
-#          props = {}
-#          props['pixmap'] = newImage
-#          props['filename'] = os.path.basename(str(filename))
-#          self.tileList.addTile(props)
-#
-#    if unreadable:
-#      flist = ''
-#      for s in unreadable:
-#        flist += '\n' + s
-#      warn = str('Following files could not be loaded: %s' % flist)
-#      print warn, type(warn)
-#      QMessageBox.warning(self,
-#                          self.trUtf8('Load tiles'),
-#                          self.trUtf8(warn))
-
   def load(self, filenames = []):
     if not filenames:
       filenames = QFileDialog.getOpenFileNames(self,
@@ -113,33 +84,44 @@ class MainWindow(QMainWindow, Ui_MainWindow):
       props = {}
       props['pixmap'] = newImage
       props['filename'] = os.path.basename(str(filename))
-      props['name'] = props['filename'][:-4]
+      props['name'] = props['filename'].rsplit('.', 1)[0]
       self.tileList.addTile(props)
       return True
 
-# finish this
   def loadXML(self, filename):
-    print filename
     try:
-      self.dbm.import_file(filename)
-      name = str(filename)[:-4]
-      props = self.dbm.get_editor()[name]['props']
-      props['name'] = name
-      props['filename'] = self.dbm.get_editor()[name]['gfx']['file']
+      # get the props list
+      filename = str(filename)
+      name = filename[:-4]
+      name = os.path.basename(filename).rsplit('.', 1)[0]
+      imported = self.dbm.import_file(filename)
+      props = imported['props']
+
+      # craft the list
       del props['editor_enabled']
+      props['name'] = name
+      k = imported['gfx'].keys()[0]
+        # this is the image-resource name from XML
+      props['filename'] = imported['gfx'][k]['file']
+      
+      # get the pixmap
       pixmap = QPixmap()
-      print gfx_path + props['filename']
       if not pixmap.load(os.path.join(gfx_path, props['filename'])):
         return False
       props['pixmap'] = pixmap
+
       self.tileList.addTile(props)
 
       return True
+#    except AttributeError, e:
+#      print 'AttributeError:', e.message
+#      return False
+#    except KeyError, e:
+#      print 'KeyError:', e.message
+#      return False
     except Exception, e:
-      print e
-      print 'Exception:', e.message
+#      print 'Exception'
       return False
-#
 
   def saveImage(self, filename = ''):
     if not filename:

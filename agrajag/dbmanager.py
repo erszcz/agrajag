@@ -82,6 +82,8 @@ class DBManager(XMLManager):
 
   def get_editor(self):
     '''
+    CONSIDER REMOVING
+
     Return config for object types which are suitable for being
     manipulated in the level editor (enemies, bonuses, anything else?).
     '''
