@@ -1,0 +1,11 @@
+<content>
+  <gfx>
+  </gfx>
+  <properties>
+    <prop name='projectile_cls_name' value='SeekerBlasterProjectile' />
+    <prop name='maximum' value='80' type='int' />
+    <prop name='recharge_rate' value='5' type='int' />
+    <prop name='cost' value='5' type='int' />
+    <prop name='cooldown' value='0.25' type='float' />
+  </properties>
+</content>
