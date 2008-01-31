@@ -6,18 +6,39 @@ from PyQt4.QtGui import *
 
 import pickle
 
+from propertyeditordialog import PropertyEditorDialog
+from constants import BackgroundItem, EventItem
+
 class AGItem(QGraphicsPixmapItem):
   def __init__(self, pixmap, pos, props):
     QGraphicsPixmapItem.__init__(self, pixmap)
     self.setPos(QPointF(pos))
+    self.setToolTip(props['name'])
 
     self.props = props
+
+  def editProperties(self):
+    dlg = PropertyEditorDialog(self.props)
+    dlg.exec_()
+
+  def contextMenuEvent(self, event):
+    menu = QMenu()
+    editProperties = QAction('Edit properties', qApp)
+    qApp.connect(editProperties, SIGNAL('triggered()'),
+                 self.editProperties)
+    menu.addAction(editProperties)
+    menu.exec_(event.screenPos())
 
   def pickledProperties(self):
     return QString(pickle.dumps(self.props))
 
+  def getType(self): return self.props['type']
+  type = property(getType)
 
-class AGEvent(QGraphicsPixmapItem):
+class AGBackgroundItem(AGItem):
+  pass
+
+class AGEventItem(AGItem):
   pass
 
 
@@ -48,13 +69,11 @@ class LevelView(QGraphicsView):
 
     return image
 
- #def placeItem(self, props, pos):
- #  graphicsItem = QGraphicsPixmapItem(pixmap)
- #  graphicsItem.setPos(QPointF(pos))
- #  self.scene.addItem(graphicsItem)
-
   def placeItem(self, pixmap, pos, props):
-    item = AGItem(pixmap, pos, props)
+    if props['type'] == BackgroundItem:
+      item = AGBackgroundItem(pixmap, pos, props)
+    elif props['type'] == EventItem:
+      item = AGEventItem(pixmap, pos, props)
     self.scene.addItem(item)
 
   def mousePressEvent(self, event):
@@ -67,6 +86,8 @@ class LevelView(QGraphicsView):
     and self.dragStartPos is not None \
     and event.pos() - self.dragStartPos >= QApplication.startDragDistance():
       item = self.itemAt(self.dragStartPos)
+      if not item:
+        return
       
       itemData = QByteArray()
       dataStream = QDataStream(itemData, QIODevice.WriteOnly)
@@ -118,9 +139,9 @@ class LevelView(QGraphicsView):
       # check whether to snap or not when dropping
       if event.keyboardModifiers() == Qt.ShiftModifier:
         # snap to grid
-        posX = event.pos().x() - hotSpot.x()
-        posY = event.pos().y() - hotSpot.y()
-        gridSize = 10
+        posX = self.mapToScene(event.pos()).x() - hotSpot.x()
+        posY = self.mapToScene(event.pos()).y() - hotSpot.y()
+        gridSize = 20
 
         offsetX = posX % gridSize
         offsetY = posY % gridSize
@@ -128,8 +149,9 @@ class LevelView(QGraphicsView):
         snapY = posY - offsetY
         posX = snapX if offsetX <= gridSize/2 else snapX + gridSize
         posY = snapY if offsetY <= gridSize/2 else snapY + gridSize
-        pos = QPoint(posX, posY)
+        pos = self.mapFromScene(QPointF(posX, posY))
       else:
+        # don't snap to grid
         pos = QPoint(event.pos().x() - hotSpot.x(),
                      event.pos().y() - hotSpot.y())
       self.placeItem(pixmap, self.mapToScene(pos), props)

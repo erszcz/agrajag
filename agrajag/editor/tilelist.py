@@ -6,11 +6,10 @@ from PyQt4.QtGui import *
 
 import pickle
 
-class TileListItem(QListWidgetItem):
-  BackgroundItem = QListWidgetItem.UserType
-  EventItem = QListWidgetItem.UserType + 1
+from constants import BackgroundItem, EventItem
 
-  def __init__(self, props, parent=None):
+class TileListItem(QListWidgetItem):
+  def __init__(self, pixmap, props, parent=None):
     '''
     @type  props: C{dict}
     @param props: A dictionary with item properties.
@@ -20,14 +19,10 @@ class TileListItem(QListWidgetItem):
     '''
 
     QListWidgetItem.__init__(self, parent)
-    self.pixmap = props.pop('pixmap')
+    self.pixmap = pixmap
     self.setIcon(QIcon(self.pixmap))
+    self.setToolTip(props['name'])
 
-    if len(props) == 1:
-      props['type'] = TileListItem.BackgroundItem
-    else:
-      props['type'] = TileListItem.EventItem
-      
     self.props = props
 
     self.setFlags(Qt.ItemIsEnabled |
@@ -39,16 +34,8 @@ class TileListItem(QListWidgetItem):
 
 
 class TileList(QListWidget):
-  #def addTile(self, pixmap, filename):
-  #  tileItem = QListWidgetItem(self)
-  #  tileItem.setIcon(QIcon(pixmap))
-  #  tileItem.setData(Qt.UserRole, QVariant(pixmap))
-  #  tileItem.setData(Qt.UserRole + 1, QVariant(filename))
-  #  tileItem.setFlags(Qt.ItemIsEnabled | 
-  #                    Qt.ItemIsSelectable |
-  #                    Qt.ItemIsDragEnabled)
-  def addTile(self, props):
-    tile = TileListItem(props, self)
+  def addItem(self, pixmap, props):
+    tile = TileListItem(pixmap, props, self)
 
   def dragEnterEvent(self, event):
     if event.mimeData().hasFormat('image/x-tile'):
