@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>353</width>
-    <height>429</height>
+    <width>360</width>
+    <height>401</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -24,31 +24,54 @@
   <property name="windowTitle" >
    <string>Properties</string>
   </property>
-  <widget class="QWidget" name="layoutWidget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>5</y>
-     <width>351</width>
-     <height>421</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" >
-    <item>
-     <widget class="PropertyEditor" name="propertyEditor" />
-    </item>
-    <item>
-     <widget class="QDialogButtonBox" name="buttonBox" >
-      <property name="orientation" >
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="standardButtons" >
-       <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+  <layout class="QGridLayout" >
+   <item rowspan="4" row="0" column="0" >
+    <widget class="PropertyEditor" name="propertyEditor" />
+   </item>
+   <item row="0" column="1" >
+    <widget class="QPushButton" name="newButton" >
+     <property name="text" >
+      <string>New</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" >
+    <widget class="QPushButton" name="deleteButton" >
+     <property name="text" >
+      <string>Delete</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="1" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>
