@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file './propertyeditordialog.ui'
 #
-# Created: Thu Jan 31 15:41:37 2008
+# Created: Sun Feb  3 18:20:52 2008
 #      by: PyQt4 UI code generator 4.3.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PyQt4 import QtCore, QtGui
 class Ui_PropertyEditorDialog(object):
     def setupUi(self, PropertyEditorDialog):
         PropertyEditorDialog.setObjectName("PropertyEditorDialog")
-        PropertyEditorDialog.resize(QtCore.QSize(QtCore.QRect(0,0,353,429).size()).expandedTo(PropertyEditorDialog.minimumSizeHint()))
+        PropertyEditorDialog.resize(QtCore.QSize(QtCore.QRect(0,0,360,401).size()).expandedTo(PropertyEditorDialog.minimumSizeHint()))
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
@@ -21,22 +21,35 @@ class Ui_PropertyEditorDialog(object):
         PropertyEditorDialog.setSizePolicy(sizePolicy)
         PropertyEditorDialog.setMinimumSize(QtCore.QSize(300,400))
 
-        self.layoutWidget = QtGui.QWidget(PropertyEditorDialog)
-        self.layoutWidget.setGeometry(QtCore.QRect(0,5,351,421))
-        self.layoutWidget.setObjectName("layoutWidget")
+        self.gridlayout = QtGui.QGridLayout(PropertyEditorDialog)
+        self.gridlayout.setObjectName("gridlayout")
 
-        self.hboxlayout = QtGui.QHBoxLayout(self.layoutWidget)
-        self.hboxlayout.setObjectName("hboxlayout")
-
-        self.propertyEditor = PropertyEditor(self.layoutWidget)
+        self.propertyEditor = PropertyEditor(PropertyEditorDialog)
         self.propertyEditor.setObjectName("propertyEditor")
-        self.hboxlayout.addWidget(self.propertyEditor)
+        self.gridlayout.addWidget(self.propertyEditor,0,0,4,1)
 
-        self.buttonBox = QtGui.QDialogButtonBox(self.layoutWidget)
+        self.newButton = QtGui.QPushButton(PropertyEditorDialog)
+        self.newButton.setObjectName("newButton")
+        self.gridlayout.addWidget(self.newButton,0,1,1,1)
+
+        self.deleteButton = QtGui.QPushButton(PropertyEditorDialog)
+        self.deleteButton.setObjectName("deleteButton")
+        self.gridlayout.addWidget(self.deleteButton,1,1,1,1)
+
+        spacerItem = QtGui.QSpacerItem(20,40,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Expanding)
+        self.gridlayout.addItem(spacerItem,2,1,1,1)
+
+        self.buttonBox = QtGui.QDialogButtonBox(PropertyEditorDialog)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.buttonBox.sizePolicy().hasHeightForWidth())
+        self.buttonBox.setSizePolicy(sizePolicy)
         self.buttonBox.setOrientation(QtCore.Qt.Vertical)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.NoButton|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
-        self.hboxlayout.addWidget(self.buttonBox)
+        self.gridlayout.addWidget(self.buttonBox,3,1,1,1)
 
         self.retranslateUi(PropertyEditorDialog)
         QtCore.QObject.connect(self.buttonBox,QtCore.SIGNAL("accepted()"),PropertyEditorDialog.accept)
@@ -45,5 +58,7 @@ class Ui_PropertyEditorDialog(object):
 
     def retranslateUi(self, PropertyEditorDialog):
         PropertyEditorDialog.setWindowTitle(QtGui.QApplication.translate("PropertyEditorDialog", "Properties", None, QtGui.QApplication.UnicodeUTF8))
+        self.newButton.setText(QtGui.QApplication.translate("PropertyEditorDialog", "New", None, QtGui.QApplication.UnicodeUTF8))
+        self.deleteButton.setText(QtGui.QApplication.translate("PropertyEditorDialog", "Delete", None, QtGui.QApplication.UnicodeUTF8))
 
 from propertyeditor import PropertyEditor

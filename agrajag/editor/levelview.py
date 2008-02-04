@@ -27,6 +27,13 @@ class AGItem(QGraphicsPixmapItem):
     qApp.connect(editProperties, SIGNAL('triggered()'),
                  self.editProperties)
     menu.addAction(editProperties)
+    #>>
+    dumpProperties = QAction('Dump properties', qApp)
+    qApp.connect(dumpProperties, SIGNAL('triggered()'),
+                 self.debugPropDump)
+    menu.addAction(dumpProperties)
+    #<<
+
     menu.exec_(event.screenPos())
 
   def pickledProperties(self):
@@ -34,6 +41,15 @@ class AGItem(QGraphicsPixmapItem):
 
   def getType(self): return self.props['type']
   type = property(getType)
+
+  # temp
+  def debugPropDump(self):
+    s = '%s\n' % str(self)
+    for x, y in self.props.items():
+      s += '%s: %s\n' % (x, str(y))
+
+    print s
+  #<<
 
 class AGBackgroundItem(AGItem):
   pass
