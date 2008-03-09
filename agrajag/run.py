@@ -12,8 +12,9 @@ from groupmanager import GroupManager
 from spaceship import BonusHolder
 from spaceship import PlayerShip, EnemyShip, EnemyInterceptor, EnemyMine, \
     MidgetBeamShip
+from spaceship import EnergyProjectile
 from spaceship import RechargeBonus, SuperShieldBonus, ShieldUpgradeBonus
-from background import SpaceBackground
+from background import SpaceBackground, BackgroundImage
 from obstacle import Obstacle, MovingObstacle
 import mover
 from clock import Clock
@@ -89,7 +90,34 @@ def run():
             pos = spawn['x'], spawn['y']
 
             object_cls = eval(spawn['object_cls_name'])
-            object = object_cls(pos)
+            if spawn['object_base_cls_name']:
+              if spawn['object_base_cls_name'] == 'Projectile':
+                if not spawn.has_key('object_params'):
+                  raise ValueError, "Params for projectile '%s' in stage %s \
+                      not set" % (spawn['object_cls_name'], stage_name)
+
+                if not spawn['object_params'].has_key('dir'):
+                  raise ValueError, "Invalid 'dir' for projectile '%s' in \
+                      stage %s" % (spawn['object_cls_name'], stage_name)
+
+                if not spawn['object_params'].has_key('collision_group'):
+                  raise ValueError, "Invalid 'collision_group' for projectile \
+                      '%s' in stage %s" % (spawn['object_cls_name'], stage_name)
+
+                params = spawn['object_params']
+
+                dir = params['dir']
+                g_coll = groupmanager.get(params['collision_group'])
+                object = object_cls(pos, dir, g_coll)
+
+              elif spawn['object_base_cls_name'] == 'Bonus':
+                pass
+              else:
+                raise ValueError, "Invalid value '%s' for attrubite \
+                    'object_base_cls_name' in stage %s" % \
+                    (spawn['object_base_cls_name'], stage_name)
+            else:
+                object = object_cls(pos)
 
             if spawn['bonus_cls_name']:
               if isinstance(object, BonusHolder):
