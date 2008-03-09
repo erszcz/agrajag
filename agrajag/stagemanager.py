@@ -55,6 +55,8 @@ class StageManager(XMLManager):
             'time' : time, 
             'x' : int(dom_event.getAttribute('x')), 
             'y' : int(dom_event.getAttribute('y')), 
+            'object_base_cls_name' : \
+                dom_event.getAttribute('object_base_cls_name'),
             'object_cls_name' : dom_event.getAttribute('object_cls_name'),
             'mover_cls_name' : dom_event.getAttribute('mover_cls_name'),
             'bonus_cls_name' : dom_event.getAttribute('bonus_cls_name')
