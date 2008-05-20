@@ -10,9 +10,17 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Agrajag Level Editor</string>
+   <string>Agrajag Editor</string>
   </property>
   <widget class="QWidget" name="centralwidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>27</y>
+     <width>574</width>
+     <height>418</height>
+    </rect>
+   </property>
    <layout class="QGridLayout" >
     <item row="0" column="0" >
      <widget class="QSplitter" name="splitter" >
@@ -66,7 +74,7 @@
      <x>0</x>
      <y>0</y>
      <width>574</width>
-     <height>28</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -75,6 +83,7 @@
     </property>
     <addaction name="actionNew_level" />
     <addaction name="actionLoad" />
+    <addaction name="actionLoad_all" />
     <addaction name="separator" />
     <addaction name="actionSave_image" />
     <addaction name="actionSave_XML" />
@@ -90,7 +99,16 @@
    <addaction name="menuFile" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>445</y>
+     <width>574</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
   <action name="actionExit" >
    <property name="text" >
     <string>E&amp;xit</string>
@@ -119,6 +137,11 @@
   <action name="actionSave_XML" >
    <property name="text" >
     <string>&amp;Save XML</string>
+   </property>
+  </action>
+  <action name="actionLoad_all" >
+   <property name="text" >
+    <string>Load &amp;all</string>
    </property>
   </action>
  </widget>

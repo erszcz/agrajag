@@ -4,26 +4,24 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from ui_propertyeditordialog import Ui_PropertyEditorDialog
+import ui_propertyeditordialog
 
-from newpropertydialog import NewPropertyDialog
+class PropertyEditorDialog(QDialog,
+  ui_propertyeditordialog.Ui_PropertyEditorDialog):
 
-class PropertyEditorDialog(QDialog, Ui_PropertyEditorDialog):
   def __init__(self, props, parent=None):
     QDialog.__init__(self, parent)
-    Ui_PropertyEditorDialog.setupUi(self, self)
-    Ui_PropertyEditorDialog.retranslateUi(self, self)
-    
+    ui_propertyeditordialog.Ui_PropertyEditorDialog.setupUi(self, self)
+    ui_propertyeditordialog.Ui_PropertyEditorDialog.retranslateUi(self, self)
+
     self.connect(self.buttonBox, SIGNAL('accepted()'),
-                 self.propertyEditor.commitChanges)
+                 self.propertyEditor.actionCommit_changes.trigger)
     self.connect(self.newButton, SIGNAL('clicked()'),
-                 self.__addProperty)
+                 self.propertyEditor.actionNew_property.trigger)
     self.connect(self.deleteButton, SIGNAL('clicked()'),
-                 self.propertyEditor.deleteCurrentProperty)
+                 self.propertyEditor.actionDelete_property.trigger)
+    self.connect(self.propertyEditor,
+                 SIGNAL('actionDelete_propertyEnabled'),
+                 self.deleteButton.setEnabled)
 
-    self.propertyEditor.initProperties(props)
-
-  # slot
-  def __addProperty(self):
-    npd = NewPropertyDialog(self.propertyEditor)
-    npd.exec_()
+    self.propertyEditor.reset(props)

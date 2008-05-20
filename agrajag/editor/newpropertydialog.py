@@ -6,7 +6,7 @@ from PyQt4.QtGui import *
 
 from ui_newpropertydialog import Ui_NewPropertyDialog
 
-from propertyeditor import PropertyAdjuster
+import propertyeditor
 
 class Type:
   Integer = 0
@@ -71,7 +71,7 @@ class NewPropertyDialog(QDialog, Ui_NewPropertyDialog):
       return
     type = Type.pythonic(self.typeButtonGroup.checkedId())
 
-    cnv = PropertyAdjuster
+    cnv = propertyeditor.PropertyAdjuster
     if   type == int:
       value = self.intSpinBox.value()
     elif type == float:
@@ -83,7 +83,7 @@ class NewPropertyDialog(QDialog, Ui_NewPropertyDialog):
     elif type == str or type == unicode:
       value = cnv.convertString(self.strLineEdit.text())
 
-    self.propertyEditor.newProperty(key, type, value)
+    self.propertyEditor.addProperty(key, type, value, True)
     # this is rooted out from this dialog's behaviour in designer
     # file, so I add it here
     self.accept()

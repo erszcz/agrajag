@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file './editor.ui'
+# Form implementation generated from reading ui file 'editor.ui'
 #
-# Created: Sat Jan 19 20:30:25 2008
-#      by: PyQt4 UI code generator 4.3.1
+# Created: Mon May 19 12:07:26 2008
+#      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -15,6 +15,7 @@ class Ui_MainWindow(object):
         MainWindow.resize(QtCore.QSize(QtCore.QRect(0,0,574,469).size()).expandedTo(MainWindow.minimumSizeHint()))
 
         self.centralwidget = QtGui.QWidget(MainWindow)
+        self.centralwidget.setGeometry(QtCore.QRect(0,27,574,418))
         self.centralwidget.setObjectName("centralwidget")
 
         self.gridlayout = QtGui.QGridLayout(self.centralwidget)
@@ -41,7 +42,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,574,28))
+        self.menubar.setGeometry(QtCore.QRect(0,0,574,27))
         self.menubar.setObjectName("menubar")
 
         self.menuFile = QtGui.QMenu(self.menubar)
@@ -52,6 +53,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
+        self.statusbar.setGeometry(QtCore.QRect(0,445,574,24))
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
@@ -72,8 +74,12 @@ class Ui_MainWindow(object):
 
         self.actionSave_XML = QtGui.QAction(MainWindow)
         self.actionSave_XML.setObjectName("actionSave_XML")
+
+        self.actionLoad_all = QtGui.QAction(MainWindow)
+        self.actionLoad_all.setObjectName("actionLoad_all")
         self.menuFile.addAction(self.actionNew_level)
         self.menuFile.addAction(self.actionLoad)
+        self.menuFile.addAction(self.actionLoad_all)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionSave_image)
         self.menuFile.addAction(self.actionSave_XML)
@@ -88,7 +94,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Agrajag Level Editor", None, QtGui.QApplication.UnicodeUTF8))
+        MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Agrajag Editor", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuHelp.setTitle(QtGui.QApplication.translate("MainWindow", "&Help", None, QtGui.QApplication.UnicodeUTF8))
         self.actionExit.setText(QtGui.QApplication.translate("MainWindow", "E&xit", None, QtGui.QApplication.UnicodeUTF8))
@@ -97,6 +103,7 @@ class Ui_MainWindow(object):
         self.actionSave_image.setText(QtGui.QApplication.translate("MainWindow", "Save &image", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew_level.setText(QtGui.QApplication.translate("MainWindow", "&New level...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave_XML.setText(QtGui.QApplication.translate("MainWindow", "&Save XML", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionLoad_all.setText(QtGui.QApplication.translate("MainWindow", "Load &all", None, QtGui.QApplication.UnicodeUTF8))
 
 from tilelist import TileList
 from levelview import LevelView

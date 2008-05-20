@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
-    <height>401</height>
+    <width>353</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -17,7 +17,7 @@
   </property>
   <property name="minimumSize" >
    <size>
-    <width>300</width>
+    <width>350</width>
     <height>400</height>
    </size>
   </property>
@@ -26,7 +26,20 @@
   </property>
   <layout class="QGridLayout" >
    <item rowspan="4" row="0" column="0" >
-    <widget class="PropertyEditor" name="propertyEditor" />
+    <widget class="PropertyEditor" name="propertyEditor" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Expanding" hsizetype="MinimumExpanding" >
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
    </item>
    <item row="0" column="1" >
     <widget class="QPushButton" name="newButton" >
@@ -47,7 +60,7 @@
      <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0" >
       <size>
        <width>20</width>
        <height>40</height>
@@ -67,7 +80,7 @@
       <enum>Qt::Vertical</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
