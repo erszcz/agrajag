@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'new_level.ui'
 #
-# Created: Fri Nov  2 18:33:48 2007
-#      by: PyQt4 UI code generator 4.3
+# Created: Sun May 18 13:41:04 2008
+#      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,13 +12,15 @@ from PyQt4 import QtCore, QtGui
 class Ui_New_level(object):
     def setupUi(self, New_level):
         New_level.setObjectName("New_level")
-        New_level.resize(QtCore.QSize(QtCore.QRect(0,0,329,109).size()).expandedTo(New_level.minimumSizeHint()))
+        New_level.resize(QtCore.QSize(QtCore.QRect(0,0,292,106).size()).expandedTo(New_level.minimumSizeHint()))
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(New_level.sizePolicy().hasHeightForWidth())
         New_level.setSizePolicy(sizePolicy)
+        New_level.setBaseSize(QtCore.QSize(200,100))
+        New_level.setModal(True)
 
         self.gridlayout = QtGui.QGridLayout(New_level)
         self.gridlayout.setObjectName("gridlayout")
@@ -45,11 +47,14 @@ class Ui_New_level(object):
         self.heightSpinBox.setObjectName("heightSpinBox")
         self.gridlayout.addWidget(self.heightSpinBox,1,1,1,1)
 
+        spacerItem = QtGui.QSpacerItem(129,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout.addItem(spacerItem,2,0,1,1)
+
         self.buttonBox = QtGui.QDialogButtonBox(New_level)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.NoButton|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
-        self.gridlayout.addWidget(self.buttonBox,2,0,1,2)
+        self.gridlayout.addWidget(self.buttonBox,2,1,1,1)
 
         self.retranslateUi(New_level)
         QtCore.QObject.connect(self.buttonBox,QtCore.SIGNAL("accepted()"),New_level.accept)

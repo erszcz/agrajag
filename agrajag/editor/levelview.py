@@ -5,21 +5,35 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import pickle
+import os.path
 
-from propertyeditordialog import PropertyEditorDialog
-from constants import BackgroundItem, EventItem
+import propertyeditor
+import propertyeditordialog
+
+import options
 
 class AGItem(QGraphicsPixmapItem):
-  def __init__(self, pixmap, pos, props):
+  def __init__(self, pixmap, pos, info, props = {}):
     QGraphicsPixmapItem.__init__(self, pixmap)
     self.setPos(QPointF(pos))
-    self.setToolTip(props['name'])
+    self.setToolTip(info['name'])
+    self.setFlag(QGraphicsItem.ItemIsSelectable, True)
 
-    self.props = props
+    self.info = info
+    if not props:
+      self.props = {'posx': self.mapToScene(0, 0).x(),
+                    'posy': self.mapToScene(0, 0).y()}
+    else:
+      self.props = props
+      self.props['posx'] = self.mapToScene(0, 0).x()
+      self.props['posy'] = self.mapToScene(0, 0).y()
+
+    self.dragStartPos = None
 
   def editProperties(self):
-    dlg = PropertyEditorDialog(self.props)
-    dlg.exec_()
+    dlg = propertyeditordialog.PropertyEditorDialog(self.props)
+    if dlg.exec_():
+      self.setPos(self.props['posx'], self.props['posy'])
 
   def contextMenuEvent(self, event):
     menu = QMenu()
@@ -27,44 +41,91 @@ class AGItem(QGraphicsPixmapItem):
     qApp.connect(editProperties, SIGNAL('triggered()'),
                  self.editProperties)
     menu.addAction(editProperties)
+
     #>>
-    dumpProperties = QAction('Dump properties', qApp)
-    qApp.connect(dumpProperties, SIGNAL('triggered()'),
-                 self.debugPropDump)
-    menu.addAction(dumpProperties)
+    dumpInformation = QAction('Dump information', qApp)
+    qApp.connect(dumpInformation, SIGNAL('triggered()'),
+                 self.debugDump)
+    menu.addAction(dumpInformation)
     #<<
 
     menu.exec_(event.screenPos())
 
+  def pickledInformation(self):
+    return QString(pickle.dumps(self.info))
+
   def pickledProperties(self):
     return QString(pickle.dumps(self.props))
 
-  def getType(self): return self.props['type']
-  type = property(getType)
-
   # temp
-  def debugPropDump(self):
-    s = '%s\n' % str(self)
-    for x, y in self.props.items():
-      s += '%s: %s\n' % (x, str(y))
-
-    print s
+  def debugDump(self):
+    print '## %s\n# info:' % str(self)
+    for x, y in sorted(self.info.items()):
+      print '%s: %s' % (x, str(y))
+    print '# props:'
+    for x, y in sorted(self.props.items()):
+      print '%s: %s' % (x, str(y))
   #<<
+
+  def mousePressEvent(self, event):
+    QGraphicsItem.mousePressEvent(self, event)  # to have the default behaviour
+    if event.button() == Qt.LeftButton:
+      self.dragStartPos = event.pos()
+
+  def mouseMoveEvent(self, event):
+    QGraphicsItem.mouseMoveEvent(self, event)  # to have the default behaviour
+    if event.buttons() & Qt.LeftButton \
+    and self.dragStartPos is not None \
+    and event.pos() - self.dragStartPos >= QApplication.startDragDistance():
+      itemData = QByteArray()
+      dataStream = QDataStream(itemData, QIODevice.WriteOnly)
+      pixmap = self.pixmap()
+
+      dataStream << pixmap << self.pickledInformation() << self.pickledProperties()
+
+      mimeData = QMimeData()
+      mimeData.setData('agrajag-object', itemData)
+
+      drag = QDrag(self.scene().views()[0])
+      drag.setMimeData(mimeData)
+      drag.setPixmap(pixmap)
+      
+      drag.setHotSpot(self.dragStartPos.toPoint())
+      self.dragStartPos = None
+      self.scene().views()[0].drag = drag
+      self.hide()
+      drag.exec_(Qt.MoveAction)
+      self.scene().views()[0].drag = None
+      self.scene().removeItem(self)
 
 class AGBackgroundItem(AGItem):
   pass
 
 class AGEventItem(AGItem):
-  pass
-
+  def __init__(self, pixmap, pos, info, props = {}):
+    AGItem.__init__(self, pixmap, pos, info, props)
+    self.props = {'posx': self.mapToScene(0, 0).x(),
+                  'posy': self.mapToScene(0, 0).y(),
+                  'time': -1,
+                  'object_cls_name': self.info['name'],
+                  'mover_cls_name': '',
+                  'bonus_cls_name': '',
+                  'object_param_name': '',
+                  'object_param_value': 0.0,
+                  'mover_param_name': '',
+                  'mover_param_value': 0.0,
+                  'bonus_param_name': '',
+                  'bonus_param_value': 0.0,
+                  'group': ''}
 
 class LevelView(QGraphicsView):
   def __init__(self, parent=None):
     QGraphicsView.__init__(self, parent)
-    self.setBackgroundBrush(QBrush(Qt.CrossPattern))
+    self.setBackgroundBrush(QBrush(QImage(os.path.join(options.gfx_path, 'grid.png'))))
+    self.setInteractive(True)
+    self.setDragMode(QGraphicsView.RubberBandDrag)
 
-    self.dragStartPos = None
-    self.dragHotSpot = None
+    self.drag = None
 
     # bez layerow na start, zeby bylo latwiej
     self.newScene(QSize(800, 1000))
@@ -75,6 +136,7 @@ class LevelView(QGraphicsView):
     self.setScene(self.scene)
 
     self.setMaximumSize(size)
+    self.ensureVisible(0, 0, 1, 1)
 
   def snapshot(self):
     image = QImage(self.scene.width(),
@@ -85,73 +147,44 @@ class LevelView(QGraphicsView):
 
     return image
 
-  def placeItem(self, pixmap, pos, props):
-    if props['type'] == BackgroundItem:
-      item = AGBackgroundItem(pixmap, pos, props)
-    elif props['type'] == EventItem:
-      item = AGEventItem(pixmap, pos, props)
+  def placeItem(self, pixmap, pos, info, props = {}):
+    if info['type'] == 'BackgroundItem':
+      item = AGBackgroundItem(pixmap, pos, info, props)
+    elif info['type'] == 'EventItem':
+      item = AGEventItem(pixmap, pos, info, props)
     self.scene.addItem(item)
 
-  def mousePressEvent(self, event):
-    if event.button() == Qt.LeftButton \
-    and self.items(event.pos()):
-      self.dragStartPos = self.dragHotSpot = event.pos()
-
-  def mouseMoveEvent(self, event):
-    if event.buttons() & Qt.LeftButton \
-    and self.dragStartPos is not None \
-    and event.pos() - self.dragStartPos >= QApplication.startDragDistance():
-      item = self.itemAt(self.dragStartPos)
-      if not item:
-        return
-      
-      itemData = QByteArray()
-      dataStream = QDataStream(itemData, QIODevice.WriteOnly)
-      pixmap = item.pixmap()
-
-      dataStream << pixmap << item.pickledProperties()
-
-      mimeData = QMimeData()
-      mimeData.setData('image/x-tile', itemData)
-
-      drag = QDrag(self)
-      drag.setMimeData(mimeData)
-      drag.setPixmap(pixmap)
-      
-      hs = self.mapToScene(self.dragHotSpot)
-      self.dragHotSpot = item.mapFromScene(hs).toPoint()
-      drag.setHotSpot(self.dragHotSpot)
-
-      self.scene.removeItem(item)
-      self.dragStartPos = None
-      drag.start(Qt.MoveAction)
 
   def dragEnterEvent(self, event):
-    if event.mimeData().hasFormat('image/x-tile'):
+    if event.mimeData().hasFormat('agrajag-object'):
       event.accept()
     else:
       event.ignore()
 
   def dragMoveEvent(self, event):
-    if event.mimeData().hasFormat('image/x-tile'):
+    if event.mimeData().hasFormat('agrajag-object'):
       event.setDropAction(Qt.MoveAction)
       event.accept()
     else:
       event.ignore()
 
   def dropEvent(self, event):
-    if event.mimeData().hasFormat('image/x-tile'):
-      tileData = event.mimeData().data('image/x-tile')
+    if event.mimeData().hasFormat('agrajag-object'):
+      tileData = event.mimeData().data('agrajag-object')
       dataStream = QDataStream(tileData, QIODevice.ReadOnly)
       
       pixmap = QPixmap()
-      pickledProps = QString()
-      dataStream >> pixmap >> pickledProps
-      props = pickle.loads(str(pickledProps))
+      pickledinfo = QString()
+      pickledprops = QString()
+      dataStream >> pixmap >> pickledinfo >> pickledprops
+      info = pickle.loads(str(pickledinfo))
+      pickledprops = str(pickledprops)
+      props = pickle.loads(pickledprops) if pickledprops else {}
 
-      hotSpot = self.dragHotSpot if self.dragHotSpot else \
-                QPoint(pixmap.width() / 2, pixmap.height() / 2)
-      self.dragHotSpot = None
+      if self.drag:
+        hotSpot = self.drag.hotSpot()
+      else:
+        hotSpot = QPoint(pixmap.width() / 2, pixmap.height() / 2)
       # check whether to snap or not when dropping
       if event.keyboardModifiers() == Qt.ShiftModifier:
         # snap to grid
@@ -170,7 +203,7 @@ class LevelView(QGraphicsView):
         # don't snap to grid
         pos = QPoint(event.pos().x() - hotSpot.x(),
                      event.pos().y() - hotSpot.y())
-      self.placeItem(pixmap, self.mapToScene(pos), props)
+      self.placeItem(pixmap, self.mapToScene(pos), info, props)
 
       event.setDropAction(Qt.MoveAction)
       event.accept()

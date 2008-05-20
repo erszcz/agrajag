@@ -10,7 +10,7 @@ import xml.dom
 from ui_editor import Ui_MainWindow
 from newleveldialog import NewLevelDialog
 
-from constants import gfx_path, BackgroundItem, EventItem
+import options
 
 class MainWindow(QMainWindow, Ui_MainWindow):
   def __init__(self, dbm, parent=None):
@@ -29,6 +29,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     self.connect(self.actionLoad,
                  SIGNAL('triggered()'),
                  self.load)
+    self.connect(self.actionLoad_all,
+                 SIGNAL('triggered()'),
+                 self.loadAll)
     self.connect(self.actionSave_image,
                  SIGNAL('triggered()'),
                  self.saveImage)
@@ -61,7 +64,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     unreadable = []
     for filename in filenames:
-      if  not filename.isEmpty() \
+      if not filename.isEmpty() \
       and not self.loadImage(filename) \
       and not self.loadXML(filename):
         unreadable.append(filename)
@@ -71,45 +74,52 @@ class MainWindow(QMainWindow, Ui_MainWindow):
       for s in unreadable:
         flist += '\n' + s
       warn = str('Following files could not be loaded: %s' % flist)
-      print warn
+      #print warn
       QMessageBox.warning(self,
                           self.trUtf8('Load'),
                           self.trUtf8(warn))
+
+  def loadAll(self):
+    files = [QString(os.path.join(options.terrain_path, f))
+             for f in os.listdir(options.terrain_path)]
+    files.extend([QString(os.path.join(options.db_path, f))
+                  for f in os.listdir(options.db_path)])
+    self.load(files)
 
   def loadImage(self, filename):
     newImage = QPixmap()
     if not newImage.load(filename):
       return False
     else:
-      props = {}
-      props['filename'] = os.path.basename(str(filename))
-      props['name'] = props['filename'].rsplit('.', 1)[0]
-      props['type'] = BackgroundItem
-      self.tileList.addItem(newImage, props)
+      info = {}
+      info['filename'] = os.path.basename(str(filename))
+      info['name'] = info['filename'].rsplit('.', 1)[0]
+      info['type'] = 'BackgroundItem'
+      self.tileList.addItem(newImage, info)
       return True
 
   def loadXML(self, filename):
     try:
-      # get the props list
+      # get the info list
       filename = str(filename)
       name = os.path.basename(filename).rsplit('.', 1)[0]
       imported = self.dbm.import_file(filename)
-      props = imported['props']
+      info = imported['props']
 
       # craft that list
-      del props['editor_enabled']
-      props['name'] = name
-      props['type'] = EventItem
+      del info['editor_enabled']
+      info['name'] = name
+      info['type'] = 'EventItem'
       k = imported['gfx'].keys()[0]
         # this is the image-resource name from XML
-      props['filename'] = imported['gfx'][k]['file']
+      info['filename'] = imported['gfx'][k]['file']
       
       # get the pixmap
       pixmap = QPixmap()
-      if not pixmap.load(os.path.join(gfx_path, props['filename'])):
+      if not pixmap.load(os.path.join(options.gfx_path, info['filename'])):
         return False
 
-      self.tileList.addItem(pixmap, props)
+      self.tileList.addItem(pixmap, info)
 
       return True
 #    except AttributeError, e:
@@ -119,7 +129,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 #      print 'KeyError:', e.message
 #      return False
     except Exception, e:
-#      print 'Exception'
+#      print 'Exception:', e.message
       return False
 
   def saveImage(self, filename = ''):
@@ -161,9 +171,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     backgroundElement = doc.createElement('background')
 
     for item in items():
-      if item.type == BackgroundItem:
+      if item.type == 'BackgroundItem':
         pass
-      elif item.type == EventItem:
+      elif item.type == 'EventItem':
         pass
       else:
         pass
