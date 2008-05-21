@@ -38,6 +38,11 @@ class PropertyAdjuster:
   def convertString(value):
     return str(value)
 
+#class PropertyRow(QTableWidgetItem):
+#  def __init__(self, key, value, parent=None)
+#    QTableWidgetItem.__init__(self, parent)
+#    
+
 class PropertyEditor(QTableWidget):
   '''
   Class suited to view and allow for adjustment
@@ -55,6 +60,8 @@ class PropertyEditor(QTableWidget):
     self.setColumnCount(2)
     self.setHorizontalHeaderLabels([self.trUtf8('Property'),
                                     self.trUtf8('Value')])
+    self.setColumnWidth(0, 110)
+    self.setColumnWidth(1, 220)
 
     self.reset({})
 
@@ -108,7 +115,7 @@ class PropertyEditor(QTableWidget):
       keyItem.setFlags(Qt.ItemIsSelectable)
 
     # item with value editor
-    valItem = self.__getEditor(key, type, value)
+    valItem, setter, setterInput = self.__getEditor(key, type, value)
     if key == 'posx' or key == 'posy':
       valItem.setEnabled(False)
     
@@ -119,7 +126,7 @@ class PropertyEditor(QTableWidget):
     # set proper items
     self.setItem(index, 0, keyItem)
     self.setCellWidget(index, 1, valItem)
-    valItem.show()
+    setter(setterInput)
     if sort:  # sort if necessary
       self.sortItems(0)
 
@@ -145,43 +152,51 @@ class PropertyEditor(QTableWidget):
 
     del self.props[key]
 
+  def contextMenuEvent(self, event):
+    menu = QMenu()
+    menu.addAction(self.actionNew_property)
+    menu.addAction(self.actionDelete_property)
+    menu.addAction(self.actionCommit_changes)
+    menu.exec_(event.globalPos())
+
   def __getEditor(self, key, type, value):
-    print 'key:', key, 'type:', type, 'val:', value
     if   type == int:
-      editor = QSpinBox()
+      editor = QSpinBox(self)
       editor.setRange(-10000, 10000)
-      editor.setValue(value)
+      setter = editor.setValue
       self.adjusters[key] = PropertyAdjuster(key, self)
       self.connect(editor, SIGNAL('valueChanged(int)'),
                    self.adjusters[key].adjustNumber)
     elif type == float:
-      editor = QDoubleSpinBox()
+      editor = QDoubleSpinBox(self)
       editor.setRange(-10000.0, 10000.0)
-      editor.setValue(value)
+      setter = editor.setValue
       self.adjusters[key] = PropertyAdjuster(key, self)
       self.connect(editor, SIGNAL('valueChanged(double)'),
                    self.adjusters[key].adjustNumber)
     elif type == bool:
-      editor = QCheckBox()
+      editor = QCheckBox(self)
       editor.setTristate(False)
       f = lambda x: 2 if x else 0
-      editor.setCheckState(Qt.CheckState(f(value)))
+      setter = editor.setCheckState
+      value = Qt.CheckState(f(value))
       self.adjusters[key] = PropertyAdjuster(key, self)
       self.connect(editor, SIGNAL('stateChanged(int)'),
                    self.adjusters[key].adjustBool)
     elif type == tuple or type == list:
-      editor = QLineEdit()
-      editor.setText(', '.join(list(value)))
+      editor = QLineEdit(self)
+      setter = editor.setText
+      value = ', '.join(list(value))
       self.adjusters[key] = PropertyAdjuster(key, self)
       self.connect(editor, SIGNAL('textChanged(QString)'),
                    self.adjusters[key].adjustTuple)
     elif type == str or type == unicode:
-      editor = QLineEdit()
-      editor.setText(value)
+      editor = QLineEdit(self)
+      setter = editor.setText
       self.adjusters[key] = PropertyAdjuster(key, self)
       self.connect(editor, SIGNAL('textChanged(QString)'),
                    self.adjusters[key].adjustString)
     else:
       raise Exception('Editor for type: %s undefined.' % type)
 
-    return editor
+    return editor, setter, value

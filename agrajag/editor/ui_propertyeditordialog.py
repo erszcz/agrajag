@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'propertyeditordialog.ui'
 #
-# Created: Sun May 18 22:33:16 2008
+# Created: Wed May 21 13:02:25 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,14 +12,14 @@ from PyQt4 import QtCore, QtGui
 class Ui_PropertyEditorDialog(object):
     def setupUi(self, PropertyEditorDialog):
         PropertyEditorDialog.setObjectName("PropertyEditorDialog")
-        PropertyEditorDialog.resize(QtCore.QSize(QtCore.QRect(0,0,353,400).size()).expandedTo(PropertyEditorDialog.minimumSizeHint()))
+        PropertyEditorDialog.resize(QtCore.QSize(QtCore.QRect(0,0,497,400).size()).expandedTo(PropertyEditorDialog.minimumSizeHint()))
 
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.MinimumExpanding)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(PropertyEditorDialog.sizePolicy().hasHeightForWidth())
         PropertyEditorDialog.setSizePolicy(sizePolicy)
-        PropertyEditorDialog.setMinimumSize(QtCore.QSize(350,400))
+        PropertyEditorDialog.setMinimumSize(QtCore.QSize(0,400))
 
         self.gridlayout = QtGui.QGridLayout(PropertyEditorDialog)
         self.gridlayout.setObjectName("gridlayout")
@@ -31,7 +31,7 @@ class Ui_PropertyEditorDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.propertyEditor.sizePolicy().hasHeightForWidth())
         self.propertyEditor.setSizePolicy(sizePolicy)
-        self.propertyEditor.setMinimumSize(QtCore.QSize(200,0))
+        self.propertyEditor.setMinimumSize(QtCore.QSize(400,0))
         self.propertyEditor.setObjectName("propertyEditor")
         self.gridlayout.addWidget(self.propertyEditor,0,0,4,1)
 
