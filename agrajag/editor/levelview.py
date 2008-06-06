@@ -106,16 +106,10 @@ class AGEventItem(AGItem):
     AGItem.__init__(self, pixmap, pos, info, props)
     self.props = {'posx': self.mapToScene(0, 0).x(),
                   'posy': self.mapToScene(0, 0).y(),
-                  'time': -1,
+                  'time': 0,
                   'object_cls_name': self.info['name'],
                   'mover_cls_name': '',
                   'bonus_cls_name': '',
-                  'object_param_name': '',
-                  'object_param_value': 0.0,
-                  'mover_param_name': '',
-                  'mover_param_value': 0.0,
-                  'bonus_param_name': '',
-                  'bonus_param_value': 0.0,
                   'group': ''}
 
 class LevelView(QGraphicsView):

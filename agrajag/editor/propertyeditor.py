@@ -6,22 +6,175 @@ from PyQt4.QtGui import *
 
 from newpropertydialog import NewPropertyDialog
 
-class PropertyAdjuster:
-  def __init__(self, propKey, parent):
-    self.propKey = propKey
+
+prop_opts = {# option selectible props
+             'object_cls_name': [],
+             'mover_cls_name':  ['RandomMover', 'ZigZagMover', 'CircularMover',
+                                 'LinearMover', 'LinearPlayerTargetingMover',
+                                 'SeekingMover'],
+             'bonus_cls_name':  ['RechargeBonus', 'SuperShieldBonus',
+                                 'ShieldUpgradeBonus'],
+             'object_param':    [],
+             'mover_param':     ['vertical_div', 'dir', 'radius', 'period'],
+             'bonus_param':     ['power'],
+             'group':           ['enemies', 'ship', 'enemy_projectiles',
+                                 'player_projectiles', 'beams', 'explosions',
+                                 'shields', 'bonuses'],
+             # primitive type props
+             'posx': float,
+             'posy': float,
+             'time': int
+            }
+select_only_props = 'group', 'mover_cls_name', 'bonus_param', 'object_param', \
+                    'mover_param', 'bonus_cls_name', 'object_cls_name'
+primitive_type_props = 'posx', 'posy', 'time'
+
+# mover/bonus-type: {param_one: default_value, param_two: default_value...}
+mover_params = {'RandomMover':   {'period': 130},
+                'ZigZagMover':   {'radius': 80},
+                'CircularMover': {'radius': 80},
+                'LinearMover':   {'dir': 0},
+                'LinearPlayerTargetingMover': {'vertical_div': 0.3},
+                'SeekingMover':  {}
+               }
+bonus_params = {'RechargeBonus': {'power': 10},
+                'SuperShieldBonus': {},
+                'ShieldUpgradeBonus': {}
+               }
+object_params = {'EnemyInterceptor': {},
+                }
+generic_params = mover_params.keys() + bonus_params.keys() + object_params.keys()
+
+
+class PropertyTableRow(QObject):
+  def __init__(self, key, value, parent):
+    QObject.__init__(self, parent)
     self.parent = parent
+    self.key = key
+    
+    # child props management
+    self.__oldkey = ''
+    self.__childProperties = []
+
+    self.labelItem = QTableWidgetItem(key)  # labelItem.text = key
+    self.editorItem, setter, value = self.__getEditor(key, value)
+
+
+    # add widgets to parent
+    index = parent.rowCount() - 1
+    parent.setItem(index, 0, self.labelItem)
+    parent.setCellWidget(index, 1, self.editorItem)
+    setter(value)
+    self.parent.sortItems(0)
+
+  def __getEditor(self, key, value):
+    vtype = type(value)
+    if key in select_only_props:
+      editor = QComboBox()
+      editor.addItems(prop_opts[key])
+      editor.setEditable(True)
+      editor.setValidator(QRegExpValidator(QRegExp('\S*'), self))
+      setter = editor.setEditText
+      self.connect(editor, SIGNAL('editTextChanged(QString)'),
+                   self.adjustString)
+
+      if key == 'object_cls_name':
+        editor.setEnabled(False)
+
+      if key in ('object_cls_name', 'mover_cls_name', 'bonus_cls_name'):
+        self.connect(editor, SIGNAL('editTextChanged(QString)'),
+                     self.updateChildProperties)
+    else:
+      if   vtype == int:
+        editor = QSpinBox()
+        setter = editor.setValue
+        self.connect(editor, SIGNAL('valueChanged(int)'),
+                     self.adjustNumber)
+      elif vtype == float:
+        editor = QDoubleSpinBox()
+        setter = editor.setValue
+        self.connect(editor, SIGNAL('valueChanged(double)'),
+                     self.adjustNumber)
+      elif vtype == bool:
+        editor = QCheckBox()
+        editor.setTristate(False)
+        f = lambda x: 2 if x else 0
+        setter = editor.setCheckState
+        value = Qt.CheckState(f(value))
+        self.connect(editor, SIGNAL('stateChanged(int)'),
+                     self.adjustBool)
+      elif vtype == tuple or vtype == list:
+        editor = QLineEdit()
+        setter = editor.setText
+        value = ', '.join(list(value))
+        self.connect(editor, SIGNAL('textChanged(QString)'),
+                     self.adjustTuple)
+      elif vtype == str or vtype == unicode:
+        editor = QLineEdit()
+        setter = editor.setText
+        self.connect(editor, SIGNAL('textChanged(QString)'),
+                     self.adjustString)
+
+      if key == 'posx':
+        editor.setEnabled(False)
+        editor.setRange(-1024, 1024)
+      elif key == 'posy':
+        editor.setEnabled(False)
+        editor.setRange(-1024, 1000000000)
+      elif key == 'time':
+        editor.setMinimum(0)
+      # object/mover/bonus parameters
+      elif key.split(':')[-1] == 'period':
+        editor.setRange(0, 1000000000)
+      elif key.split(':')[-1] == 'radius':
+        editor.setRange(0, 512)
+      elif key.split(':')[-1] == 'dir':
+        editor.setRange(0, 359)
+      elif key.split(':')[-1] == 'vertical_div':
+        editor.setRange(0.0, 6.28)
+      elif key.split(':')[-1] == 'power':
+        editor.setRange(0, 1000000000)
+
+    return editor, setter, value
 
   def adjustNumber(self, value):
-    self.parent.props[self.propKey] = value
+    self.parent.props[self.key] = value
 
   def adjustBool(self, value):
-    self.parent.props[self.propKey] = self.convertBool(value)
+    self.parent.props[self.key] = self.convertBool(value)
 
   def adjustTuple(self, value):
-    self.parent.props[self.propKey] = self.convertTuple(value)
+    self.parent.props[self.key] = self.convertTuple(value)
 
   def adjustString(self, value):
-    self.parent.props[self.propKey] = self.convertString(value)
+    self.parent.props[self.key] = self.convertString(value)
+
+  # slot
+  def updateChildProperties(self, key):
+    key = str(key)
+    if self.__oldkey != key:
+      # purge old child properties
+      for child in self.__childProperties:
+        self.parent.deleteProperty(key = child)
+      self.__childProperties = []
+
+      # create new child properties
+      self.__oldkey = key
+      if mover_params.has_key(key):
+        for child, value in mover_params[key].items():
+          self.parent.addProperty(':'.join((key, child)), value)
+          self.__childProperties.append(':'.join((key, child)))
+      elif bonus_params.has_key(key):
+        for child, value in bonus_params[key].items():
+          self.parent.addProperty(':'.join((key, child)), value)
+          self.__childProperties.append(':'.join((key, child)))
+      elif object_params.has_key(key):
+        for child, value in object_params[key].items():
+          self.parent.addProperty(':'.join((key, child)), value)
+          self.__childProperties.append(':'.join((key, child)))
+      else:
+        raise Exception('Unrecognized object/mover/bonus: %s of type %s' \
+                        % (key, type(key)))
 
   # converters
   @staticmethod
@@ -38,10 +191,6 @@ class PropertyAdjuster:
   def convertString(value):
     return str(value)
 
-#class PropertyRow(QTableWidgetItem):
-#  def __init__(self, key, value, parent=None)
-#    QTableWidgetItem.__init__(self, parent)
-#    
 
 class PropertyEditor(QTableWidget):
   '''
@@ -88,13 +237,12 @@ class PropertyEditor(QTableWidget):
       self.emit(SIGNAL('actionDelete_propertyEnabled'), True)
 
   def reset(self, props):
-    self.adjusters = {}
+    self.rows = {}
     self.initialProps = props
     self.props = self.initialProps.copy()
 
     for x, y in self.props.items():
-      self.addProperty(x, type(y), y, False)
-    self.sortItems(0)
+      self.addProperty(x, y)
 
   # slot
   def commitChanges(self):
@@ -106,29 +254,12 @@ class PropertyEditor(QTableWidget):
     self.initialProps.update(self.props)
 
   # slot
-  def addProperty(self, key, type, value, sort=True):
-    # item with key name
-    keyItem = QTableWidgetItem(key)
-    if key != 'posx' and key != 'posy':
-      keyItem.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
-    else:
-      keyItem.setFlags(Qt.ItemIsSelectable)
-
-    # item with value editor
-    valItem, setter, setterInput = self.__getEditor(key, type, value)
-    if key == 'posx' or key == 'posy':
-      valItem.setEnabled(False)
-    
+  def addProperty(self, key, value):
     # increase row number
     index = self.rowCount()
     self.setRowCount(index + 1)
-
-    # set proper items
-    self.setItem(index, 0, keyItem)
-    self.setCellWidget(index, 1, valItem)
-    setter(setterInput)
-    if sort:  # sort if necessary
-      self.sortItems(0)
+    
+    self.rows[key] = PropertyTableRow(key, value, self)
 
     # add to the dictionary
     self.props[key] = value
@@ -139,16 +270,18 @@ class PropertyEditor(QTableWidget):
     npd.exec_()
 
   # slot
-  def deleteProperty(self, item=None):
-    if item == None:
+  def deleteProperty(self, item=None, key=None):
+    if item == None and key == None:
       item = self.currentItem()
-      
-    # remove the corresponding adjuster
-    key = str(item.text())
-    del self.adjusters[key]
+
+    if not key:
+      key = str(item.text())
+    if not item:
+      item = self.rows[str(key)].labelItem
 
     # remove item's row
     self.removeRow(self.row(item))
+    del self.rows[key]
 
     del self.props[key]
 
@@ -159,44 +292,3 @@ class PropertyEditor(QTableWidget):
     menu.addAction(self.actionCommit_changes)
     menu.exec_(event.globalPos())
 
-  def __getEditor(self, key, type, value):
-    if   type == int:
-      editor = QSpinBox(self)
-      editor.setRange(-10000, 10000)
-      setter = editor.setValue
-      self.adjusters[key] = PropertyAdjuster(key, self)
-      self.connect(editor, SIGNAL('valueChanged(int)'),
-                   self.adjusters[key].adjustNumber)
-    elif type == float:
-      editor = QDoubleSpinBox(self)
-      editor.setRange(-10000.0, 10000.0)
-      setter = editor.setValue
-      self.adjusters[key] = PropertyAdjuster(key, self)
-      self.connect(editor, SIGNAL('valueChanged(double)'),
-                   self.adjusters[key].adjustNumber)
-    elif type == bool:
-      editor = QCheckBox(self)
-      editor.setTristate(False)
-      f = lambda x: 2 if x else 0
-      setter = editor.setCheckState
-      value = Qt.CheckState(f(value))
-      self.adjusters[key] = PropertyAdjuster(key, self)
-      self.connect(editor, SIGNAL('stateChanged(int)'),
-                   self.adjusters[key].adjustBool)
-    elif type == tuple or type == list:
-      editor = QLineEdit(self)
-      setter = editor.setText
-      value = ', '.join(list(value))
-      self.adjusters[key] = PropertyAdjuster(key, self)
-      self.connect(editor, SIGNAL('textChanged(QString)'),
-                   self.adjusters[key].adjustTuple)
-    elif type == str or type == unicode:
-      editor = QLineEdit(self)
-      setter = editor.setText
-      self.adjusters[key] = PropertyAdjuster(key, self)
-      self.connect(editor, SIGNAL('textChanged(QString)'),
-                   self.adjusters[key].adjustString)
-    else:
-      raise Exception('Editor for type: %s undefined.' % type)
-
-    return editor, setter, value
