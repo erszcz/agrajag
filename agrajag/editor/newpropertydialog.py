@@ -71,7 +71,7 @@ class NewPropertyDialog(QDialog, Ui_NewPropertyDialog):
       return
     type = Type.pythonic(self.typeButtonGroup.checkedId())
 
-    cnv = propertyeditor.PropertyAdjuster
+    cnv = propertyeditor.PropertyTableRow
     if   type == int:
       value = self.intSpinBox.value()
     elif type == float:
@@ -83,7 +83,7 @@ class NewPropertyDialog(QDialog, Ui_NewPropertyDialog):
     elif type == str or type == unicode:
       value = cnv.convertString(self.strLineEdit.text())
 
-    self.propertyEditor.addProperty(key, type, value, True)
+    self.propertyEditor.addProperty(key, value)
     # this is rooted out from this dialog's behaviour in designer
     # file, so I add it here
     self.accept()
