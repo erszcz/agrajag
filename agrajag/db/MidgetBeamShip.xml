@@ -5,6 +5,7 @@
     </resource>
   </gfx>
   <properties>
+    <prop name='editor_enabled' value='1' type='bool' />
     <prop name='explosion_cls_name' value='MediumExplosion' />
     <prop name='weapons_cls_names' value='BasicBeamer' type='tuple' />
     <prop name='durability' value='20' type='int' />

@@ -47,14 +47,13 @@ generic_params = mover_params.keys() + bonus_params.keys() + object_params.keys(
 
 
 class PropertyTableRow(QObject):
-  def __init__(self, key, value, parent):
+  def __init__(self, key, value, parent, childProperties=None):
     QObject.__init__(self, parent)
     self.parent = parent
     self.key = key
     
     # child props management
     self.__oldkey = ''
-    self.__childProperties = []
 
     self.labelItem = QTableWidgetItem(key)  # labelItem.text = key
     self.editorItem, setter, value = self.__getEditor(key, value)
@@ -66,6 +65,17 @@ class PropertyTableRow(QObject):
     parent.setCellWidget(index, 1, self.editorItem)
     setter(value)
     self.parent.sortItems(0)
+
+  def initChildProperties(self, properties):
+    self.__childProperties = []
+    for child in properties:
+      parent.addProperty()
+      self.__childProperties.append(child)
+
+  def deleteChildProperties(self):
+    for child in self.__childProperties:
+      self.parent.deleteProperty(key = child)
+    self.__childProperties = []
 
   def __getEditor(self, key, value):
     vtype = type(value)
@@ -154,9 +164,7 @@ class PropertyTableRow(QObject):
     key = str(key)
     if self.__oldkey != key:
       # purge old child properties
-      for child in self.__childProperties:
-        self.parent.deleteProperty(key = child)
-      self.__childProperties = []
+      self.deleteChildProperties()
 
       # create new child properties
       self.__oldkey = key
@@ -212,7 +220,7 @@ class PropertyEditor(QTableWidget):
     self.setColumnWidth(0, 110)
     self.setColumnWidth(1, 220)
 
-    self.reset({})
+    self.setProperties({})
 
   def setupActions(self):
     self.actionNew_property = QAction('New property', self)
@@ -236,10 +244,19 @@ class PropertyEditor(QTableWidget):
       self.actionDelete_property.setEnabled(True)
       self.emit(SIGNAL('actionDelete_propertyEnabled'), True)
 
-  def reset(self, props):
+  def setProperties(self, props):
     self.rows = {}
     self.initialProps = props
     self.props = self.initialProps.copy()
+
+    keys = sorted(props.keys(), reverse = True)
+      # any primitive props will be first; those being children
+      # of others will come at the end, because they begin with
+      # uppercase letters
+    initTree = {}
+    for key in keys:
+      if key[0].islower(): initTree[key] = []
+      elif key[0].isupper(): 
 
     for x, y in self.props.items():
       self.addProperty(x, y)
