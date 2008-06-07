@@ -24,4 +24,4 @@ class PropertyEditorDialog(QDialog,
                  SIGNAL('actionDelete_propertyEnabled'),
                  self.deleteButton.setEnabled)
 
-    self.propertyEditor.reset(props)
+    self.propertyEditor.setProperties(props)

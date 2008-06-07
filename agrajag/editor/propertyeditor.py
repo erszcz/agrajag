@@ -47,15 +47,17 @@ generic_params = mover_params.keys() + bonus_params.keys() + object_params.keys(
 
 
 class PropertyTableRow(QObject):
-  def __init__(self, key, value, parent, childProperties=None):
+  def __init__(self, key, value, parent, childProperties={}):
     QObject.__init__(self, parent)
     self.parent = parent
     self.key = key
     
     # child props management
     self.__oldkey = ''
+    self.initChildProperties(childProperties)
 
     self.labelItem = QTableWidgetItem(key)  # labelItem.text = key
+    self.labelItem.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
     self.editorItem, setter, value = self.__getEditor(key, value)
 
 
@@ -67,9 +69,10 @@ class PropertyTableRow(QObject):
     self.parent.sortItems(0)
 
   def initChildProperties(self, properties):
+    print properties
     self.__childProperties = []
-    for child in properties:
-      parent.addProperty()
+    for child, value in properties.items():
+      self.parent.addProperty(child, value)
       self.__childProperties.append(child)
 
   def deleteChildProperties(self):
@@ -90,6 +93,7 @@ class PropertyTableRow(QObject):
 
       if key == 'object_cls_name':
         editor.setEnabled(False)
+        self.labelItem.setFlags(Qt.ItemIsSelectable)
 
       if key in ('object_cls_name', 'mover_cls_name', 'bonus_cls_name'):
         self.connect(editor, SIGNAL('editTextChanged(QString)'),
@@ -127,9 +131,11 @@ class PropertyTableRow(QObject):
 
       if key == 'posx':
         editor.setEnabled(False)
+        self.labelItem.setFlags(Qt.ItemIsSelectable)
         editor.setRange(-1024, 1024)
       elif key == 'posy':
         editor.setEnabled(False)
+        self.labelItem.setFlags(Qt.ItemIsSelectable)
         editor.setRange(-1024, 1000000000)
       elif key == 'time':
         editor.setMinimum(0)
@@ -217,7 +223,7 @@ class PropertyEditor(QTableWidget):
     self.setColumnCount(2)
     self.setHorizontalHeaderLabels([self.trUtf8('Property'),
                                     self.trUtf8('Value')])
-    self.setColumnWidth(0, 110)
+    self.setColumnWidth(0, 160)
     self.setColumnWidth(1, 220)
 
     self.setProperties({})
@@ -249,17 +255,28 @@ class PropertyEditor(QTableWidget):
     self.initialProps = props
     self.props = self.initialProps.copy()
 
-    keys = sorted(props.keys(), reverse = True)
+#    keys = sorted(props.keys(), reverse = True)
       # any primitive props will be first; those being children
       # of others will come at the end, because they begin with
       # uppercase letters
     initTree = {}
-    for key in keys:
-      if key[0].islower(): initTree[key] = []
-      elif key[0].isupper(): 
+    for key in props.keys():  #keys:
+      if key[0].islower(): initTree[key] = {}
+      elif key[0].isupper():
+        initTree['object_cls_name'] = {}
+        initTree['mover_cls_name'] = {}
+        initTree['bonus_cls_name'] = {}
+        if key.split(':')[0] in prop_opts['object_cls_name']:
+          initTree['object_cls_name'][key] = props[key]
+        elif key.split(':')[0] in prop_opts['mover_cls_name']:
+          initTree['mover_cls_name'][key] = props[key]
+        elif key.split(':')[0] in prop_opts['bonus_cls_name']:
+          initTree['bonus_cls_name'][key] = props[key]
+      else:
+        raise Exception('Undefined property: %s' % key)
 
-    for x, y in self.props.items():
-      self.addProperty(x, y)
+    for key in initTree.keys():
+      self.addProperty(key, props[key], initTree[key])
 
   # slot
   def commitChanges(self):
@@ -271,12 +288,12 @@ class PropertyEditor(QTableWidget):
     self.initialProps.update(self.props)
 
   # slot
-  def addProperty(self, key, value):
+  def addProperty(self, key, value, childProperties={}):
     # increase row number
     index = self.rowCount()
     self.setRowCount(index + 1)
     
-    self.rows[key] = PropertyTableRow(key, value, self)
+    self.rows[key] = PropertyTableRow(key, value, self, childProperties)
 
     # add to the dictionary
     self.props[key] = value
@@ -298,6 +315,7 @@ class PropertyEditor(QTableWidget):
 
     # remove item's row
     self.removeRow(self.row(item))
+    self.rows[key].deleteChildProperties()
     del self.rows[key]
 
     del self.props[key]
