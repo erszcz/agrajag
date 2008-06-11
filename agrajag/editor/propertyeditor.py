@@ -69,7 +69,6 @@ class PropertyTableRow(QObject):
     self.parent.sortItems(0)
 
   def initChildProperties(self, properties):
-    print properties
     self.__childProperties = []
     for child, value in properties.items():
       self.parent.addProperty(child, value)
@@ -263,7 +262,8 @@ class PropertyEditor(QTableWidget):
     for key in props.keys():  #keys:
       if key[0].islower(): initTree[key] = {}
       elif key[0].isupper():
-        initTree['object_cls_name'] = {}
+        if props.has_key('object_cls_name'):
+          initTree['object_cls_name'] = {}
         initTree['mover_cls_name'] = {}
         initTree['bonus_cls_name'] = {}
         if key.split(':')[0] in prop_opts['object_cls_name']:
