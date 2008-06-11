@@ -5,10 +5,11 @@ import os
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-import xml.dom
 
 from ui_editor import Ui_MainWindow
 from newleveldialog import NewLevelDialog
+
+import xmlwriter as xw
 
 import options
 
@@ -38,11 +39,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     self.connect(self.actionAbout_Qt,
                  SIGNAL('triggered()'),
                  qApp.aboutQt)
-
-    # not implemented
     self.connect(self.actionSave_XML,
                  SIGNAL('triggered()'),
-                 self.notImplementedYet)
+                 self.saveXML)
 
   def notImplementedYet(self):
     info = 'The feature you requested is not implemented yet.'
@@ -142,6 +141,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     if not filename:
       return
     image = self.levelView.snapshot()
+    if filename.indexOf('.') == -1:
+      filename.append('.png')
     if not image.save(filename):
       QMessageBox.warning(self, self.trUtf8('Save level as image'),
                           self.trUtf8('The file could not be saved.'))
@@ -155,34 +156,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     if not filename:
       return
-    items = self.levelView.items()
-    if not self.writeXML(filename, items):
+    if not filename.endsWith('.xml'):
+      filename.append('.xml')
+    if not xw.XMLWriter.writeEventsFile(filename, self.levelView.scene):
       warn = 'Could not write file:\n%s' %filename
       QMessageBox.warning(self,
                           self.trUtf8('Save as XML'),
                           self.trUtf8(warn))
-
-  def writeXML(self, filename, items):
-    # create the document
-    imp = xml.dom.getDOMImplementation()
-    doc = imp.createDocument('', 'stage', None)
-    root = doc.firstChild
-    eventsElement = doc.createElement('events')
-    backgroundElement = doc.createElement('background')
-
-    for item in items():
-      if item.type == 'BackgroundItem':
-        pass
-      elif item.type == 'EventItem':
-        pass
-      else:
-        pass
-
-    try:
-      filename = str(filename)
-      # write the file...
-
-      return True
-    except IOError, e:
-      print 'IOError:', e.message
-      return False

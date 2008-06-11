@@ -65,6 +65,7 @@ class AGItem(QGraphicsPixmapItem):
     print '# props:'
     for x, y in sorted(self.props.items()):
       print '%s: %s' % (x, str(y))
+    print
   #<<
 
   def mousePressEvent(self, event):
@@ -104,13 +105,25 @@ class AGBackgroundItem(AGItem):
 class AGEventItem(AGItem):
   def __init__(self, pixmap, pos, info, props = {}):
     AGItem.__init__(self, pixmap, pos, info, props)
-    self.props = {'posx': self.mapToScene(0, 0).x(),
-                  'posy': self.mapToScene(0, 0).y(),
-                  'time': 0,
-                  'object_cls_name': self.info['name'],
-                  'mover_cls_name': '',
-                  'bonus_cls_name': '',
-                  'group': ''}
+    if not props:
+      if self.isBonus():
+        self.props = {'posx': self.mapToScene(0, 0).x(),
+                      'posy': self.mapToScene(0, 0).y(),
+                      'time': 0,
+                      'bonus_cls_name': self.info['name'],
+                      'mover_cls_name': '',
+                      'group': ''}
+      else:
+        self.props = {'posx': self.mapToScene(0, 0).x(),
+                      'posy': self.mapToScene(0, 0).y(),
+                      'time': 0,
+                      'object_cls_name': self.info['name'],
+                      'mover_cls_name': '',
+                      'bonus_cls_name': '',
+                      'group': ''}
+
+  def isBonus(self):
+    return True if self.info['name'].find('Bonus') != -1 else False
 
 class LevelView(QGraphicsView):
   def __init__(self, parent=None):
