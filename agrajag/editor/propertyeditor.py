@@ -8,25 +8,22 @@ from newpropertydialog import NewPropertyDialog
 
 
 prop_opts = {# option selectible props
-             'object_cls_name': [],
+             'object_cls_name': ['EnemyInterceptor', 'MidgetBeamShip'],
              'mover_cls_name':  ['RandomMover', 'ZigZagMover', 'CircularMover',
                                  'LinearMover', 'LinearPlayerTargetingMover',
                                  'SeekingMover'],
              'bonus_cls_name':  ['RechargeBonus', 'SuperShieldBonus',
                                  'ShieldUpgradeBonus'],
-             'object_param':    [],
-             'mover_param':     ['vertical_div', 'dir', 'radius', 'period'],
-             'bonus_param':     ['power'],
              'group':           ['enemies', 'ship', 'enemy_projectiles',
                                  'player_projectiles', 'beams', 'explosions',
                                  'shields', 'bonuses'],
              # primitive type props
-             'posx': float,
-             'posy': float,
+             'posx': int,
+             'posy': int,
              'time': int
             }
-select_only_props = 'group', 'mover_cls_name', 'bonus_param', 'object_param', \
-                    'mover_param', 'bonus_cls_name', 'object_cls_name'
+select_only_props = 'group', 'mover_cls_name', \
+                    'bonus_cls_name', 'object_cls_name'
 primitive_type_props = 'posx', 'posy', 'time'
 
 # mover/bonus-type: {param_one: default_value, param_two: default_value...}
@@ -42,8 +39,17 @@ bonus_params = {'RechargeBonus': {'power': 10},
                 'ShieldUpgradeBonus': {}
                }
 object_params = {'EnemyInterceptor': {},
+                 'MidgetBeamShip': {}
                 }
-generic_params = mover_params.keys() + bonus_params.keys() + object_params.keys()
+# translator: class name -> object type (i.e.: mover, object, bonus)
+cls2type = {}
+for cls in mover_params.keys() + bonus_params.keys() + object_params.keys():
+  if cls in prop_opts['object_cls_name']:
+    cls2type[cls] = 'object_cls_name'
+  elif cls in prop_opts['mover_cls_name']:
+    cls2type[cls] = 'mover_cls_name'
+  elif cls in prop_opts['bonus_cls_name']:
+    cls2type[cls] = 'bonus_cls_name'
 
 
 class PropertyTableRow(QObject):
@@ -53,7 +59,8 @@ class PropertyTableRow(QObject):
     self.key = key
     
     # child props management
-    self.__oldkey = ''
+    print 'childProperties:', childProperties
+    self.__oldChoice = ''
     self.initChildProperties(childProperties)
 
     self.labelItem = QTableWidgetItem(key)  # labelItem.text = key
@@ -71,6 +78,7 @@ class PropertyTableRow(QObject):
   def initChildProperties(self, properties):
     self.__childProperties = []
     for child, value in properties.items():
+      print 'child, value:', child, value
       self.parent.addProperty(child, value)
       self.__childProperties.append(child)
 
@@ -78,6 +86,48 @@ class PropertyTableRow(QObject):
     for child in self.__childProperties:
       self.parent.deleteProperty(key = child)
     self.__childProperties = []
+
+  # slot
+  def updateChildProperties(self, choice):
+    choice = str(choice)
+    if self.__oldChoice != choice:
+      self.__oldChoice = choice
+
+      # purge old child properties
+      self.deleteChildProperties()
+
+      # create new child properties
+      type = cls2type[choice].split('_')[0]
+      for child, value in eval(type + '_params')[choice].items():
+        self.parent.addProperty(':'.join((choice, child)), value)
+        self.__childProperties.append(':'.join((choice, child)))
+
+  # converters
+  @staticmethod
+  def convertBool(value):
+    return bool(value)
+
+  @staticmethod
+  def convertTuple(value):
+    value = str(value)
+    value = value.replace(' ', '')
+    return tuple(value.split(','))
+
+  @staticmethod
+  def convertString(value):
+    return str(value)
+
+  def adjustNumber(self, value):
+    self.parent.props[self.key] = value
+
+  def adjustBool(self, value):
+    self.parent.props[self.key] = self.convertBool(value)
+
+  def adjustTuple(self, value):
+    self.parent.props[self.key] = self.convertTuple(value)
+
+  def adjustString(self, value):
+    self.parent.props[self.key] = self.convertString(value)
 
   def __getEditor(self, key, value):
     vtype = type(value)
@@ -152,58 +202,6 @@ class PropertyTableRow(QObject):
 
     return editor, setter, value
 
-  def adjustNumber(self, value):
-    self.parent.props[self.key] = value
-
-  def adjustBool(self, value):
-    self.parent.props[self.key] = self.convertBool(value)
-
-  def adjustTuple(self, value):
-    self.parent.props[self.key] = self.convertTuple(value)
-
-  def adjustString(self, value):
-    self.parent.props[self.key] = self.convertString(value)
-
-  # slot
-  def updateChildProperties(self, key):
-    key = str(key)
-    if self.__oldkey != key:
-      # purge old child properties
-      self.deleteChildProperties()
-
-      # create new child properties
-      self.__oldkey = key
-      if mover_params.has_key(key):
-        for child, value in mover_params[key].items():
-          self.parent.addProperty(':'.join((key, child)), value)
-          self.__childProperties.append(':'.join((key, child)))
-      elif bonus_params.has_key(key):
-        for child, value in bonus_params[key].items():
-          self.parent.addProperty(':'.join((key, child)), value)
-          self.__childProperties.append(':'.join((key, child)))
-      elif object_params.has_key(key):
-        for child, value in object_params[key].items():
-          self.parent.addProperty(':'.join((key, child)), value)
-          self.__childProperties.append(':'.join((key, child)))
-      else:
-        raise Exception('Unrecognized object/mover/bonus: %s of type %s' \
-                        % (key, type(key)))
-
-  # converters
-  @staticmethod
-  def convertBool(value):
-    return bool(value)
-
-  @staticmethod
-  def convertTuple(value):
-    value = str(value)
-    value = value.replace(' ', '')
-    return tuple(value.split(','))
-
-  @staticmethod
-  def convertString(value):
-    return str(value)
-
 
 class PropertyEditor(QTableWidget):
   '''
@@ -220,12 +218,13 @@ class PropertyEditor(QTableWidget):
                  self.updateActions)
     
     self.setColumnCount(2)
+    self.setMinimumWidth(230)
     self.setHorizontalHeaderLabels([self.trUtf8('Property'),
                                     self.trUtf8('Value')])
-    self.setColumnWidth(0, 160)
-    self.setColumnWidth(1, 220)
 
-    self.setProperties({})
+    self.autoApplyChanges = False
+    #self.setProperties({})
+    self.reset()
 
   def setupActions(self):
     self.actionNew_property = QAction('New property', self)
@@ -249,31 +248,43 @@ class PropertyEditor(QTableWidget):
       self.actionDelete_property.setEnabled(True)
       self.emit(SIGNAL('actionDelete_propertyEnabled'), True)
 
-  def setProperties(self, props):
-    self.rows = {}
-    self.initialProps = props
-    self.props = self.initialProps.copy()
+  def setFromItem(self, item=None):
+    if item:
+      self.setProperties(item.props)
+    else:
+      self.setProperties({})
 
-#    keys = sorted(props.keys(), reverse = True)
-      # any primitive props will be first; those being children
-      # of others will come at the end, because they begin with
-      # uppercase letters
+  def reset(self):
+    self.setRowCount(0)
+    self.rows = {}
+    self.props = {}
+
+  def setProperties(self, props):
+    if not props:  # no props, not setting anything
+      self.setEnabled(False)
+      self.reset()
+      return
+    
+    self.setEnabled(True)
+    self.reset()
+    if self.autoApplyChanges:
+      self.props = props
+    else:
+      self.initialProps = props
+      self.props = props.copy()
+
     initTree = {}
-    for key in props.keys():  #keys:
+    print 'sorted:', sorted(props.keys(), reverse=True)
+    for key in sorted(props.keys(), reverse=True):
       if key[0].islower(): initTree[key] = {}
       elif key[0].isupper():
-        if props.has_key('object_cls_name'):
-          initTree['object_cls_name'] = {}
-        initTree['mover_cls_name'] = {}
-        initTree['bonus_cls_name'] = {}
-        if key.split(':')[0] in prop_opts['object_cls_name']:
-          initTree['object_cls_name'][key] = props[key]
-        elif key.split(':')[0] in prop_opts['mover_cls_name']:
-          initTree['mover_cls_name'][key] = props[key]
-        elif key.split(':')[0] in prop_opts['bonus_cls_name']:
-          initTree['bonus_cls_name'][key] = props[key]
+        type = cls2type[key.split(':')[0]]
+        print 'key, type:', key, type
+        initTree[type][key] = props[key]
       else:
         raise Exception('Undefined property: %s' % key)
+
+    print 'initTree:', initTree
 
     for key in initTree.keys():
       self.addProperty(key, props[key], initTree[key])
@@ -284,6 +295,8 @@ class PropertyEditor(QTableWidget):
     Commit all the changes user has made (i.e. apply them to
     the original dictionary storing the properties).
     '''
+    if self.autoApplyChanges:
+      return
     self.initialProps.clear()
     self.initialProps.update(self.props)
 
@@ -311,7 +324,8 @@ class PropertyEditor(QTableWidget):
     if not key:
       key = str(item.text())
     if not item:
-      item = self.rows[str(key)].labelItem
+      key = str(key)
+      item = self.rows[key].labelItem
 
     # remove item's row
     self.removeRow(self.row(item))
