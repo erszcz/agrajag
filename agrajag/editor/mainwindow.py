@@ -19,9 +19,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     Ui_MainWindow.setupUi(self, self)
     Ui_MainWindow.retranslateUi(self, self)
 
+    self.propEd.autoApplyChanges = True
+    self.setupConnections()
     self.setupActions()
 
     self.dbm = dbm
+
+  def setupConnections(self):
+    self.connect(self.levelView, SIGNAL('itemSelected(QGraphicsItem)'),
+                 self.propEd.setFromItem)
+    self.connect(self.levelView, SIGNAL('itemDeselected'),
+                 self.propEd.setFromItem)
 
   def setupActions(self):
     self.connect(self.actionNew_level,

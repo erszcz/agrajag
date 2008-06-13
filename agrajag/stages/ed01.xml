@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<events>
+  <spawn bonus_cls_name="" mover_cls_name="LinearMover" object_cls_name="EnemyInterceptor" time="0" x="260" y="340">
+    <mover_param name="dir" type="int" value="0"/>
+    <group name="enemies"/>
+  </spawn>
+  <spawn bonus_cls_name="" mover_cls_name="LinearMover" object_cls_name="EnemyInterceptor" time="0" x="460" y="340">
+    <mover_param name="dir" type="int" value="0"/>
+    <group name="enemies"/>
+  </spawn>
+  <spawn bonus_cls_name="" mover_cls_name="LinearMover" object_cls_name="EnemyInterceptor" time="0" x="220" y="380">
+    <mover_param name="dir" type="int" value="0"/>
+    <group name="enemies"/>
+  </spawn>
+  <spawn bonus_cls_name="" mover_cls_name="LinearMover" object_cls_name="EnemyInterceptor" time="0" x="500" y="380">
+    <mover_param name="dir" type="int" value="0"/>
+    <group name="enemies"/>
+  </spawn>
+  <spawn bonus_cls_name="" mover_cls_name="LinearMover" object_cls_name="EnemyInterceptor" time="0" x="180" y="420">
+    <mover_param name="dir" type="int" value="0"/>
+    <group name="enemies"/>
+  </spawn>
+  <spawn bonus_cls_name="" mover_cls_name="LinearMover" object_cls_name="EnemyInterceptor" time="0" x="540" y="420">
+    <mover_param name="dir" type="int" value="0"/>
+    <group name="enemies"/>
+  </spawn>
+  <spawn bonus_cls_name="" mover_cls_name="LinearMover" object_cls_name="EnemyInterceptor" time="0" x="360" y="500">
+    <mover_param name="dir" type="int" value="0"/>
+    <group name="enemies"/>
+  </spawn>
+  <spawn bonus_cls_name="" mover_cls_name="LinearMover" object_cls_name="EnemyInterceptor" time="0" x="360" y="380">
+    <mover_param name="dir" type="int" value="0"/>
+    <group name="enemies"/>
+  </spawn>
+  <spawn bonus_cls_name="" mover_cls_name="LinearPlayerTargetingMover" object_cls_name="MidgetBeamShip" time="0" x="40" y="380">
+    <mover_param name="vertical_div" type="float" value="0.3"/>
+    <group name="enemies"/>
+  </spawn>
+  <spawn bonus_cls_name="" mover_cls_name="LinearPlayerTargetingMover" object_cls_name="MidgetBeamShip" time="0" x="60" y="340">
+    <mover_param name="vertical_div" type="float" value="0.3"/>
+    <group name="enemies"/>
+  </spawn>
+  <spawn bonus_cls_name="" mover_cls_name="LinearPlayerTargetingMover" object_cls_name="MidgetBeamShip" time="0" x="80" y="380">
+    <mover_param name="vertical_div" type="float" value="0.3"/>
+    <group name="enemies"/>
+  </spawn>
+</events>

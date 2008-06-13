@@ -3,7 +3,7 @@
 
 import os, sys, random
 import pygame
-from profilehooks import profile
+#from profilehooks import profile
 
 from dbmanager import DBManager
 from gfxmanager import GfxManager
@@ -22,7 +22,7 @@ from hud import Hud
 
 from weakref import proxy, ref
 
-import psyco
+#import psyco
 
 def run():
   pygame.init()
