@@ -24,6 +24,8 @@ def deg2rad(deg, normalize = True):
   @param normalize: If true translate returned value to [0, 2pi)
   """
 
+  if not deg: deg = 0
+
   rad = 2 * pi * deg / 360
   return rad if not normalize else normalize_rad(rad)
 

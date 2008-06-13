@@ -25,3 +25,5 @@ class PropertyEditorDialog(QDialog,
                  self.deleteButton.setEnabled)
 
     self.propertyEditor.setProperties(props)
+    self.propertyEditor.setColumnWidth(0, 160)
+    self.propertyEditor.setColumnWidth(1, 220)

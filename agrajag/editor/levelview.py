@@ -137,13 +137,26 @@ class LevelView(QGraphicsView):
     # bez layerow na start, zeby bylo latwiej
     self.newScene(QSize(800, 1000))
 
+  # signal
+  def __itemsSelected(self):
+    items = self.scene.selectedItems()
+    if len(items) == 1:
+      self.emit(SIGNAL('itemSelected(QGraphicsItem)'), items[0])
+    else:
+      self.emit(SIGNAL('itemDeselected'))
+
   def newScene(self, size):
+    if type(self.scene) == QObject:
+      self.disconnect(self.scene, SIGNAL('selectionChanged()'))
     self.scene = QGraphicsScene()
     self.scene.setSceneRect(0, 0, size.width(), size.height())
     self.setScene(self.scene)
 
     self.setMaximumSize(size)
     self.ensureVisible(0, 0, 1, 1)
+    
+    self.connect(self.scene, SIGNAL('selectionChanged()'),
+                 self.__itemsSelected)
 
   def snapshot(self):
     image = QImage(self.scene.width(),

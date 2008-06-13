@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'editor.ui'
 #
-# Created: Mon May 19 12:07:26 2008
+# Created: Thu Jun 12 23:06:04 2008
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,10 +12,10 @@ from PyQt4 import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(QtCore.QSize(QtCore.QRect(0,0,574,469).size()).expandedTo(MainWindow.minimumSizeHint()))
+        MainWindow.resize(QtCore.QSize(QtCore.QRect(0,0,798,475).size()).expandedTo(MainWindow.minimumSizeHint()))
 
         self.centralwidget = QtGui.QWidget(MainWindow)
-        self.centralwidget.setGeometry(QtCore.QRect(0,27,574,418))
+        self.centralwidget.setGeometry(QtCore.QRect(0,32,798,418))
         self.centralwidget.setObjectName("centralwidget")
 
         self.gridlayout = QtGui.QGridLayout(self.centralwidget)
@@ -36,13 +36,24 @@ class Ui_MainWindow(object):
         self.tileList.setObjectName("tileList")
 
         self.levelView = LevelView(self.splitter)
+
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(1)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.levelView.sizePolicy().hasHeightForWidth())
+        self.levelView.setSizePolicy(sizePolicy)
         self.levelView.setMinimumSize(QtCore.QSize(400,400))
+        self.levelView.setMaximumSize(QtCore.QSize(820,16777215))
+        self.levelView.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.levelView.setObjectName("levelView")
+
+        self.propEd = PropertyEditor(self.splitter)
+        self.propEd.setObjectName("propEd")
         self.gridlayout.addWidget(self.splitter,0,0,1,1)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.menubar = QtGui.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0,0,574,27))
+        self.menubar.setGeometry(QtCore.QRect(0,0,798,32))
         self.menubar.setObjectName("menubar")
 
         self.menuFile = QtGui.QMenu(self.menubar)
@@ -53,7 +64,7 @@ class Ui_MainWindow(object):
         MainWindow.setMenuBar(self.menubar)
 
         self.statusbar = QtGui.QStatusBar(MainWindow)
-        self.statusbar.setGeometry(QtCore.QRect(0,445,574,24))
+        self.statusbar.setGeometry(QtCore.QRect(0,450,798,25))
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
@@ -106,4 +117,5 @@ class Ui_MainWindow(object):
         self.actionLoad_all.setText(QtGui.QApplication.translate("MainWindow", "Load &all", None, QtGui.QApplication.UnicodeUTF8))
 
 from tilelist import TileList
+from propertyeditor import PropertyEditor
 from levelview import LevelView

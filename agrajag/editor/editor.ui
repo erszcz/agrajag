@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>574</width>
-    <height>469</height>
+    <width>798</width>
+    <height>475</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -16,12 +16,12 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>27</y>
-     <width>574</width>
+     <y>32</y>
+     <width>798</width>
      <height>418</height>
     </rect>
    </property>
-   <layout class="QGridLayout" >
+   <layout class="QGridLayout" name="gridLayout" >
     <item row="0" column="0" >
      <widget class="QSplitter" name="splitter" >
       <property name="orientation" >
@@ -57,13 +57,29 @@
        </property>
       </widget>
       <widget class="LevelView" name="levelView" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize" >
         <size>
          <width>400</width>
          <height>400</height>
         </size>
        </property>
+       <property name="maximumSize" >
+        <size>
+         <width>820</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="horizontalScrollBarPolicy" >
+        <enum>Qt::ScrollBarAsNeeded</enum>
+       </property>
       </widget>
+      <widget class="PropertyEditor" name="propEd" />
      </widget>
     </item>
    </layout>
@@ -73,8 +89,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>574</width>
-     <height>27</height>
+     <width>798</width>
+     <height>32</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -103,9 +119,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>445</y>
-     <width>574</width>
-     <height>24</height>
+     <y>450</y>
+     <width>798</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -155,6 +171,11 @@
    <class>LevelView</class>
    <extends>QGraphicsView</extends>
    <header>levelview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PropertyEditor</class>
+   <extends>QTableView</extends>
+   <header>propertyeditor.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
