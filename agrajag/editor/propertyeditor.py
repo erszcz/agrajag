@@ -59,8 +59,10 @@ class PropertyTableRow(QObject):
     self.key = key
     
     # child props management
-    print 'childProperties:', childProperties
-    self.__oldChoice = ''
+    if childProperties:
+      self.__oldChoice = childProperties.keys()[0].split(':')[0]
+    else:
+      self.__oldChoice = ''
     self.initChildProperties(childProperties)
 
     self.labelItem = QTableWidgetItem(key)  # labelItem.text = key
@@ -78,7 +80,6 @@ class PropertyTableRow(QObject):
   def initChildProperties(self, properties):
     self.__childProperties = []
     for child, value in properties.items():
-      print 'child, value:', child, value
       self.parent.addProperty(child, value)
       self.__childProperties.append(child)
 
@@ -274,17 +275,13 @@ class PropertyEditor(QTableWidget):
       self.props = props.copy()
 
     initTree = {}
-    print 'sorted:', sorted(props.keys(), reverse=True)
     for key in sorted(props.keys(), reverse=True):
       if key[0].islower(): initTree[key] = {}
       elif key[0].isupper():
         type = cls2type[key.split(':')[0]]
-        print 'key, type:', key, type
         initTree[type][key] = props[key]
       else:
         raise Exception('Undefined property: %s' % key)
-
-    print 'initTree:', initTree
 
     for key in initTree.keys():
       self.addProperty(key, props[key], initTree[key])
