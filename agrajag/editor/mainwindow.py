@@ -13,6 +13,29 @@ import xmlwriter as xw
 
 import options
 
+class InfoWindow(QDialog):
+  def __init__(self, short, long='', parent=None):
+    QDialog.__init__(self, parent)
+    self.setModal(True)
+    self.setMinimumWidth(500)
+    layout = QVBoxLayout(self)
+    
+    shortLabel = QLabel(short, self)
+    layout.addWidget(shortLabel)
+    if long:
+      longText = QTextEdit(long)
+      layout.addWidget(longText)
+      longText.setLineWrapMode(QTextEdit.NoWrap)
+    button = QPushButton('&OK')
+    layout.addWidget(button)
+    self.connect(button, SIGNAL('clicked()'),
+                 self, SLOT('accept()'))
+
+  @staticmethod
+  def info(short, long='', parent=None):
+    dlg = InfoWindow(short, long, parent)
+    dlg.exec_()
+
 class MainWindow(QMainWindow, Ui_MainWindow):
   def __init__(self, dbm, parent=None):
     QMainWindow.__init__(self, parent)
@@ -76,15 +99,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
       and not self.loadXML(filename):
         unreadable.append(filename)
         
-    if unreadable:
+    if unreadable and options.info_load_error:
       flist = ''
       for s in unreadable:
-        flist += '\n' + s
-      warn = str('Following files could not be loaded: %s' % flist)
-      #print warn
-      QMessageBox.warning(self,
-                          self.trUtf8('Load'),
-                          self.trUtf8(warn))
+        flist += s + '<br />'
+      InfoWindow.info(self.trUtf8('Following files could not be loaded:'),
+                      flist, self)
+#      warn = str('Following files could not be loaded: %s' % flist)
+#      print warn
 
   def loadAll(self):
     files = [QString(os.path.join(options.terrain_path, f))
