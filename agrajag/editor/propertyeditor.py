@@ -250,9 +250,11 @@ class PropertyEditor(QTableWidget):
       self.emit(SIGNAL('actionDelete_propertyEnabled'), True)
 
   def setFromItem(self, item=None):
-    if item:
+    if not item:
+      item = QGraphicsPixmapItem()
+    try:
       self.setProperties(item.props)
-    else:
+    except:
       self.setProperties({})
 
   def reset(self):

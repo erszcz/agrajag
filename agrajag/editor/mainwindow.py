@@ -41,6 +41,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     QMainWindow.__init__(self, parent)
     Ui_MainWindow.setupUi(self, self)
     Ui_MainWindow.retranslateUi(self, self)
+    
+    self.statusbar = QStatusBar(self)
+    self.dimensionsLabel = QLabel('Dim: %s x %s' % options.scene_size)
+    self.positionLabel = QLabel('Pos: 0, 0')
+    self.statusbar.addPermanentWidget(self.positionLabel)
+    self.statusbar.addPermanentWidget(self.dimensionsLabel)
+    self.setStatusBar(self.statusbar)
 
     self.propEd.autoApplyChanges = True
     self.setupConnections()
@@ -48,11 +55,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     self.dbm = dbm
 
+  # slot
+  def __updateMousePosition(self, x, y):
+    self.positionLabel.setText('Pos: %s, %s' % (x, y))
+
+  def __updateSceneDimensions(self, x, y):
+    self.dimensionsLabel.setText('Dim: %s x %s' % (x, y))
+
   def setupConnections(self):
     self.connect(self.levelView, SIGNAL('itemSelected(QGraphicsItem)'),
                  self.propEd.setFromItem)
     self.connect(self.levelView, SIGNAL('itemDeselected'),
                  self.propEd.setFromItem)
+    self.connect(self.levelView, SIGNAL('mouseAt'),
+                 self.__updateMousePosition)
+    self.connect(self.levelView, SIGNAL('sceneSize'),
+                 self.__updateSceneDimensions)
 
   def setupActions(self):
     self.connect(self.actionNew_level,
