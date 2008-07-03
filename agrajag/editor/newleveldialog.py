@@ -6,6 +6,8 @@ from PyQt4.QtGui import *
 
 from ui_new_level import Ui_New_level
 
+import options
+
 class NewLevelDialog(QDialog, Ui_New_level):
   __width = 0
   __height = 0
@@ -14,6 +16,9 @@ class NewLevelDialog(QDialog, Ui_New_level):
     QDialog.__init__(self, parent)
     Ui_New_level.setupUi(self, self)
     Ui_New_level.retranslateUi(self, self)
+
+    self.widthSpinBox.setValue(options.scene_size[0])
+    self.heightSpinBox.setValue(options.scene_size[1])
 
   @staticmethod
   def getLevelSize(parent=None):
