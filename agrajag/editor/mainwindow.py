@@ -139,8 +139,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
       return False
     else:
       info = {}
-      info['filename'] = os.path.basename(str(filename))
-      info['name'] = info['filename'].rsplit('.', 1)[0]
+      info['pixmap'] = os.path.basename(str(filename))
+      info['pixmap_size'] = newImage.width(), newImage.height()
+      info['name'] = info['pixmap'].rsplit('.', 1)[0]
       info['type'] = 'BackgroundItem'
       self.tileList.addItem(newImage, info)
       return True
@@ -159,12 +160,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
       info['type'] = 'EventItem'
       k = imported['gfx'].keys()[0]
         # this is the image-resource name from XML
-      info['filename'] = imported['gfx'][k]['file']
+      info['pixmap'] = imported['gfx'][k]['file']
       
       # get the pixmap
       pixmap = QPixmap()
-      if not pixmap.load(os.path.join(options.gfx_path, info['filename'])):
+      if not pixmap.load(os.path.join(options.gfx_path, info['pixmap'])):
         return False
+      info['pixmap_size'] = pixmap.width(), pixmap.height()
 
       self.tileList.addItem(pixmap, info)
 
