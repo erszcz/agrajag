@@ -108,6 +108,14 @@ class AGEventItem(AGItem):
   def isBonus(self):
     return True if self.info['name'].find('Bonus') != -1 else False
 
+  @staticmethod
+  def fromSkeleton(skeleton):
+    pixmap = QPixmap(os.path.join(ops.gfx_path, skeleton.info['pixmap']))
+    item = AGEventItem(pixmap, skeleton.info)
+    if skeleton.mover:
+      item._props['mover_cls_name'] = skeleton.mover
+    return item
+
 
 class LevelView(QGraphicsView):
   def __init__(self, parent=None):
@@ -143,11 +151,14 @@ class LevelView(QGraphicsView):
 
     return image
 
-  def placeItem(self, pixmap, pos, info):
+  def createItem(self, pixmap, pos, info):
     if info['type'] == 'BackgroundItem':
       item = AGBackgroundItem(pixmap, info)
     elif info['type'] == 'EventItem':
       item = AGEventItem(pixmap, info)
+    self.placeItem(item, pos)
+
+  def placeItem(self, item, pos):
     item.setPos(pos)
     self.connect(self.scene, SIGNAL('changed(const QList<QRectF>&)'),
                  item.adjustPos)
@@ -159,13 +170,15 @@ class LevelView(QGraphicsView):
     self.emit(SIGNAL('mouseAt'), int(pos.x()), int(pos.y()))
 
   def dragEnterEvent(self, event):
-    if event.mimeData().hasFormat('agrajag-object'):
+    if event.mimeData().hasFormat('agrajag-object') \
+    or event.mimeData().hasFormat('agrajag-formation'):
       event.accept()
     else:
       event.ignore()
 
   def dragMoveEvent(self, event):
-    if event.mimeData().hasFormat('agrajag-object'):
+    if event.mimeData().hasFormat('agrajag-object') \
+    or event.mimeData().hasFormat('agrajag-formation'):
       event.setDropAction(Qt.MoveAction)
       event.accept()
     else:
@@ -174,6 +187,8 @@ class LevelView(QGraphicsView):
   def dropEvent(self, event):
     if event.mimeData().hasFormat('agrajag-object'):
       self.__acceptAgrajagObjectDrop(event)
+    elif event.mimeData().hasFormat('agrajag-formation'):
+      self.__acceptFormationDrop(event)
     else:
       event.ignore()
 
@@ -195,7 +210,18 @@ class LevelView(QGraphicsView):
     else:  # don't snap to grid
       pos = QPoint(event.pos().x() - hotSpot.x(),
                    event.pos().y() - hotSpot.y())
-    self.placeItem(pixmap, self.mapToScene(pos), info)
+    self.createItem(pixmap, self.mapToScene(pos), info)
+
+    event.setDropAction(Qt.MoveAction)
+    event.accept()
+
+  def __acceptFormationDrop(self, event):
+    data = event.mimeData().data('agrajag-formation')
+    
+    formation = pickle.loads(data)
+    for skel, pos in formation:
+      posF = QPointF(event.pos() + pos)
+      self.placeItem(AGEventItem.fromSkeleton(skel), posF)
 
     event.setDropAction(Qt.MoveAction)
     event.accept()

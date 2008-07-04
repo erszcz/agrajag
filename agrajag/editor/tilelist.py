@@ -6,6 +6,8 @@ from PyQt4.QtGui import *
 
 import pickle
 
+import formation as f
+
 class TileListItem(QListWidgetItem):
   def __init__(self, pixmap, info, parent=None):
     '''
@@ -27,7 +29,7 @@ class TileListItem(QListWidgetItem):
                   Qt.ItemIsSelectable |
                   Qt.ItemIsDragEnabled)
 
-  def pickledProperties(self):
+  def pickledInfo(self):
     return QString(pickle.dumps(self.info))
 
 
@@ -55,27 +57,41 @@ class TileList(QListWidget):
     else:
       event.ignore()
 
+#  def startDrag(self, supportedActions):
+#    item = self.currentItem()
+#
+#    itemData = QByteArray()
+#    dataStream = QDataStream(itemData, QIODevice.WriteOnly)
+#    pixmap = item.pixmap
+#
+#    dataStream << pixmap << item.pickledInfo()
+#
+#    mimeData = QMimeData()
+#    mimeData.setData('agrajag-object', itemData)
+#
+#    drag = QDrag(self)
+#    drag.setMimeData(mimeData)
+#    drag.setHotSpot(QPoint(pixmap.width() / 2, pixmap.height() / 2))
+#    drag.setPixmap(pixmap)
+#
+#    drag.start(Qt.MoveAction)
+
   def startDrag(self, supportedActions):
     item = self.currentItem()
 
-    itemData = QByteArray()
-    dataStream = QDataStream(itemData, QIODevice.WriteOnly)
-    pixmap = item.pixmap
+    formation = f.LineFormation(item.info, 5)
+    data = pickle.dumps(formation)
 
-    # The data stream supports storing QPixmaps directly. The other
-    # properties of an item are stored as a QString containing pickled
-    # Python dictionary.
-    dataStream << pixmap << item.pickledProperties()
-
-    mimeData = QMimeData()
-    mimeData.setData('agrajag-object', itemData)
+    mdata = QMimeData()
+    mdata.setData('agrajag-formation', data)
 
     drag = QDrag(self)
-    drag.setMimeData(mimeData)
-    drag.setHotSpot(QPoint(pixmap.width() / 2, pixmap.height() / 2))
-    drag.setPixmap(pixmap)
+    drag.setMimeData(mdata)
+    drag.setHotSpot(QPoint(item.pixmap.width() / 2,
+                           item.pixmap.height() / 2))
+    drag.setPixmap(item.pixmap)
 
-    drag.start(Qt.MoveAction)
+    drag.exec_(Qt.MoveAction)
 
 #if __name__ == '__main__':
 # qapp = QApplication([])
