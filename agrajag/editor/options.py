@@ -15,5 +15,5 @@ info_load_error = False  # info about files which couldn't be loaded
 
 # behavoiur
 always_snap = True
-grid_size = 20
+grid_size = 10
 scene_size = 800, 5000

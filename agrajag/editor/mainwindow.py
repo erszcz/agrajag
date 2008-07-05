@@ -9,6 +9,7 @@ from PyQt4.QtGui import *
 from ui_editor import Ui_MainWindow
 from newleveldialog import NewLevelDialog
 
+import formation as f
 import xmlwriter as xw
 
 import options
@@ -36,12 +37,76 @@ class InfoWindow(QDialog):
     dlg = InfoWindow(short, long, parent)
     dlg.exec_()
 
+
+class FormationToolbar(QToolBar):
+  def __init__(self, parent=None):
+    QToolBar.__init__(self, parent)
+
+    # formations combobox
+    self.addWidget(QLabel(self.trUtf8('Formation:')))
+
+    self.combo = QComboBox(self)
+    self.combo.addItems(f.formations)
+    self.addWidget(self.combo)
+
+    # item count
+    self.addWidget(QLabel(self.trUtf8('Ship count:')))
+
+    self.count = QSpinBox(self)
+    self.count.setRange(1, 20)
+    self.count.setValue(5)
+    self.addWidget(self.count)
+
+    self.__setupActions()
+    self.__setupConnections()
+
+    self.__cachedIndex = 0
+    self.__lastType = ''
+
+  def __setupActions(self):
+    self.actionShowHide = QAction(self.trUtf8('Formation toolbar'), qApp)
+    self.actionShowHide.setCheckable(True)
+    self.actionShowHide.setChecked(True)
+    self.connect(self.actionShowHide, SIGNAL('toggled(bool)'),
+                 self.setVisible)
+
+  def __setupConnections(self):
+    self.connect(self.combo, SIGNAL('currentIndexChanged(int)'),
+                 self.__cacheIndex)
+
+  def __cacheIndex(self, index):
+    if self.combo.currentIndex() != -1 and self.__lastType == 'EventItem':
+      self.__cachedIndex = index
+
+  def adjustSettings(self, type):
+    self.__lastType = type
+    if type == 'BackgroundItem':
+      self.combo.setCurrentIndex(0)
+      self.setEnabled(False)
+    elif type == 'EventItem':
+      self.setEnabled(True)
+      # shite without that, but why?
+      for x in self.findChildren(QWidget, QString()):
+        x.setEnabled(True)
+      #
+      self.combo.setCurrentIndex(self.__cachedIndex)
+    else:
+      raise Exception('unknown item type: %s' % type)
+
+  def contextMenuEvent(self, event):
+    pass
+
+  def formation(self):
+    return self.combo.currentText()
+
+
 class MainWindow(QMainWindow, Ui_MainWindow):
   def __init__(self, dbm, parent=None):
     QMainWindow.__init__(self, parent)
     Ui_MainWindow.setupUi(self, self)
     Ui_MainWindow.retranslateUi(self, self)
-    
+ 
+    # statusbar
     self.statusbar = QStatusBar(self)
     self.dimensionsLabel = QLabel('Dim: %s x %s' % options.scene_size)
     self.positionLabel = QLabel('Pos: 0, 0')
@@ -49,9 +114,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     self.statusbar.addPermanentWidget(self.dimensionsLabel)
     self.setStatusBar(self.statusbar)
 
+    # toolbar
+    self.toolbar = FormationToolbar(self)
+    self.addToolBar(self.toolbar)
+    self.menuOptions.addAction(self.toolbar.actionShowHide)
+    self.menubar.contextMenuEvent = lambda: 0
+
+    # property editor
     self.propEd.autoApplyChanges = True
-    self.setupConnections()
-    self.setupActions()
+    self.menuOptions.addAction(self.propEd.actionShowHide)
+
+    self.__setupConnections()
+    self.__setupActions()
 
     self.dbm = dbm
 
@@ -62,7 +136,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
   def __updateSceneDimensions(self, x, y):
     self.dimensionsLabel.setText('Dim: %s x %s' % (x, y))
 
-  def setupConnections(self):
+  def __setupConnections(self):
     self.connect(self.levelView, SIGNAL('itemSelected(QGraphicsItem)'),
                  self.propEd.setFromItem)
     self.connect(self.levelView, SIGNAL('itemDeselected'),
@@ -72,7 +146,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     self.connect(self.levelView, SIGNAL('sceneSize'),
                  self.__updateSceneDimensions)
 
-  def setupActions(self):
+    self.connect(self.tileList, SIGNAL('itemSelected(PyQt_PyObject)'),
+                 self.toolbar.adjustSettings)
+
+  def __setupActions(self):
     self.connect(self.actionNew_level,
                  SIGNAL('triggered()'),
                  self.newLevel)

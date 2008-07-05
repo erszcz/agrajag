@@ -7,6 +7,7 @@ from PyQt4.QtGui import *
 import pickle
 
 import formation as f
+import mainwindow as mw
 
 class TileListItem(QListWidgetItem):
   def __init__(self, pixmap, info, parent=None):
@@ -34,6 +35,18 @@ class TileListItem(QListWidgetItem):
 
 
 class TileList(QListWidget):
+  def __init__(self, parent = None):
+    QListWidget.__init__(self, parent)
+
+    self.connect(self, SIGNAL('currentItemChanged(QListWidgetItem *, QListWidgetItem *)'),
+                 self.__currentItemChanged)
+
+  def __currentItemChanged(self, item):
+    if item.info['type'] in ['BackgroundItem', 'EventItem']:
+      self.emit(SIGNAL('itemSelected(PyQt_PyObject)'), item.info['type'])
+    else:
+      raise Exception('unknown item type: %s' % item.info['type'])
+
   def addItem(self, pixmap, info):
     tile = TileListItem(pixmap, info, self)
 
@@ -57,26 +70,36 @@ class TileList(QListWidget):
     else:
       event.ignore()
 
-#  def startDrag(self, supportedActions):
-#    item = self.currentItem()
-#
-#    itemData = QByteArray()
-#    dataStream = QDataStream(itemData, QIODevice.WriteOnly)
-#    pixmap = item.pixmap
-#
-#    dataStream << pixmap << item.pickledInfo()
-#
-#    mimeData = QMimeData()
-#    mimeData.setData('agrajag-object', itemData)
-#
-#    drag = QDrag(self)
-#    drag.setMimeData(mimeData)
-#    drag.setHotSpot(QPoint(pixmap.width() / 2, pixmap.height() / 2))
-#    drag.setPixmap(pixmap)
-#
-#    drag.start(Qt.MoveAction)
-
   def startDrag(self, supportedActions):
+    for widget in qApp.topLevelWidgets():
+      if isinstance(widget, mw.MainWindow):
+        main = widget
+    formation = main.toolbar.formation()
+    if formation == 'NoFormation':
+      self.__startItemDrag()
+    else:
+      self.__startFormationDrag(formation)
+
+  def __startItemDrag(self):
+    item = self.currentItem()
+
+    itemData = QByteArray()
+    dataStream = QDataStream(itemData, QIODevice.WriteOnly)
+    pixmap = item.pixmap
+
+    dataStream << pixmap << item.pickledInfo()
+
+    mimeData = QMimeData()
+    mimeData.setData('agrajag-object', itemData)
+
+    drag = QDrag(self)
+    drag.setMimeData(mimeData)
+    drag.setHotSpot(QPoint(pixmap.width() / 2, pixmap.height() / 2))
+    drag.setPixmap(pixmap)
+
+    drag.start(Qt.MoveAction)
+
+  def __startFormationDrag(self, frmCls):
     item = self.currentItem()
 
     formation = f.LineFormation(item.info, 5)
