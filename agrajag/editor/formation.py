@@ -9,6 +9,10 @@ import propertyeditor as pe
 import options as ops
 
 
+formations = ['NoFormation',
+              'LineFormation']
+
+
 class AGEventItemSkeleton:
   def __init__(self, info):
     self.info = info

@@ -212,7 +212,7 @@ class PropertyEditor(QTableWidget):
   
   def __init__(self, parent=None):
     QTableWidget.__init__(self, parent)
-    self.setupActions()
+    self.__setupActions()
     self.setSelectionBehavior(QAbstractItemView.SelectRows)
     self.setSelectionMode(QAbstractItemView.SingleSelection)
     self.connect(self, SIGNAL('currentItemChanged(QTableWidgetItem *, QTableWidgetItem *)'),
@@ -227,7 +227,7 @@ class PropertyEditor(QTableWidget):
     #self.setProperties({})
     self.reset()
 
-  def setupActions(self):
+  def __setupActions(self):
     self.actionNew_property = QAction('New property', self)
     self.connect(self.actionNew_property, SIGNAL('triggered()'),
                  self.newProperty)
@@ -239,6 +239,13 @@ class PropertyEditor(QTableWidget):
     self.actionCommit_changes = QAction('Commit changes', self)
     self.connect(self.actionCommit_changes, SIGNAL('triggered()'),
                  self.commitChanges)
+
+    self.actionShowHide = QAction(self.trUtf8('Property editor'), qApp)
+    self.actionShowHide.setCheckable(True)
+    self.actionShowHide.setChecked(True)
+    self.connect(self.actionShowHide, SIGNAL('toggled(bool)'),
+                 self.setVisible)
+
 
   def updateActions(self, currentItem, previousItem):
     text = str(currentItem.text())
