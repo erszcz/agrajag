@@ -93,6 +93,9 @@ class AGBackgroundItem(AGItem):
 class AGEventItem(AGItem):
   def __init__(self, pixmap, info):
     AGItem.__init__(self, pixmap, info)
+
+    self.setZValue(1)
+
     if self.isBonus():
       self._props = {'time': 0,
                      'bonus_cls_name': self.info['name'],
@@ -114,6 +117,9 @@ class AGEventItem(AGItem):
     item = AGEventItem(pixmap, skeleton.info)
     if skeleton.mover:
       item._props['mover_cls_name'] = skeleton.mover
+    if skeleton.mover_params:
+      for param, value in skeleton.mover_params.iteritems():
+        item._props[param] = value
     return item
 
 
@@ -220,7 +226,7 @@ class LevelView(QGraphicsView):
     
     formation = pickle.loads(data)
     for skel, pos in formation:
-      posF = QPointF(event.pos() + pos)
+      posF = QPointF( self.mapToScene(QPoint(event.pos() + pos)) )
       self.placeItem(AGEventItem.fromSkeleton(skel), posF)
 
     event.setDropAction(Qt.MoveAction)

@@ -9,6 +9,7 @@ import pickle
 import formation as f
 import mainwindow as mw
 
+
 class TileListItem(QListWidgetItem):
   def __init__(self, pixmap, info, parent=None):
     '''
@@ -38,17 +39,32 @@ class TileList(QListWidget):
   def __init__(self, parent = None):
     QListWidget.__init__(self, parent)
 
+    self.__items = []
+
+    self.formation = {}
+
     self.connect(self, SIGNAL('currentItemChanged(QListWidgetItem *, QListWidgetItem *)'),
                  self.__currentItemChanged)
 
+  # slot
   def __currentItemChanged(self, item):
     if item.info['type'] in ['BackgroundItem', 'EventItem']:
       self.emit(SIGNAL('itemSelected(PyQt_PyObject)'), item.info['type'])
     else:
       raise Exception('unknown item type: %s' % item.info['type'])
 
-  def addItem(self, pixmap, info):
-    tile = TileListItem(pixmap, info, self)
+  def addItem(self, pixmap, info, update=True):
+    # hardly elaborate...
+    tile = {'pixmap': pixmap,
+            'info': info}
+    self.__items.append(tile)
+    self.updateItems()
+
+  def updateItems(self):
+    self.clear()
+    self.__items.sort(key=lambda x: x['info']['name'].lower())
+    for x in self.__items:
+      QListWidget.addItem(self, TileListItem(x['pixmap'], x['info'], self))
 
   def dragEnterEvent(self, event):
     if event.mimeData().hasFormat('agrajag-object'):
@@ -102,7 +118,9 @@ class TileList(QListWidget):
   def __startFormationDrag(self, frmCls):
     item = self.currentItem()
 
-    formation = f.LineFormation(item.info, 5)
+    self.emit(SIGNAL('requestFormation'))
+    formation = eval('f.' + self.formation['type'])(item.info,
+                                                    **self.formation['args'])
     data = pickle.dumps(formation)
 
     mdata = QMimeData()
@@ -115,6 +133,10 @@ class TileList(QListWidget):
     drag.setPixmap(item.pixmap)
 
     drag.exec_(Qt.MoveAction)
+
+  def setFormation(self, formation, args):
+    self.formation = {'type': str(formation),
+                      'args': args}
 
 #if __name__ == '__main__':
 # qapp = QApplication([])
