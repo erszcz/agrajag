@@ -18,17 +18,18 @@ class AGEventItemSkeleton:
     self.info = info
 
     self.mover = ''
+    self.mover_params = {}
 
 
 class Formation:
-  '''Stores informationa about relative item positions.'''
+  '''Stores informations about relative item positions.'''
 
-  def __init__(self, info, count):
+  def __init__(self, info, count, mover='', mover_params={}):
     # item is a dict sotring at least 'pixmap' and dict 'info'
     self._info = info
     self._count = count
 
-    self.mover = ''
+    self.setMover(mover, mover_params)
 
     self._cache = []
     self._nodes = []
@@ -48,6 +49,8 @@ class Formation:
         item = AGEventItemSkeleton(self._info)
         if self.mover:
           item.mover = self.mover
+        if self.mover_params:
+          item.mover_params = self.mover_params
         self._cache.append(item)
         yield item, self._nodes[x]
 
@@ -66,10 +69,11 @@ class Formation:
     '''Setup the node positions.'''
     pass
 
-  def setMover(self, mover):
-    if mover not in pe.mover_params.keys():
+  def setMover(self, mover, params={}):
+    if mover and mover not in pe.mover_params.keys():
       raise ValueError('unknown mover type: %s' % mover)
     self.mover = mover
+    self.mover_params = params
 
 
 class LineFormation(Formation):

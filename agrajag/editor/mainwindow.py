@@ -10,6 +10,7 @@ from ui_editor import Ui_MainWindow
 from newleveldialog import NewLevelDialog
 
 import formation as f
+import propertyeditor as pe
 import xmlwriter as xw
 
 import options
@@ -42,54 +43,134 @@ class FormationToolbar(QToolBar):
   def __init__(self, parent=None):
     QToolBar.__init__(self, parent)
 
-    # formations combobox
-    self.addWidget(QLabel(self.trUtf8('Formation:')))
+    self.__cachedIndex = 0
+    self.__lastType = ''
 
-    self.combo = QComboBox(self)
-    self.combo.addItems(f.formations)
-    self.addWidget(self.combo)
+    self.setWindowTitle (self.trUtf8('Formations toolbar'))
+    self.actionToggleView = self.toggleViewAction()
+
+    self.__wdgactions = {}
+
+    # formations combobox
+    self.formationLabel = QLabel(self.trUtf8('Formation:'))
+    self.formationLabel.setIndent(5)
+    self.__wdgactions[self.formationLabel] = self.addWidget(self.formationLabel)
+    self.formationCombo = QComboBox(self)
+    self.formationCombo.addItems(f.formations)
+    self.__wdgactions[self.formationCombo] = self.addWidget(self.formationCombo)
 
     # item count
-    self.addWidget(QLabel(self.trUtf8('Ship count:')))
-
+    label = QLabel(self.trUtf8('Ship count:'))
+    label.setIndent(5)
+    self.__wdgactions[label] = self.addWidget(label)
     self.count = QSpinBox(self)
     self.count.setRange(1, 20)
     self.count.setValue(5)
-    self.addWidget(self.count)
+    self.__wdgactions[self.count] = self.addWidget(self.count)
+
+    # mover preselection
+    label = QLabel(self.trUtf8('Mover:'))
+    label.setIndent(5)
+    self.__wdgactions[label] = self.addWidget(label)
+    self.moverCombo = QComboBox(self)
+    self.moverCombo.addItems(['NoMover'] + pe.mover_params.keys())
+    self.__wdgactions[self.moverCombo] = self.addWidget(self.moverCombo)
+
+    # mover param
+    self.__setupParamWidgets()
 
     self.__setupActions()
     self.__setupConnections()
 
-    self.__cachedIndex = 0
-    self.__lastType = ''
+    self.__currentFormationChanged(0)
 
   def __setupActions(self):
-    self.actionShowHide = QAction(self.trUtf8('Formation toolbar'), qApp)
-    self.actionShowHide.setCheckable(True)
-    self.actionShowHide.setChecked(True)
-    self.connect(self.actionShowHide, SIGNAL('toggled(bool)'),
-                 self.setVisible)
+    pass
 
   def __setupConnections(self):
-    self.connect(self.combo, SIGNAL('currentIndexChanged(int)'),
-                 self.__cacheIndex)
+    self.connect(self.formationCombo, SIGNAL('currentIndexChanged(int)'),
+                 self.__currentFormationChanged)
+    self.connect(self.moverCombo, SIGNAL('currentIndexChanged(int)'),
+                 self.__updateParamWidgets)
 
-  def __cacheIndex(self, index):
-    if self.combo.currentIndex() != -1 and self.__lastType == 'EventItem':
+  def __setupParamWidgets(self):
+    self.paramLabels = {}
+    self.paramSpins = {}
+    for mover, params in pe.mover_params.items():
+      for param in params.keys():
+        labelText = str(self.trUtf8('Mover parameter (%s):'))
+        paramKey = ':'.join((mover, param))
+        paramWdg = self.paramLabels[paramKey] = QLabel(labelText % param)
+        paramWdg.setIndent(5)
+        self.__wdgactions[paramWdg] = self.addWidget(paramWdg)
+        QAction.setVisible(self.__wdgactions[paramWdg], False)
+
+        if type(params[param]) == int:
+          paramWdg = self.paramSpins[paramKey] = QSpinBox()
+        elif type(params[param]) == float:
+          paramWdg = self.paramSpins[paramKey] = QDoubleSpinBox()
+        else:
+          raise Exception('undefined parameter type %s' % type(params[param]))
+        paramWdg.setRange(-1000000, 1000000)
+        paramWdg.setValue(params[param])
+        self.__wdgactions[paramWdg] = self.addWidget(paramWdg)
+        QAction.setVisible(self.__wdgactions[paramWdg], False)
+
+  def __updateParamWidgets(self):
+    mover = str(self.moverCombo.currentText())
+    for item in self.paramLabels:
+      QAction.setVisible(self.__wdgactions[self.paramLabels[item]], False)
+    for item in self.paramSpins:
+      QAction.setVisible(self.__wdgactions[self.paramSpins[item]], False)
+    if pe.mover_params.has_key(mover):
+      for param in pe.mover_params[mover]:
+        QAction.setVisible(self.__wdgactions[self.paramLabels[':'.join((mover, param))]], True)
+        QAction.setVisible(self.__wdgactions[self.paramSpins[':'.join((mover, param))]], True)
+        self.paramLabels[':'.join((mover, param))].setEnabled(True)
+        self.paramSpins[':'.join((mover, param))].setEnabled(True)
+
+  def __currentFormationChanged(self, index):
+    if index == 0:
+      for x in self.findChildren(QWidget, QString()):
+        x.setEnabled(False)
+      self.formationLabel.setEnabled(True)
+      self.formationCombo.setEnabled(True)
+      for x in self.formationCombo.findChildren(QWidget, QString()):
+        x.setEnabled(True)
+    else:
+      for x in self.findChildren(QWidget, QString()):
+        x.setEnabled(True)
+        for y in x.findChildren(QWidget, QString()):
+          y.setEnabled(True)
+
+    if self.formationCombo.currentIndex() != -1 and self.__lastType == 'EventItem':
       self.__cachedIndex = index
+
+  def sendFormation(self):
+    mover = str(self.moverCombo.currentText())
+    if mover != 'NoMover':
+      params = {}
+      for param in self.paramSpins.keys():
+        if param.startswith(mover):
+          params[param] = self.paramSpins[param].value()
+      args = {'count': self.count.value(),
+              'mover': mover,
+              'mover_params': params}
+    else:
+      args = {'count': self.count.value(),
+              'mover': ''}
+    self.emit(SIGNAL('sendFormation(const QString&, PyQt_PyObject)'),
+              self.formationCombo.currentText(), args)
 
   def adjustSettings(self, type):
     self.__lastType = type
     if type == 'BackgroundItem':
-      self.combo.setCurrentIndex(0)
+      self.formationCombo.setCurrentIndex(0)
       self.setEnabled(False)
     elif type == 'EventItem':
       self.setEnabled(True)
-      # shite without that, but why?
-      for x in self.findChildren(QWidget, QString()):
-        x.setEnabled(True)
-      #
-      self.combo.setCurrentIndex(self.__cachedIndex)
+      self.__currentFormationChanged(self.__cachedIndex)
+      self.formationCombo.setCurrentIndex(self.__cachedIndex)
     else:
       raise Exception('unknown item type: %s' % type)
 
@@ -97,7 +178,7 @@ class FormationToolbar(QToolBar):
     pass
 
   def formation(self):
-    return self.combo.currentText()
+    return self.formationCombo.currentText()
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -117,7 +198,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     # toolbar
     self.toolbar = FormationToolbar(self)
     self.addToolBar(self.toolbar)
-    self.menuOptions.addAction(self.toolbar.actionShowHide)
+    self.menuOptions.addAction(self.toolbar.actionToggleView)
     self.menubar.contextMenuEvent = lambda: 0
 
     # property editor
@@ -148,6 +229,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     self.connect(self.tileList, SIGNAL('itemSelected(PyQt_PyObject)'),
                  self.toolbar.adjustSettings)
+    self.connect(self.tileList, SIGNAL('requestFormation'),
+                 self.toolbar.sendFormation)
+
+    self.connect(self.toolbar,
+                 SIGNAL('sendFormation(const QString&, PyQt_PyObject)'),
+                 self.tileList.setFormation)
 
   def __setupActions(self):
     self.connect(self.actionNew_level,
@@ -190,9 +277,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     unreadable = []
     for filename in filenames:
       if not filename.isEmpty() \
-      and not self.loadImage(filename) \
-      and not self.loadXML(filename):
+      and not self.loadImage(filename, update=False) \
+      and not self.loadXML(filename, update=False):
         unreadable.append(filename)
+    self.tileList.updateItems()
         
     if unreadable and options.info_load_error:
       flist = ''
@@ -210,7 +298,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                   for f in os.listdir(options.db_path)])
     self.load(files)
 
-  def loadImage(self, filename):
+  def loadImage(self, filename, update=True):
     newImage = QPixmap()
     if not newImage.load(filename):
       return False
@@ -220,10 +308,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
       info['pixmap_size'] = newImage.width(), newImage.height()
       info['name'] = info['pixmap'].rsplit('.', 1)[0]
       info['type'] = 'BackgroundItem'
-      self.tileList.addItem(newImage, info)
+      self.tileList.addItem(newImage, info, update)
       return True
 
-  def loadXML(self, filename):
+  def loadXML(self, filename, update=True):
     try:
       # get the info list
       filename = str(filename)
@@ -245,7 +333,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         return False
       info['pixmap_size'] = pixmap.width(), pixmap.height()
 
-      self.tileList.addItem(pixmap, info)
+      self.tileList.addItem(pixmap, info, update)
 
       return True
 #    except AttributeError, e:
