@@ -57,10 +57,251 @@
     <li> <strong class="uidlink"><a href="base.AGObject-class.html">base.AGObject</a></strong>:
       <em class="summary">Base class for all game objects.</em>
     <ul>
+    <li> <strong class="uidlink"><a href="spaceship.Weapon-class.html">spaceship.Weapon</a></strong>:
+      <em class="summary">Base class for all weapons.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.AmmoWeapon-class.html">spaceship.AmmoWeapon</a></strong>:
+      <em class="summary">Base class for all weapons that need ammunition to shoot.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.ProjectileAmmoWeapon-class.html">spaceship.ProjectileAmmoWeapon</a></strong>:
+      <em class="summary">Base class for all ammo weapons that shoot projectiles moving 
+        with finite speed.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicPAW-class.html">spaceship.BasicPAW</a></strong>:
+      <em class="summary"><code><a href="spaceship.ProjectileAmmoWeapon-class.html" 
+        class="link">ProjectileAmmoWeapon</a></code> used in testing.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.HeavyCannon-class.html">spaceship.HeavyCannon</a></strong>:
+      <em class="summary">Heavy cannon shooting scattering projectiles.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MultiCannon-class.html">spaceship.MultiCannon</a></strong>:
+      <em class="summary">Cannon shooting multiple projectiles at once.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.TargetedProjectileAmmoWeapon-class.html">spaceship.TargetedProjectileAmmoWeapon</a></strong>:
+      <em class="summary">Base class for all projectile ammo weapons that automatically 
+        aim at selected target.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.AutoCannon-class.html">spaceship.AutoCannon</a></strong>:
+      <em class="summary">More advanced version of <code><a 
+        href="spaceship.MiniCannon-class.html" 
+        class="link">MiniCannon</a></code> with shorter cooldown time and 
+        auto-targeting mechanism (wide angle).</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SeekingPAW-class.html">spaceship.SeekingPAW</a></strong>:
+      <em class="summary">Projectile ammo weapon shooting <code><a 
+        href="spaceship.SeekingProjectile-class.html" 
+        class="link">SeekingProjectile</a></code>s (attempts to shoot 
+        projectiles not derived from <code>SeekingProjectile</code> will 
+        fail).</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.SeekerCannon-class.html">spaceship.SeekerCannon</a></strong>:
+      <em class="summary">Cannon shooting small small seeking projectiles.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MiniCannon-class.html">spaceship.MiniCannon</a></strong>:
+      <em class="summary">Basic <code><a href="spaceship.ProjectileAmmoWeapon-class.html" 
+        class="link">ProjectileAmmoWeapon</a></code> used commonly by weak 
+        enemies.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnergyWeapon-class.html">spaceship.EnergyWeapon</a></strong>:
+      <em class="summary">Base class for all weapons that consume energy to shoot.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.InstantEnergyWeapon-class.html">spaceship.InstantEnergyWeapon</a></strong>:
+      <em class="summary">Base class for instantly hitting <code><a 
+        href="spaceship.EnergyWeapon-class.html" 
+        class="link">EnergyWeapon</a></code>s.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicBeamer-class.html">spaceship.BasicBeamer</a></strong>:
+      <em class="summary">The least powerful yet energy effective instant energy 
+        weapon.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ProjectileEnergyWeapon-class.html">spaceship.ProjectileEnergyWeapon</a></strong>:
+      <em class="summary">Base class for <code><a href="spaceship.EnergyWeapon-class.html"
+        class="link">EnergyWeapon</a></code>s that shoot energy in the form
+        of projectiles moving with finite speed.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.TargetedProjectileEnergyWeapon-class.html">spaceship.TargetedProjectileEnergyWeapon</a></strong>:
+      <em class="summary">Base class for all projectile energy weapons that automatically 
+        aim at selected target.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicTPEW-class.html">spaceship.BasicTPEW</a></strong>:
+      <em class="summary">Targeted version of <code><a 
+        href="spaceship.BasicProjectileEnergyWeapon-class.html" 
+        class="link">BasicProjectileEnergyWeapon</a></code>.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ScatterBlaster-class.html">spaceship.ScatterBlaster</a></strong>:
+      <em class="summary">Projectile energy weapon with following characteristics:</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.DualBlaster-class.html">spaceship.DualBlaster</a></strong>:
+      <em class="summary">Projectile energy weapon with following characteristics:</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.BasicProjectileEnergyWeapon-class.html">spaceship.BasicProjectileEnergyWeapon</a></strong>:
+      <em class="summary">The least powerful, yet energy effective projectile energy 
+        weapon.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MiniBlaster-class.html">spaceship.MiniBlaster</a></strong>:
+      <em class="summary">Projectile energy weapon with following characteristics:</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SeekingPEW-class.html">spaceship.SeekingPEW</a></strong>:
+      <em class="summary">Projectile energy weapon shooting <code><a 
+        href="spaceship.SeekingProjectile-class.html" 
+        class="link">SeekingProjectile</a></code>s (attempts to shoot 
+        projectiles not derived from <code>SeekingProjectile</code> will 
+        fail).</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.SeekerBlaster-class.html">spaceship.SeekerBlaster</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Blaster-class.html">spaceship.Blaster</a></strong>:
+      <em class="summary">Projectile energy weapon with following characteristics:</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink"><a href="spaceship.AGSprite-class.html">spaceship.AGSprite</a></strong>:
       <em class="summary">Abstract sprite class used as a parent class for more specific 
         classes like Ship, Projectile or Obstacle.</em>
     <ul>
+    <li> <strong class="uidlink"><a href="spaceship.Destructible-class.html">spaceship.Destructible</a></strong>:
+      <em class="summary">Class describing an object that can be destroyed.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="obstacle.Obstacle-class.html">obstacle.Obstacle</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="obstacle.MovingObstacle-class.html">obstacle.MovingObstacle</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.BonusHolder-class.html">spaceship.BonusHolder</a></strong>:
+      <em class="summary">Class desribing an object that can hold a <code><a 
+        href="spaceship.Bonus-class.html" class="link">Bonus</a></code> and
+        release it when destroyed.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.Ship-class.html">spaceship.Ship</a></strong>:
+      <em class="summary">Base class for player's ship and enemy ships.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.EnemyShip-class.html">spaceship.EnemyShip</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.EnemyInterceptor-class.html">spaceship.EnemyInterceptor</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MidgetBeamShip-class.html">spaceship.MidgetBeamShip</a></strong>:
+      <em class="summary">Very small ball-shaped enemy ship equipped with weak beam 
+        weapon.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.PlayerShip-class.html">spaceship.PlayerShip</a></strong>:
+      <em class="summary">Represents the player's ship in way similiar to described in 
+        project's wiki (but simpler).</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnemyMine-class.html">spaceship.EnemyMine</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Projectile-class.html">spaceship.Projectile</a></strong>:
+      <em class="summary">Base class for all projectiles.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BigProjectile-class.html">spaceship.BigProjectile</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.DualBlasterProjectile-class.html">spaceship.DualBlasterProjectile</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MiniBlasterProjectile-class.html">spaceship.MiniBlasterProjectile</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SeekingProjectile-class.html">spaceship.SeekingProjectile</a></strong>:
+      <em class="summary">Base class for projectiles following chosen target.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.DirectedSeekingProjectile-class.html">spaceship.DirectedSeekingProjectile</a></strong>:
+      <em class="summary">This class differs from its parent in that displayed image 
+        changes depending on projectile direction.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.SeekerCannonProjectile-class.html">spaceship.SeekerCannonProjectile</a></strong>:
+      <em class="summary">Projectile shot by <code><a 
+        href="spaceship.SeekerCannon-class.html" 
+        class="link">SeekerCannon</a></code>.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SeekerBlasterProjectile-class.html">spaceship.SeekerBlasterProjectile</a></strong>:
+      <em class="summary">Star shaped seeking energetic projectile.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MultiCannonProjectile-class.html">spaceship.MultiCannonProjectile</a></strong>:
+      <em class="summary">Projectile shot by <code><a 
+        href="spaceship.MultiCannon-class.html" 
+        class="link">MultiCannon</a></code>.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.HeavyCannonProjectileFragment-class.html">spaceship.HeavyCannonProjectileFragment</a></strong>:
+      <em class="summary">Projectile generated when <code><a 
+        href="spaceship.HeavyCannonProjectile-class.html" 
+        class="link">HeavyCannonProjectile</a></code> explodes.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.AutoCannonProjectile-class.html">spaceship.AutoCannonProjectile</a></strong>:
+      <em class="summary">Projectile shot by <code><a 
+        href="spaceship.AutoCannon-class.html" 
+        class="link">AutoCannon</a></code>.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ScatterBlasterProjectileFragment-class.html">spaceship.ScatterBlasterProjectileFragment</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ScatteringProjectile-class.html">spaceship.ScatteringProjectile</a></strong>:
+      <em class="summary">At the moment of explosion or after a <code>lifetime</code> 
+        seconds <code>ScatteringProjectile</code>s explode and spawn 
+        <code>child_cnt</code> of <code>child_cls_name</code> 
+        projectiles.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.HeavyCannonProjectile-class.html">spaceship.HeavyCannonProjectile</a></strong>:
+      <em class="summary">Scattering projectile shot by <code><a 
+        href="spaceship.HeavyCannon-class.html" 
+        class="link">HeavyCannon</a></code>.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ScatterBlasterProjectile-class.html">spaceship.ScatterBlasterProjectile</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.BlasterProjectile-class.html">spaceship.BlasterProjectile</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MiniCannonProjectile-class.html">spaceship.MiniCannonProjectile</a></strong>:
+      <em class="summary">Projectile shot by <code><a 
+        href="spaceship.MiniCannon-class.html" 
+        class="link">MiniCannon</a></code>.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnergyProjectile-class.html">spaceship.EnergyProjectile</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Bonus-class.html">spaceship.Bonus</a></strong>:
+      <em class="summary">Base class for bonuses/powerups that can be collected by 
+        players.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.RechargeBonus-class.html">spaceship.RechargeBonus</a></strong>:
+      <em class="summary">This bonus recharges player ship's shields and energy 
+        weapons.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ShieldUpgradeBonus-class.html">spaceship.ShieldUpgradeBonus</a></strong>:
+      <em class="summary">This bonus replaces player ship's shield with a better one.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SuperShieldBonus-class.html">spaceship.SuperShieldBonus</a></strong>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink"><a href="spaceship.InstantEnergyBeam-class.html">spaceship.InstantEnergyBeam</a></strong>:
       <em class="summary">Visual representation of energy fired by <code><a 
         href="spaceship.InstantEnergyWeapon-class.html" 
@@ -73,52 +314,74 @@
     </li>
     <li> <strong class="uidlink"><a href="spaceship.Explosion-class.html">spaceship.Explosion</a></strong>
     <ul>
-    <li> <strong class="uidlink"><a href="spaceship.ShellExplosion-class.html">spaceship.ShellExplosion</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.BulletExplosion-class.html">spaceship.BulletExplosion</a></strong>
+    <li> <strong class="uidlink"><a href="spaceship.BigProjectileExplosion-class.html">spaceship.BigProjectileExplosion</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="spaceship.ObstacleExplosion-class.html">spaceship.ObstacleExplosion</a></strong>
     </li>
+    <li> <strong class="uidlink"><a href="spaceship.SmallExplosion-class.html">spaceship.SmallExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MediumExplosion-class.html">spaceship.MediumExplosion</a></strong>
+    </li>
     <li> <strong class="uidlink"><a href="spaceship.BasicBeamExplosion-class.html">spaceship.BasicBeamExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ShellExplosion-class.html">spaceship.ShellExplosion</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="spaceship.EnergyProjectileExplosion-class.html">spaceship.EnergyProjectileExplosion</a></strong>
     </li>
     </ul>
     </li>
-    <li> <strong class="uidlink"><a href="spaceship.Destructible-class.html">spaceship.Destructible</a></strong>:
-      <em class="summary">Class describing an object that can be destroyed.</em>
+    <li> <strong class="uidlink"><a href="spaceship.AmmoConsumingItem-class.html">spaceship.AmmoConsumingItem</a></strong>:
+      <em class="summary">Base class for items that require ammo to operate.</em>
     <ul>
-    <li> <strong class="uidlink"><a href="spaceship.Ship-class.html">spaceship.Ship</a></strong>:
-      <em class="summary">Base class for player's ship and enemy ships.</em>
+    <li> <strong class="uidlink"><a href="spaceship.AmmoWeapon-class.html">spaceship.AmmoWeapon</a></strong>:
+      <em class="summary">Base class for all weapons that need ammunition to shoot.</em>
     <ul>
-    <li> <strong class="uidlink"><a href="spaceship.EnemyShip-class.html">spaceship.EnemyShip</a></strong>
+    <li> <strong class="uidlink"><a href="spaceship.ProjectileAmmoWeapon-class.html">spaceship.ProjectileAmmoWeapon</a></strong>:
+      <em class="summary">Base class for all ammo weapons that shoot projectiles moving 
+        with finite speed.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicPAW-class.html">spaceship.BasicPAW</a></strong>:
+      <em class="summary"><code><a href="spaceship.ProjectileAmmoWeapon-class.html" 
+        class="link">ProjectileAmmoWeapon</a></code> used in testing.</em>
     </li>
-    <li> <strong class="uidlink"><a href="spaceship.PlayerShip-class.html">spaceship.PlayerShip</a></strong>:
-      <em class="summary">Represents the player's ship (not necessarily a spaceship).</em>
+    <li> <strong class="uidlink"><a href="spaceship.HeavyCannon-class.html">spaceship.HeavyCannon</a></strong>:
+      <em class="summary">Heavy cannon shooting scattering projectiles.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MultiCannon-class.html">spaceship.MultiCannon</a></strong>:
+      <em class="summary">Cannon shooting multiple projectiles at once.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.TargetedProjectileAmmoWeapon-class.html">spaceship.TargetedProjectileAmmoWeapon</a></strong>:
+      <em class="summary">Base class for all projectile ammo weapons that automatically 
+        aim at selected target.</em>
     <ul>
-    <li> <strong class="uidlink"><a href="spaceship.AdvancedPlayerShip-class.html">spaceship.AdvancedPlayerShip</a></strong>:
-      <em class="summary">Represents the player's ship in more advanced version described 
-        in project's wiki.</em>
+    <li> <strong class="uidlink"><a href="spaceship.AutoCannon-class.html">spaceship.AutoCannon</a></strong>:
+      <em class="summary">More advanced version of <code><a 
+        href="spaceship.MiniCannon-class.html" 
+        class="link">MiniCannon</a></code> with shorter cooldown time and 
+        auto-targeting mechanism (wide angle).</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SeekingPAW-class.html">spaceship.SeekingPAW</a></strong>:
+      <em class="summary">Projectile ammo weapon shooting <code><a 
+        href="spaceship.SeekingProjectile-class.html" 
+        class="link">SeekingProjectile</a></code>s (attempts to shoot 
+        projectiles not derived from <code>SeekingProjectile</code> will 
+        fail).</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.SeekerCannon-class.html">spaceship.SeekerCannon</a></strong>:
+      <em class="summary">Cannon shooting small small seeking projectiles.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MiniCannon-class.html">spaceship.MiniCannon</a></strong>:
+      <em class="summary">Basic <code><a href="spaceship.ProjectileAmmoWeapon-class.html" 
+        class="link">ProjectileAmmoWeapon</a></code> used commonly by weak 
+        enemies.</em>
     </li>
     </ul>
     </li>
     </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="obstacle.Obstacle-class.html">obstacle.Obstacle</a></strong>
-    <ul>
-    <li> <strong class="uidlink"><a href="obstacle.MovingObstacle-class.html">obstacle.MovingObstacle</a></strong>
-    </li>
-    </ul>
-    </li>
-    </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.Projectile-class.html">spaceship.Projectile</a></strong>
-    <ul>
-    <li> <strong class="uidlink"><a href="spaceship.Shell-class.html">spaceship.Shell</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.EnergyProjectile-class.html">spaceship.EnergyProjectile</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.Bullet-class.html">spaceship.Bullet</a></strong>
     </li>
     </ul>
     </li>
@@ -126,16 +389,117 @@
       <em class="summary">Base class for all shield types used both by player ship and 
         enemies.</em>
     <ul>
+    <li> <strong class="uidlink"><a href="spaceship.AutoShield-class.html">spaceship.AutoShield</a></strong>:
+      <em class="summary">Base class for all automatically activated shields.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicAutoShield-class.html">spaceship.BasicAutoShield</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnemyShipShield-class.html">spaceship.EnemyShipShield</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SuperShield-class.html">spaceship.SuperShield</a></strong>:
+      <em class="summary"><code>SuperShield</code> can be granted by a bonus.</em>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink"><a href="spaceship.BasicShield-class.html">spaceship.BasicShield</a></strong>
     </li>
-    </ul>
+    <li> <strong class="uidlink"><a href="spaceship.MediumShield-class.html">spaceship.MediumShield</a></strong>
     </li>
     </ul>
     </li>
-    <li> <strong class="uidlink"><a href="spaceship.Reactor-class.html">spaceship.Reactor</a></strong>:
-      <em class="summary">Base class for all ship reactors.</em>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.TargetedProjectileWeapon-class.html">spaceship.TargetedProjectileWeapon</a></strong>:
+      <em class="summary">...</em>
     <ul>
-    <li> <strong class="uidlink"><a href="spaceship.BasicReactor-class.html">spaceship.BasicReactor</a></strong>
+    <li> <strong class="uidlink"><a href="spaceship.TargetedProjectileAmmoWeapon-class.html">spaceship.TargetedProjectileAmmoWeapon</a></strong>:
+      <em class="summary">Base class for all projectile ammo weapons that automatically 
+        aim at selected target.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.AutoCannon-class.html">spaceship.AutoCannon</a></strong>:
+      <em class="summary">More advanced version of <code><a 
+        href="spaceship.MiniCannon-class.html" 
+        class="link">MiniCannon</a></code> with shorter cooldown time and 
+        auto-targeting mechanism (wide angle).</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.TargetedProjectileEnergyWeapon-class.html">spaceship.TargetedProjectileEnergyWeapon</a></strong>:
+      <em class="summary">Base class for all projectile energy weapons that automatically 
+        aim at selected target.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicTPEW-class.html">spaceship.BasicTPEW</a></strong>:
+      <em class="summary">Targeted version of <code><a 
+        href="spaceship.BasicProjectileEnergyWeapon-class.html" 
+        class="link">BasicProjectileEnergyWeapon</a></code>.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnergyConsumingItem-class.html">spaceship.EnergyConsumingItem</a></strong>:
+      <em class="summary">Base class for items that require energy to operate.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.EnergyWeapon-class.html">spaceship.EnergyWeapon</a></strong>:
+      <em class="summary">Base class for all weapons that consume energy to shoot.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.InstantEnergyWeapon-class.html">spaceship.InstantEnergyWeapon</a></strong>:
+      <em class="summary">Base class for instantly hitting <code><a 
+        href="spaceship.EnergyWeapon-class.html" 
+        class="link">EnergyWeapon</a></code>s.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicBeamer-class.html">spaceship.BasicBeamer</a></strong>:
+      <em class="summary">The least powerful yet energy effective instant energy 
+        weapon.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ProjectileEnergyWeapon-class.html">spaceship.ProjectileEnergyWeapon</a></strong>:
+      <em class="summary">Base class for <code><a href="spaceship.EnergyWeapon-class.html"
+        class="link">EnergyWeapon</a></code>s that shoot energy in the form
+        of projectiles moving with finite speed.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.TargetedProjectileEnergyWeapon-class.html">spaceship.TargetedProjectileEnergyWeapon</a></strong>:
+      <em class="summary">Base class for all projectile energy weapons that automatically 
+        aim at selected target.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicTPEW-class.html">spaceship.BasicTPEW</a></strong>:
+      <em class="summary">Targeted version of <code><a 
+        href="spaceship.BasicProjectileEnergyWeapon-class.html" 
+        class="link">BasicProjectileEnergyWeapon</a></code>.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ScatterBlaster-class.html">spaceship.ScatterBlaster</a></strong>:
+      <em class="summary">Projectile energy weapon with following characteristics:</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.DualBlaster-class.html">spaceship.DualBlaster</a></strong>:
+      <em class="summary">Projectile energy weapon with following characteristics:</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.BasicProjectileEnergyWeapon-class.html">spaceship.BasicProjectileEnergyWeapon</a></strong>:
+      <em class="summary">The least powerful, yet energy effective projectile energy 
+        weapon.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MiniBlaster-class.html">spaceship.MiniBlaster</a></strong>:
+      <em class="summary">Projectile energy weapon with following characteristics:</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SeekingPEW-class.html">spaceship.SeekingPEW</a></strong>:
+      <em class="summary">Projectile energy weapon shooting <code><a 
+        href="spaceship.SeekingProjectile-class.html" 
+        class="link">SeekingProjectile</a></code>s (attempts to shoot 
+        projectiles not derived from <code>SeekingProjectile</code> will 
+        fail).</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.SeekerBlaster-class.html">spaceship.SeekerBlaster</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Blaster-class.html">spaceship.Blaster</a></strong>:
+      <em class="summary">Projectile energy weapon with following characteristics:</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
     </li>
     </ul>
     </li>
@@ -150,9 +514,20 @@
     <li> <strong class="uidlink"><a href="mover.Mover-class.html">mover.Mover</a></strong>:
       <em class="summary">Base class for all movers.</em>
     <ul>
+    <li> <strong class="uidlink"><a href="mover.CircularMover-class.html">mover.CircularMover</a></strong>:
+      <em class="summary">Causes object to make circular movement around its initial 
+        position.</em>
+    </li>
     <li> <strong class="uidlink"><a href="mover.LinearMover-class.html">mover.LinearMover</a></strong>:
       <em class="summary">Causes object to move in a straight line with constant 
         speed.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="mover.LinearPlayerTargetingMover-class.html">mover.LinearPlayerTargetingMover</a></strong>:
+      <em class="summary">This mover choses its target from group 'ship' and tries to 
+        position owning ship in front of the target.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="mover.SeekingMover-class.html">mover.SeekingMover</a></strong>:
+      <em class="summary">This mover makes its owner chase its <code>target</code>.</em>
     </li>
     <li> <strong class="uidlink"><a href="mover.RandomMover-class.html">mover.RandomMover</a></strong>:
       <em class="summary">Randomly changes direction of an object but not its speed.</em>
@@ -161,59 +536,12 @@
       <em class="summary">Couses object to make zigzaging movement from top to the 
         bottom.</em>
     </li>
-    <li> <strong class="uidlink"><a href="mover.CircularMover-class.html">mover.CircularMover</a></strong>:
-      <em class="summary">Causes object to make circular movement around its initial 
-        position.</em>
-    </li>
     </ul>
     </li>
-    <li> <strong class="uidlink"><a href="spaceship.Weapon-class.html">spaceship.Weapon</a></strong>:
-      <em class="summary">Base class for all weapons.</em>
+    <li> <strong class="uidlink"><a href="spaceship.Reactor-class.html">spaceship.Reactor</a></strong>:
+      <em class="summary">Base class for all ship reactors.</em>
     <ul>
-    <li> <strong class="uidlink"><a href="spaceship.EnergyWeapon-class.html">spaceship.EnergyWeapon</a></strong>:
-      <em class="summary">Base class for all weapons that consume energy to shoot.</em>
-    <ul>
-    <li> <strong class="uidlink"><a href="spaceship.ProjectileEnergyWeapon-class.html">spaceship.ProjectileEnergyWeapon</a></strong>:
-      <em class="summary">Base class for <code><a href="spaceship.EnergyWeapon-class.html"
-        class="link">EnergyWeapon</a></code>s that shoot energy in the form
-        of projectiles moving with finite speed.</em>
-    <ul>
-    <li> <strong class="uidlink"><a href="spaceship.BasicProjectileEnergyWeapon-class.html">spaceship.BasicProjectileEnergyWeapon</a></strong>:
-      <em class="summary">The least powerful, yet energy effective projectile energy 
-        weapon.</em>
-    </li>
-    </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.InstantEnergyWeapon-class.html">spaceship.InstantEnergyWeapon</a></strong>:
-      <em class="summary">Base class for instantly hitting <code><a 
-        href="spaceship.EnergyWeapon-class.html" 
-        class="link">EnergyWeapon</a></code>s.</em>
-    <ul>
-    <li> <strong class="uidlink"><a href="spaceship.BasicBeamer-class.html">spaceship.BasicBeamer</a></strong>:
-      <em class="summary">The least powerful yet energy effective instant energy 
-        weapon.</em>
-    </li>
-    </ul>
-    </li>
-    </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.AmmoWeapon-class.html">spaceship.AmmoWeapon</a></strong>:
-      <em class="summary">Base class for all weapons that need ammunition to shoot.</em>
-    <ul>
-    <li> <strong class="uidlink"><a href="spaceship.InstantAmmoWeapon-class.html">spaceship.InstantAmmoWeapon</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.ProjectileAmmoWeapon-class.html">spaceship.ProjectileAmmoWeapon</a></strong>:
-      <em class="summary">Base class for all ammo weapons that shoot projectiles moving 
-        with finite speed.</em>
-    <ul>
-    <li> <strong class="uidlink"><a href="spaceship.BasicPAW-class.html">spaceship.BasicPAW</a></strong>:
-      <em class="summary">Basic type of <code><a 
-        href="spaceship.ProjectileAmmoWeapon-class.html" 
-        class="link">ProjectileAmmoWeapon</a></code>.</em>
-    </li>
-    </ul>
-    </li>
-    </ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicReactor-class.html">spaceship.BasicReactor</a></strong>
     </li>
     </ul>
     </li>
@@ -221,22 +549,187 @@
     </li>
     <li> <strong class="uidlink"><a href="gfxmanager.GfxManager-class.html">gfxmanager.GfxManager</a></strong>
     </li>
+    <li> <strong class="uidlink"><a href="groupmanager.GroupManager-class.html">groupmanager.GroupManager</a></strong>
+    </li>
     <li> <strong class="uidlink"><a href="hud.Hud-class.html">hud.Hud</a></strong>
     </li>
     <li> <strong class="uidlink">object</strong>:
       <em class="summary">The most base type</em>
     <ul>
+    <li> <strong class="uidlink">pygame.Rect</strong>:
+      <em class="summary">The rectangle object is a useful object representing a rectangle
+        area.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="base.AGRect-class.html">base.AGRect</a></strong>:
+      <em class="summary"><code>pygame.Rect</code> with extended functionality.</em>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink"><a href="clock.Clock-class.html">clock.Clock</a></strong>:
       <em class="summary">This class grants objects information about the flow of 
         time.</em>
     </li>
+    <li> <strong class="uidlink"><a href="application.AGMenu-class.html">application.AGMenu</a></strong>:
+      <em class="summary">Main Agrajag game menu.</em>
+    </li>
     <li> <strong class="uidlink">pygame.sprite.Sprite</strong>:
       <em class="summary">The base class for your visible game objects.</em>
     <ul>
+    <li> <strong class="uidlink"><a href="background.BackgroundObject-class.html">background.BackgroundObject</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="background.BackgroundImage-class.html">background.BackgroundImage</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="background.CloserStar-class.html">background.CloserStar</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="background.CloserStarCluster-class.html">background.CloserStarCluster</a></strong>:
+      <em class="summary">Cluster of small random numer of CloserStar instances positioned
+        randomly each close to one another</em>
+    </li>
+    <li> <strong class="uidlink"><a href="background.DistantStar-class.html">background.DistantStar</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="base.Overlay-class.html">base.Overlay</a></strong>:
+      <em class="summary">Overlay can be used to display auxiliary animated effects over a
+        sprite.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="widgets.Widget-class.html">widgets.Widget</a></strong>:
+      <em class="summary">A base widget object to be inherited from.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="widgets.VerticalProgressBar-class.html">widgets.VerticalProgressBar</a></strong>:
+      <em class="summary">Vertical progress bar or indicator available in 8 colours.</em>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink"><a href="spaceship.AGSprite-class.html">spaceship.AGSprite</a></strong>:
       <em class="summary">Abstract sprite class used as a parent class for more specific 
         classes like Ship, Projectile or Obstacle.</em>
     <ul>
+    <li> <strong class="uidlink"><a href="spaceship.Destructible-class.html">spaceship.Destructible</a></strong>:
+      <em class="summary">Class describing an object that can be destroyed.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="obstacle.Obstacle-class.html">obstacle.Obstacle</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="obstacle.MovingObstacle-class.html">obstacle.MovingObstacle</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.BonusHolder-class.html">spaceship.BonusHolder</a></strong>:
+      <em class="summary">Class desribing an object that can hold a <code><a 
+        href="spaceship.Bonus-class.html" class="link">Bonus</a></code> and
+        release it when destroyed.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.Ship-class.html">spaceship.Ship</a></strong>:
+      <em class="summary">Base class for player's ship and enemy ships.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.EnemyShip-class.html">spaceship.EnemyShip</a></strong>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.EnemyInterceptor-class.html">spaceship.EnemyInterceptor</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MidgetBeamShip-class.html">spaceship.MidgetBeamShip</a></strong>:
+      <em class="summary">Very small ball-shaped enemy ship equipped with weak beam 
+        weapon.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.PlayerShip-class.html">spaceship.PlayerShip</a></strong>:
+      <em class="summary">Represents the player's ship in way similiar to described in 
+        project's wiki (but simpler).</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnemyMine-class.html">spaceship.EnemyMine</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Projectile-class.html">spaceship.Projectile</a></strong>:
+      <em class="summary">Base class for all projectiles.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BigProjectile-class.html">spaceship.BigProjectile</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.DualBlasterProjectile-class.html">spaceship.DualBlasterProjectile</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MiniBlasterProjectile-class.html">spaceship.MiniBlasterProjectile</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SeekingProjectile-class.html">spaceship.SeekingProjectile</a></strong>:
+      <em class="summary">Base class for projectiles following chosen target.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.DirectedSeekingProjectile-class.html">spaceship.DirectedSeekingProjectile</a></strong>:
+      <em class="summary">This class differs from its parent in that displayed image 
+        changes depending on projectile direction.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.SeekerCannonProjectile-class.html">spaceship.SeekerCannonProjectile</a></strong>:
+      <em class="summary">Projectile shot by <code><a 
+        href="spaceship.SeekerCannon-class.html" 
+        class="link">SeekerCannon</a></code>.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SeekerBlasterProjectile-class.html">spaceship.SeekerBlasterProjectile</a></strong>:
+      <em class="summary">Star shaped seeking energetic projectile.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MultiCannonProjectile-class.html">spaceship.MultiCannonProjectile</a></strong>:
+      <em class="summary">Projectile shot by <code><a 
+        href="spaceship.MultiCannon-class.html" 
+        class="link">MultiCannon</a></code>.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.HeavyCannonProjectileFragment-class.html">spaceship.HeavyCannonProjectileFragment</a></strong>:
+      <em class="summary">Projectile generated when <code><a 
+        href="spaceship.HeavyCannonProjectile-class.html" 
+        class="link">HeavyCannonProjectile</a></code> explodes.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.AutoCannonProjectile-class.html">spaceship.AutoCannonProjectile</a></strong>:
+      <em class="summary">Projectile shot by <code><a 
+        href="spaceship.AutoCannon-class.html" 
+        class="link">AutoCannon</a></code>.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ScatterBlasterProjectileFragment-class.html">spaceship.ScatterBlasterProjectileFragment</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ScatteringProjectile-class.html">spaceship.ScatteringProjectile</a></strong>:
+      <em class="summary">At the moment of explosion or after a <code>lifetime</code> 
+        seconds <code>ScatteringProjectile</code>s explode and spawn 
+        <code>child_cnt</code> of <code>child_cls_name</code> 
+        projectiles.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.HeavyCannonProjectile-class.html">spaceship.HeavyCannonProjectile</a></strong>:
+      <em class="summary">Scattering projectile shot by <code><a 
+        href="spaceship.HeavyCannon-class.html" 
+        class="link">HeavyCannon</a></code>.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ScatterBlasterProjectile-class.html">spaceship.ScatterBlasterProjectile</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.BlasterProjectile-class.html">spaceship.BlasterProjectile</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MiniCannonProjectile-class.html">spaceship.MiniCannonProjectile</a></strong>:
+      <em class="summary">Projectile shot by <code><a 
+        href="spaceship.MiniCannon-class.html" 
+        class="link">MiniCannon</a></code>.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnergyProjectile-class.html">spaceship.EnergyProjectile</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.Bonus-class.html">spaceship.Bonus</a></strong>:
+      <em class="summary">Base class for bonuses/powerups that can be collected by 
+        players.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.RechargeBonus-class.html">spaceship.RechargeBonus</a></strong>:
+      <em class="summary">This bonus recharges player ship's shields and energy 
+        weapons.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ShieldUpgradeBonus-class.html">spaceship.ShieldUpgradeBonus</a></strong>:
+      <em class="summary">This bonus replaces player ship's shield with a better one.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SuperShieldBonus-class.html">spaceship.SuperShieldBonus</a></strong>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink"><a href="spaceship.InstantEnergyBeam-class.html">spaceship.InstantEnergyBeam</a></strong>:
       <em class="summary">Visual representation of energy fired by <code><a 
         href="spaceship.InstantEnergyWeapon-class.html" 
@@ -249,52 +742,74 @@
     </li>
     <li> <strong class="uidlink"><a href="spaceship.Explosion-class.html">spaceship.Explosion</a></strong>
     <ul>
-    <li> <strong class="uidlink"><a href="spaceship.ShellExplosion-class.html">spaceship.ShellExplosion</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.BulletExplosion-class.html">spaceship.BulletExplosion</a></strong>
+    <li> <strong class="uidlink"><a href="spaceship.BigProjectileExplosion-class.html">spaceship.BigProjectileExplosion</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="spaceship.ObstacleExplosion-class.html">spaceship.ObstacleExplosion</a></strong>
     </li>
+    <li> <strong class="uidlink"><a href="spaceship.SmallExplosion-class.html">spaceship.SmallExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MediumExplosion-class.html">spaceship.MediumExplosion</a></strong>
+    </li>
     <li> <strong class="uidlink"><a href="spaceship.BasicBeamExplosion-class.html">spaceship.BasicBeamExplosion</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.ShellExplosion-class.html">spaceship.ShellExplosion</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="spaceship.EnergyProjectileExplosion-class.html">spaceship.EnergyProjectileExplosion</a></strong>
     </li>
     </ul>
     </li>
-    <li> <strong class="uidlink"><a href="spaceship.Destructible-class.html">spaceship.Destructible</a></strong>:
-      <em class="summary">Class describing an object that can be destroyed.</em>
+    <li> <strong class="uidlink"><a href="spaceship.AmmoConsumingItem-class.html">spaceship.AmmoConsumingItem</a></strong>:
+      <em class="summary">Base class for items that require ammo to operate.</em>
     <ul>
-    <li> <strong class="uidlink"><a href="spaceship.Ship-class.html">spaceship.Ship</a></strong>:
-      <em class="summary">Base class for player's ship and enemy ships.</em>
+    <li> <strong class="uidlink"><a href="spaceship.AmmoWeapon-class.html">spaceship.AmmoWeapon</a></strong>:
+      <em class="summary">Base class for all weapons that need ammunition to shoot.</em>
     <ul>
-    <li> <strong class="uidlink"><a href="spaceship.EnemyShip-class.html">spaceship.EnemyShip</a></strong>
+    <li> <strong class="uidlink"><a href="spaceship.ProjectileAmmoWeapon-class.html">spaceship.ProjectileAmmoWeapon</a></strong>:
+      <em class="summary">Base class for all ammo weapons that shoot projectiles moving 
+        with finite speed.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicPAW-class.html">spaceship.BasicPAW</a></strong>:
+      <em class="summary"><code><a href="spaceship.ProjectileAmmoWeapon-class.html" 
+        class="link">ProjectileAmmoWeapon</a></code> used in testing.</em>
     </li>
-    <li> <strong class="uidlink"><a href="spaceship.PlayerShip-class.html">spaceship.PlayerShip</a></strong>:
-      <em class="summary">Represents the player's ship (not necessarily a spaceship).</em>
+    <li> <strong class="uidlink"><a href="spaceship.HeavyCannon-class.html">spaceship.HeavyCannon</a></strong>:
+      <em class="summary">Heavy cannon shooting scattering projectiles.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MultiCannon-class.html">spaceship.MultiCannon</a></strong>:
+      <em class="summary">Cannon shooting multiple projectiles at once.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.TargetedProjectileAmmoWeapon-class.html">spaceship.TargetedProjectileAmmoWeapon</a></strong>:
+      <em class="summary">Base class for all projectile ammo weapons that automatically 
+        aim at selected target.</em>
     <ul>
-    <li> <strong class="uidlink"><a href="spaceship.AdvancedPlayerShip-class.html">spaceship.AdvancedPlayerShip</a></strong>:
-      <em class="summary">Represents the player's ship in more advanced version described 
-        in project's wiki.</em>
+    <li> <strong class="uidlink"><a href="spaceship.AutoCannon-class.html">spaceship.AutoCannon</a></strong>:
+      <em class="summary">More advanced version of <code><a 
+        href="spaceship.MiniCannon-class.html" 
+        class="link">MiniCannon</a></code> with shorter cooldown time and 
+        auto-targeting mechanism (wide angle).</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SeekingPAW-class.html">spaceship.SeekingPAW</a></strong>:
+      <em class="summary">Projectile ammo weapon shooting <code><a 
+        href="spaceship.SeekingProjectile-class.html" 
+        class="link">SeekingProjectile</a></code>s (attempts to shoot 
+        projectiles not derived from <code>SeekingProjectile</code> will 
+        fail).</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.SeekerCannon-class.html">spaceship.SeekerCannon</a></strong>:
+      <em class="summary">Cannon shooting small small seeking projectiles.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.MiniCannon-class.html">spaceship.MiniCannon</a></strong>:
+      <em class="summary">Basic <code><a href="spaceship.ProjectileAmmoWeapon-class.html" 
+        class="link">ProjectileAmmoWeapon</a></code> used commonly by weak 
+        enemies.</em>
     </li>
     </ul>
     </li>
     </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="obstacle.Obstacle-class.html">obstacle.Obstacle</a></strong>
-    <ul>
-    <li> <strong class="uidlink"><a href="obstacle.MovingObstacle-class.html">obstacle.MovingObstacle</a></strong>
-    </li>
-    </ul>
-    </li>
-    </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.Projectile-class.html">spaceship.Projectile</a></strong>
-    <ul>
-    <li> <strong class="uidlink"><a href="spaceship.Shell-class.html">spaceship.Shell</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.EnergyProjectile-class.html">spaceship.EnergyProjectile</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="spaceship.Bullet-class.html">spaceship.Bullet</a></strong>
     </li>
     </ul>
     </li>
@@ -302,35 +817,33 @@
       <em class="summary">Base class for all shield types used both by player ship and 
         enemies.</em>
     <ul>
+    <li> <strong class="uidlink"><a href="spaceship.AutoShield-class.html">spaceship.AutoShield</a></strong>:
+      <em class="summary">Base class for all automatically activated shields.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.BasicAutoShield-class.html">spaceship.BasicAutoShield</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.EnemyShipShield-class.html">spaceship.EnemyShipShield</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SuperShield-class.html">spaceship.SuperShield</a></strong>:
+      <em class="summary"><code>SuperShield</code> can be granted by a bonus.</em>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink"><a href="spaceship.BasicShield-class.html">spaceship.BasicShield</a></strong>
     </li>
-    </ul>
-    </li>
-    </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="background.BackgroundObject-class.html">background.BackgroundObject</a></strong>
-    <ul>
-    <li> <strong class="uidlink"><a href="background.CloserStar-class.html">background.CloserStar</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="background.BackgroundImage-class.html">background.BackgroundImage</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="background.CloserStarCluster-class.html">background.CloserStarCluster</a></strong>:
-      <em class="summary">Cluster of small random numer of CloserStar instances positioned
-        randomly each close to one another</em>
-    </li>
-    <li> <strong class="uidlink"><a href="background.DistantStar-class.html">background.DistantStar</a></strong>
-    </li>
-    </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="widgets.Widget-class.html">widgets.Widget</a></strong>:
-      <em class="summary">A base widget object to be inherited from.</em>
-    <ul>
-    <li> <strong class="uidlink"><a href="widgets.VerticalProgressBar-class.html">widgets.VerticalProgressBar</a></strong>:
-      <em class="summary">Vertical progress bar or indicator available in 8 colours.</em>
+    <li> <strong class="uidlink"><a href="spaceship.MediumShield-class.html">spaceship.MediumShield</a></strong>
     </li>
     </ul>
     </li>
     </ul>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="application.AGApplication-class.html">application.AGApplication</a></strong>:
+      <em class="summary">Main Agrajag application class.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="application.AGLevel-class.html">application.AGLevel</a></strong>:
+      <em class="summary">Agrajag level object.</em>
     </li>
     </ul>
     </li>
@@ -341,17 +854,58 @@
     </li>
     <li> <strong class="uidlink"><a href="signals._WeakMethod_FuncHost-class.html">signals._WeakMethod_FuncHost</a></strong>
     </li>
+    <li> <strong class="uidlink"><a href="spaceship.MultiShotProjectileWeapon-class.html">spaceship.MultiShotProjectileWeapon</a></strong>:
+      <em class="summary">This class can be used to allow projectile weapons to shoot 
+        multiple projectiles at once.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.MultiCannon-class.html">spaceship.MultiCannon</a></strong>:
+      <em class="summary">Cannon shooting multiple projectiles at once.</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SeekingProjectileWeapon-class.html">spaceship.SeekingProjectileWeapon</a></strong>:
+      <em class="summary">Projectile weapon shooting <code><a 
+        href="spaceship.SeekingProjectile-class.html" 
+        class="link">SeekingProjectile</a></code>s (attempts to shoot 
+        projectiles not derived from <code>SeekingProjectile</code> will 
+        fail).</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.SeekingPEW-class.html">spaceship.SeekingPEW</a></strong>:
+      <em class="summary">Projectile energy weapon shooting <code><a 
+        href="spaceship.SeekingProjectile-class.html" 
+        class="link">SeekingProjectile</a></code>s (attempts to shoot 
+        projectiles not derived from <code>SeekingProjectile</code> will 
+        fail).</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.SeekerBlaster-class.html">spaceship.SeekerBlaster</a></strong>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="spaceship.SeekingPAW-class.html">spaceship.SeekingPAW</a></strong>:
+      <em class="summary">Projectile ammo weapon shooting <code><a 
+        href="spaceship.SeekingProjectile-class.html" 
+        class="link">SeekingProjectile</a></code>s (attempts to shoot 
+        projectiles not derived from <code>SeekingProjectile</code> will 
+        fail).</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="spaceship.SeekerCannon-class.html">spaceship.SeekerCannon</a></strong>:
+      <em class="summary">Cannon shooting small small seeking projectiles.</em>
+    </li>
+    </ul>
+    </li>
+    </ul>
+    </li>
     <li> <strong class="uidlink"><a href="xmlmanager.XMLManager-class.html">xmlmanager.XMLManager</a></strong>:
       <em class="summary">This class is intended to be base class for other classes that 
         do XML processing.</em>
     <ul>
-    <li> <strong class="uidlink"><a href="stagemanager.StageManager-class.html">stagemanager.StageManager</a></strong>:
-      <em class="summary">This class is responsible for importing game stages 
-        schedule.</em>
-    </li>
     <li> <strong class="uidlink"><a href="dbmanager.DBManager-class.html">dbmanager.DBManager</a></strong>:
       <em class="summary">This class is responsible for importing game content 
         configuration.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="stagemanager.StageManager-class.html">stagemanager.StageManager</a></strong>:
+      <em class="summary">This class is responsible for importing game stages 
+        schedule.</em>
     </li>
     </ul>
     </li>
@@ -379,7 +933,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0beta1 on Tue Oct 30 16:10:11 2007
+    Generated by Epydoc 3.0beta1 on Thu Jul 31 17:03:02 2008
     </td>
     <td align="right" class="footer">
       <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>

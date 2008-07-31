@@ -1,6 +1,9 @@
 #!/usr/bin/python
 #coding: utf-8
 
+'''Management of XML defined levels.
+'''
+
 import os
 import pygame
 import xml.dom.minidom

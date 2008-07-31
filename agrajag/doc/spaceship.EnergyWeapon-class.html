@@ -54,11 +54,15 @@
 <!-- ==================== CLASS DESCRIPTION ==================== -->
 <h1 class="epydoc">Class EnergyWeapon</h1><span class="codelink"><a href="spaceship-pysrc.html#EnergyWeapon">source&nbsp;code</a></span><br /><br />
 <pre class="base-tree">
-<a href="base.AGObject-class.html">base.AGObject</a> --+    
-                |    
-           <a href="spaceship.Weapon-class.html">Weapon</a> --+
-                    |
-                   <strong class="uidshort">EnergyWeapon</strong>
+  <a href="base.AGObject-class.html">base.AGObject</a> --+    
+                  |    
+             <a href="spaceship.Weapon-class.html">Weapon</a> --+
+                      |
+  <a href="base.AGObject-class.html">base.AGObject</a> --+   |
+                  |   |
+<a href="spaceship.EnergyConsumingItem-class.html">EnergyConsumingItem</a> --+
+                      |
+                     <strong class="uidshort">EnergyWeapon</strong>
 </pre>
 
 <dl><dt>Known Subclasses:</dt>
@@ -93,7 +97,8 @@ Base class for all weapons that consume energy to shoot.<br /><br />
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="spaceship.EnergyWeapon-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="spaceship.EnergyWeapon-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">owner</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="spaceship-pysrc.html#EnergyWeapon.__init__">source&nbsp;code</a></span>
             
@@ -109,11 +114,11 @@ Base class for all weapons that consume energy to shoot.<br /><br />
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="get_demand"></a><span class="summary-sig-name">get_demand</span>(<span class="summary-sig-arg">self</span>)</span><br />
-      Return energy demand, that is difference between maximal and 
-      current energy level.</td>
+          <td><span class="summary-sig"><a href="spaceship.EnergyWeapon-class.html#can_shoot" class="summary-sig-name">can_shoot</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Return <code>True</code> if weapon can shoot, <code>False</code> 
+      otherwise.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="spaceship-pysrc.html#EnergyWeapon.get_demand">source&nbsp;code</a></span>
+            <span class="codelink"><a href="spaceship-pysrc.html#EnergyWeapon.can_shoot">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -127,25 +132,9 @@ Base class for all weapons that consume energy to shoot.<br /><br />
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="spaceship.EnergyWeapon-class.html#recharge" class="summary-sig-name">recharge</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">supply</span>)</span><br />
-      Recharge energy.</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="spaceship-pysrc.html#EnergyWeapon.recharge">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="shoot"></a><span class="summary-sig-name">shoot</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="spaceship.EnergyWeapon-class.html#shoot" class="summary-sig-name">shoot</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">pos</span>)</span><br />
+      Try to perform shot.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="spaceship-pysrc.html#EnergyWeapon.shoot">source&nbsp;code</a></span>
             
@@ -160,9 +149,18 @@ Base class for all weapons that consume energy to shoot.<br /><br />
     <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.Weapon-class.html">Weapon</a></code></b>:
       <code><a href="spaceship.Weapon-class.html#update">update</a></code>
       </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.Weapon-class.html">Weapon</a></code></b> (private):
+      <code><a href="spaceship.Weapon-class.html#_shoot">_shoot</a></code>
+      </p></div>
     <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="base.AGObject-class.html">base.AGObject</a></code></b> (private):
       <code><a href="base.AGObject-class.html#_setattrs">_setattrs</a></code>
       </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.EnergyConsumingItem-class.html">EnergyConsumingItem</a></code></b>:
+      <code><a href="spaceship.EnergyConsumingItem-class.html#get_demand">get_demand</a></code>,
+      <code><a href="spaceship.EnergyConsumingItem-class.html#is_usable">is_usable</a></code>,
+      <code><a href="spaceship.EnergyConsumingItem-class.html#recharge">recharge</a></code>,
+      <code><a href="spaceship.EnergyConsumingItem-class.html#use">use</a></code>
+      </p>
     </td>
   </tr>
 </table>
@@ -187,32 +185,32 @@ Base class for all weapons that consume energy to shoot.<br /><br />
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">float</span>
     </td><td class="summary">
-        <a name="maximum"></a><span class="summary-name">maximum</span> = <code title="0">0</code><br />
-      Maximum amount of energy that weapon can store at a time
+        <a name="cost"></a><span class="summary-name">cost</span><br />
+      Amount of energy needed for one use.
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">float</span>
     </td><td class="summary">
-        <a name="current"></a><span class="summary-name">current</span> = <code title="0">0</code><br />
-      Currently stored amount of energy
+        <a name="current"></a><span class="summary-name">current</span><br />
+      Currently stored amount of energy.
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">float</span>
     </td><td class="summary">
-        <a name="recharge_rate"></a><span class="summary-name">recharge_rate</span> = <code title="1">1</code><br />
+        <a name="maximum"></a><span class="summary-name">maximum</span><br />
+      Maximum amount of energy that item can store at a time.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">float</span>
+    </td><td class="summary">
+        <a name="recharge_rate"></a><span class="summary-name">recharge_rate</span><br />
       Maximum number of energy points recharged per second.
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">float</span>
-    </td><td class="summary">
-        <a name="cost"></a><span class="summary-name">cost</span> = <code title="1">1</code><br />
-      Amount of energy needed for one shot.
     </td>
   </tr>
   <tr>
@@ -221,7 +219,11 @@ Base class for all weapons that consume energy to shoot.<br /><br />
       <code><a href="spaceship.Weapon-class.html#cfg">cfg</a></code>,
       <code><a href="spaceship.Weapon-class.html#cooldown">cooldown</a></code>,
       <code><a href="spaceship.Weapon-class.html#last_shot_time">last_shot_time</a></code>,
+      <code><a href="spaceship.Weapon-class.html#owner">owner</a></code>,
       <code><a href="spaceship.Weapon-class.html#remaining_cooldown">remaining_cooldown</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="base.AGObject-class.html">base.AGObject</a></code></b>:
+      <code><a href="base.AGObject-class.html#clock">clock</a></code>
       </p>
     </td>
   </tr>
@@ -251,7 +253,8 @@ Base class for all weapons that consume energy to shoot.<br /><br />
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">owner</span>)</span>
     <br /><em class="fname">(Constructor)</em>
   </h3>
   </td><td align="right" valign="top"
@@ -267,25 +270,52 @@ Base class for all weapons that consume energy to shoot.<br /><br />
   </dl>
 </td></tr></table>
 </div>
-<a name="recharge"></a>
+<a name="can_shoot"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">recharge</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">supply</span>)</span>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">can_shoot</span>(<span class="sig-arg">self</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="spaceship-pysrc.html#EnergyWeapon.recharge">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="spaceship-pysrc.html#EnergyWeapon.can_shoot">source&nbsp;code</a></span>&nbsp;
     </td>
   </table>
   
-  Recharge energy. Amount of energy recharged depends on amount of 
-  energy supplied and recharge rate. It is assumed that supply is never 
-  larger than demand. If there is any excess it is lost.
+  Return <code>True</code> if weapon can shoot, <code>False</code> 
+  otherwise.
   <dl class="fields">
+    <dt>Overrides:
+      <a href="spaceship.Weapon-class.html#can_shoot">Weapon.can_shoot</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="shoot"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">shoot</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">pos</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="spaceship-pysrc.html#EnergyWeapon.shoot">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Try to perform shot. Return projectile / beam / list of projectiles / 
+  whatever if successfull, <code>False</code> or <code>None</code> 
+  otherwise. Update <code>remaining_cooldown</code>.
+  <dl class="fields">
+    <dt>Overrides:
+      <a href="spaceship.Weapon-class.html#shoot">Weapon.shoot</a>
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
   </dl>
 </td></tr></table>
 </div>
@@ -313,7 +343,7 @@ Base class for all weapons that consume energy to shoot.<br /><br />
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0beta1 on Tue Oct 30 16:10:12 2007
+    Generated by Epydoc 3.0beta1 on Thu Jul 31 17:03:02 2008
     </td>
     <td align="right" class="footer">
       <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>

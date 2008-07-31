@@ -1,6 +1,9 @@
 #!/usr/bin/python
 #coding: utf-8
 
+'''Plain and simple space-style background.
+'''
+
 import random
 import pygame
 

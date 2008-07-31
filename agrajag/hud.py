@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 #coding: utf-8
 
+'''In-level heads-up display.
+'''
+
 import pygame
 
 from widgets import VerticalProgressBar

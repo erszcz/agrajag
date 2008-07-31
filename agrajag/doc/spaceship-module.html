@@ -52,6 +52,9 @@
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
 <h1 class="epydoc">Module spaceship</h1><span class="codelink"><a href="spaceship-pysrc.html">source&nbsp;code</a></span><br /><br />
+Enemies, player ship, gear, projectiles, bonuses and maybe some other 
+  things.<br /><br />
+
 <!-- ==================== CLASSES ==================== -->
 <a name="section-Classes"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -90,6 +93,16 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
+        <a href="spaceship.BonusHolder-class.html" class="summary-name">BonusHolder</a><br />
+      Class desribing an object that can hold a <code><a 
+        href="spaceship.Bonus-class.html" class="link">Bonus</a></code> and
+        release it when destroyed.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
         <a href="spaceship.Ship-class.html" class="summary-name">Ship</a><br />
       Base class for player's ship and enemy ships.
     </td>
@@ -99,7 +112,8 @@
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="spaceship.PlayerShip-class.html" class="summary-name">PlayerShip</a><br />
-      Represents the player's ship (not necessarily a spaceship).
+      Represents the player's ship in way similiar to described in 
+        project's wiki (but simpler).
     </td>
   </tr>
 <tr>
@@ -113,9 +127,39 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="spaceship.AdvancedPlayerShip-class.html" class="summary-name">AdvancedPlayerShip</a><br />
-      Represents the player's ship in more advanced version described 
-        in project's wiki.
+        <a href="spaceship.EnemyInterceptor-class.html" class="summary-name">EnemyInterceptor</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.MidgetBeamShip-class.html" class="summary-name">MidgetBeamShip</a><br />
+      Very small ball-shaped enemy ship equipped with weak beam 
+        weapon.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.EnemyMine-class.html" class="summary-name">EnemyMine</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.AmmoConsumingItem-class.html" class="summary-name">AmmoConsumingItem</a><br />
+      Base class for items that require ammo to operate.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.EnergyConsumingItem-class.html" class="summary-name">EnergyConsumingItem</a><br />
+      Base class for items that require energy to operate.
     </td>
   </tr>
 <tr>
@@ -146,7 +190,8 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="spaceship.InstantAmmoWeapon-class.html" class="summary-name">InstantAmmoWeapon</a>
+        <a href="spaceship.TargetedProjectileWeapon-class.html" class="summary-name">TargetedProjectileWeapon</a><br />
+      ...
     </td>
   </tr>
 <tr>
@@ -162,10 +207,96 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
+        <a href="spaceship.TargetedProjectileAmmoWeapon-class.html" class="summary-name">TargetedProjectileAmmoWeapon</a><br />
+      Base class for all projectile ammo weapons that automatically 
+        aim at selected target.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.SeekingProjectileWeapon-class.html" class="summary-name">SeekingProjectileWeapon</a><br />
+      Projectile weapon shooting <code><a 
+        href="spaceship.SeekingProjectile-class.html" 
+        class="link">SeekingProjectile</a></code>s (attempts to shoot 
+        projectiles not derived from <code>SeekingProjectile</code> will 
+        fail).
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.MultiShotProjectileWeapon-class.html" class="summary-name">MultiShotProjectileWeapon</a><br />
+      This class can be used to allow projectile weapons to shoot 
+        multiple projectiles at once.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.SeekingPAW-class.html" class="summary-name">SeekingPAW</a><br />
+      Projectile ammo weapon shooting <code><a 
+        href="spaceship.SeekingProjectile-class.html" 
+        class="link">SeekingProjectile</a></code>s (attempts to shoot 
+        projectiles not derived from <code>SeekingProjectile</code> will 
+        fail).
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
         <a href="spaceship.BasicPAW-class.html" class="summary-name">BasicPAW</a><br />
-      Basic type of <code><a 
-        href="spaceship.ProjectileAmmoWeapon-class.html" 
-        class="link">ProjectileAmmoWeapon</a></code>.
+      <code><a href="spaceship.ProjectileAmmoWeapon-class.html" 
+        class="link">ProjectileAmmoWeapon</a></code> used in testing.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.MiniCannon-class.html" class="summary-name">MiniCannon</a><br />
+      Basic <code><a href="spaceship.ProjectileAmmoWeapon-class.html" 
+        class="link">ProjectileAmmoWeapon</a></code> used commonly by weak 
+        enemies.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.AutoCannon-class.html" class="summary-name">AutoCannon</a><br />
+      More advanced version of <code><a 
+        href="spaceship.MiniCannon-class.html" 
+        class="link">MiniCannon</a></code> with shorter cooldown time and 
+        auto-targeting mechanism (wide angle).
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.MultiCannon-class.html" class="summary-name">MultiCannon</a><br />
+      Cannon shooting multiple projectiles at once.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.SeekerCannon-class.html" class="summary-name">SeekerCannon</a><br />
+      Cannon shooting small small seeking projectiles.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.HeavyCannon-class.html" class="summary-name">HeavyCannon</a><br />
+      Heavy cannon shooting scattering projectiles.
     </td>
   </tr>
 <tr>
@@ -219,9 +350,79 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
+        <a href="spaceship.TargetedProjectileEnergyWeapon-class.html" class="summary-name">TargetedProjectileEnergyWeapon</a><br />
+      Base class for all projectile energy weapons that automatically 
+        aim at selected target.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
         <a href="spaceship.BasicProjectileEnergyWeapon-class.html" class="summary-name">BasicProjectileEnergyWeapon</a><br />
       The least powerful, yet energy effective projectile energy 
         weapon.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.BasicTPEW-class.html" class="summary-name">BasicTPEW</a><br />
+      Targeted version of <code><a 
+        href="spaceship.BasicProjectileEnergyWeapon-class.html" 
+        class="link">BasicProjectileEnergyWeapon</a></code>.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.SeekingPEW-class.html" class="summary-name">SeekingPEW</a><br />
+      Projectile energy weapon shooting <code><a 
+        href="spaceship.SeekingProjectile-class.html" 
+        class="link">SeekingProjectile</a></code>s (attempts to shoot 
+        projectiles not derived from <code>SeekingProjectile</code> will 
+        fail).
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.MiniBlaster-class.html" class="summary-name">MiniBlaster</a><br />
+      Projectile energy weapon with following characteristics:
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.Blaster-class.html" class="summary-name">Blaster</a><br />
+      Projectile energy weapon with following characteristics:
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.DualBlaster-class.html" class="summary-name">DualBlaster</a><br />
+      Projectile energy weapon with following characteristics:
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.ScatterBlaster-class.html" class="summary-name">ScatterBlaster</a><br />
+      Projectile energy weapon with following characteristics:
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.SeekerBlaster-class.html" class="summary-name">SeekerBlaster</a>
     </td>
   </tr>
 <tr>
@@ -237,7 +438,44 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
+        <a href="spaceship.AutoShield-class.html" class="summary-name">AutoShield</a><br />
+      Base class for all automatically activated shields.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
         <a href="spaceship.BasicShield-class.html" class="summary-name">BasicShield</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.MediumShield-class.html" class="summary-name">MediumShield</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.BasicAutoShield-class.html" class="summary-name">BasicAutoShield</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.EnemyShipShield-class.html" class="summary-name">EnemyShipShield</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.SuperShield-class.html" class="summary-name">SuperShield</a><br />
+      <code>SuperShield</code> can be granted by a bonus.
     </td>
   </tr>
 <tr>
@@ -282,13 +520,6 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="spaceship.BulletExplosion-class.html" class="summary-name">BulletExplosion</a>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
         <a href="spaceship.ShellExplosion-class.html" class="summary-name">ShellExplosion</a>
     </td>
   </tr>
@@ -317,21 +548,57 @@
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="spaceship.Projectile-class.html" class="summary-name">Projectile</a>
+        <a href="spaceship.SmallExplosion-class.html" class="summary-name">SmallExplosion</a>
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="spaceship.Bullet-class.html" class="summary-name">Bullet</a>
+        <a href="spaceship.MediumExplosion-class.html" class="summary-name">MediumExplosion</a>
     </td>
   </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
-        <a href="spaceship.Shell-class.html" class="summary-name">Shell</a>
+        <a href="spaceship.BigProjectileExplosion-class.html" class="summary-name">BigProjectileExplosion</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.Projectile-class.html" class="summary-name">Projectile</a><br />
+      Base class for all projectiles.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.ScatteringProjectile-class.html" class="summary-name">ScatteringProjectile</a><br />
+      At the moment of explosion or after a <code>lifetime</code> 
+        seconds <code>ScatteringProjectile</code>s explode and spawn 
+        <code>child_cnt</code> of <code>child_cls_name</code> 
+        projectiles.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.SeekingProjectile-class.html" class="summary-name">SeekingProjectile</a><br />
+      Base class for projectiles following chosen target.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.DirectedSeekingProjectile-class.html" class="summary-name">DirectedSeekingProjectile</a><br />
+      This class differs from its parent in that displayed image 
+        changes depending on projectile direction.
     </td>
   </tr>
 <tr>
@@ -339,6 +606,149 @@
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
         <a href="spaceship.EnergyProjectile-class.html" class="summary-name">EnergyProjectile</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.MiniBlasterProjectile-class.html" class="summary-name">MiniBlasterProjectile</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.BlasterProjectile-class.html" class="summary-name">BlasterProjectile</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.ScatterBlasterProjectile-class.html" class="summary-name">ScatterBlasterProjectile</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.ScatterBlasterProjectileFragment-class.html" class="summary-name">ScatterBlasterProjectileFragment</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.DualBlasterProjectile-class.html" class="summary-name">DualBlasterProjectile</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.SeekerBlasterProjectile-class.html" class="summary-name">SeekerBlasterProjectile</a><br />
+      Star shaped seeking energetic projectile.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.BigProjectile-class.html" class="summary-name">BigProjectile</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.MiniCannonProjectile-class.html" class="summary-name">MiniCannonProjectile</a><br />
+      Projectile shot by <code><a 
+        href="spaceship.MiniCannon-class.html" 
+        class="link">MiniCannon</a></code>.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.AutoCannonProjectile-class.html" class="summary-name">AutoCannonProjectile</a><br />
+      Projectile shot by <code><a 
+        href="spaceship.AutoCannon-class.html" 
+        class="link">AutoCannon</a></code>.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.MultiCannonProjectile-class.html" class="summary-name">MultiCannonProjectile</a><br />
+      Projectile shot by <code><a 
+        href="spaceship.MultiCannon-class.html" 
+        class="link">MultiCannon</a></code>.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.SeekerCannonProjectile-class.html" class="summary-name">SeekerCannonProjectile</a><br />
+      Projectile shot by <code><a 
+        href="spaceship.SeekerCannon-class.html" 
+        class="link">SeekerCannon</a></code>.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.HeavyCannonProjectile-class.html" class="summary-name">HeavyCannonProjectile</a><br />
+      Scattering projectile shot by <code><a 
+        href="spaceship.HeavyCannon-class.html" 
+        class="link">HeavyCannon</a></code>.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.HeavyCannonProjectileFragment-class.html" class="summary-name">HeavyCannonProjectileFragment</a><br />
+      Projectile generated when <code><a 
+        href="spaceship.HeavyCannonProjectile-class.html" 
+        class="link">HeavyCannonProjectile</a></code> explodes.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.Bonus-class.html" class="summary-name">Bonus</a><br />
+      Base class for bonuses/powerups that can be collected by 
+        players.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.RechargeBonus-class.html" class="summary-name">RechargeBonus</a><br />
+      This bonus recharges player ship's shields and energy 
+        weapons.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.SuperShieldBonus-class.html" class="summary-name">SuperShieldBonus</a>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="spaceship.ShieldUpgradeBonus-class.html" class="summary-name">ShieldUpgradeBonus</a><br />
+      This bonus replaces player ship's shield with a better one.
     </td>
   </tr>
 </table>
@@ -365,7 +775,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0beta1 on Tue Oct 30 16:10:11 2007
+    Generated by Epydoc 3.0beta1 on Thu Jul 31 17:03:02 2008
     </td>
     <td align="right" class="footer">
       <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>

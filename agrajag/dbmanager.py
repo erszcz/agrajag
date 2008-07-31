@@ -1,6 +1,10 @@
 #!/usr/bin/python
 #coding: utf-8
 
+'''Management of XML data describing game objects (enemies, bonuses,
+   projectiles, etc.).
+'''
+
 import os
 import pygame
 import xml.dom.minidom

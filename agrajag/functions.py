@@ -1,5 +1,8 @@
 #coding: utf-8
 
+'''Helper functions for normalization, conversion, etc.
+'''
+
 from math import pi, fabs
 
 def sgn(x):

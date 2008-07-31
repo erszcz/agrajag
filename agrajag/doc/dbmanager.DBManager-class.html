@@ -86,10 +86,11 @@ This class is responsible for importing game content
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="import_db"></a><span class="summary-sig-name">import_db</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">dir</span>)</span><br />
-      Imports all files from specified directory and puts contents in 
-      static variable <code>DBManager.content</code></td>
+          <td><span class="summary-sig"><a href="dbmanager.DBManager-class.html#import_db" class="summary-sig-name">import_db</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dir</span>,
+        <span class="summary-sig-arg">purge</span>=<span class="summary-sig-default">False</span>)</span><br />
+      Import all files from specified directory and put contents in 
+      static variable <code>DBManager.content</code>.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="dbmanager-pysrc.html#DBManager.import_db">source&nbsp;code</a></span>
             
@@ -107,8 +108,8 @@ This class is responsible for importing game content
         <tr>
           <td><span class="summary-sig"><a name="import_file"></a><span class="summary-sig-name">import_file</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">filepath</span>)</span><br />
-      Imports contents of a single file and returns them as a 
-      dictionary</td>
+      Import contents of a single file and return them as a 
+      dictionary.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="dbmanager-pysrc.html#DBManager.import_file">source&nbsp;code</a></span>
             
@@ -126,10 +127,44 @@ This class is responsible for importing game content
         <tr>
           <td><span class="summary-sig"><a name="get"></a><span class="summary-sig-name">get</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">class_name</span>=<span class="summary-sig-default">None</span>)</span><br />
-      Returns config for a specific class or for all classes if no 
-      classname is given</td>
+      Return config for a specific class or for all classes if no 
+      classname is given.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="dbmanager-pysrc.html#DBManager.get">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="dbmanager.DBManager-class.html#get_editor" class="summary-sig-name">get_editor</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      CONSIDER REMOVING</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="dbmanager-pysrc.html#DBManager.get_editor">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="reset"></a><span class="summary-sig-name">reset</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Reset the inner classes' configuration dictionary.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="dbmanager-pysrc.html#DBManager.reset">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -170,6 +205,73 @@ This class is responsible for importing game content
     </td>
   </tr>
 </table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="import_db"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">import_db</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">dir</span>,
+        <span class="sig-arg">purge</span>=<span class="sig-default">False</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="dbmanager-pysrc.html#DBManager.import_db">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Import all files from specified directory and put contents in static 
+  variable <code>DBManager.content</code>.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>dir</code></strong> (<code>string</code>) - path where to look for xml config files</li>
+        <li><strong class="pname"><code>purge</code></strong> (<code>boolean</code>) - set to True to empty previous <code>content</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_editor"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_editor</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="dbmanager-pysrc.html#DBManager.get_editor">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  <p>CONSIDER REMOVING</p>
+  Return config for object types which are suitable for being 
+  manipulated in the level editor (enemies, bonuses, anything else?).
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
@@ -193,7 +295,7 @@ This class is responsible for importing game content
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0beta1 on Tue Oct 30 16:10:11 2007
+    Generated by Epydoc 3.0beta1 on Thu Jul 31 17:03:02 2008
     </td>
     <td align="right" class="footer">
       <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>

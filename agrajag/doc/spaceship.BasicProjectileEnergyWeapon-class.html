@@ -54,15 +54,19 @@
 <!-- ==================== CLASS DESCRIPTION ==================== -->
 <h1 class="epydoc">Class BasicProjectileEnergyWeapon</h1><span class="codelink"><a href="spaceship-pysrc.html#BasicProjectileEnergyWeapon">source&nbsp;code</a></span><br /><br />
 <pre class="base-tree">
-<a href="base.AGObject-class.html">base.AGObject</a> --+            
-                |            
-           <a href="spaceship.Weapon-class.html">Weapon</a> --+        
-                    |        
-         <a href="spaceship.EnergyWeapon-class.html">EnergyWeapon</a> --+    
-                        |    
-   <a href="spaceship.ProjectileEnergyWeapon-class.html">ProjectileEnergyWeapon</a> --+
-                            |
-                           <strong class="uidshort">BasicProjectileEnergyWeapon</strong>
+  <a href="base.AGObject-class.html">base.AGObject</a> --+            
+                  |            
+             <a href="spaceship.Weapon-class.html">Weapon</a> --+        
+                      |        
+  <a href="base.AGObject-class.html">base.AGObject</a> --+   |        
+                  |   |        
+<a href="spaceship.EnergyConsumingItem-class.html">EnergyConsumingItem</a> --+        
+                      |        
+           <a href="spaceship.EnergyWeapon-class.html">EnergyWeapon</a> --+    
+                          |    
+     <a href="spaceship.ProjectileEnergyWeapon-class.html">ProjectileEnergyWeapon</a> --+
+                              |
+                             <strong class="uidshort">BasicProjectileEnergyWeapon</strong>
 </pre>
 
 <hr />
@@ -85,30 +89,17 @@ The least powerful, yet energy effective projectile energy weapon.<br /><br />
     </table>
   </td>
 </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="spaceship.BasicProjectileEnergyWeapon-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="spaceship-pysrc.html#BasicProjectileEnergyWeapon.__init__">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.ProjectileEnergyWeapon-class.html">ProjectileEnergyWeapon</a></code></b>:
+      <code><a href="spaceship.ProjectileEnergyWeapon-class.html#__init__">__init__</a></code>,
       <code><a href="spaceship.ProjectileEnergyWeapon-class.html#shoot">shoot</a></code>
       </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.ProjectileEnergyWeapon-class.html">ProjectileEnergyWeapon</a></code></b> (private):
+      <code><a href="spaceship.ProjectileEnergyWeapon-class.html#_shoot">_shoot</a></code>
+      </p></div>
     <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.EnergyWeapon-class.html">EnergyWeapon</a></code></b>:
-      <code><a href="spaceship.EnergyWeapon-class.html#get_demand">get_demand</a></code>,
-      <code><a href="spaceship.EnergyWeapon-class.html#recharge">recharge</a></code>
+      <code><a href="spaceship.EnergyWeapon-class.html#can_shoot">can_shoot</a></code>
       </p>
     <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.Weapon-class.html">Weapon</a></code></b>:
       <code><a href="spaceship.Weapon-class.html#update">update</a></code>
@@ -116,6 +107,12 @@ The least powerful, yet energy effective projectile energy weapon.<br /><br />
     <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="base.AGObject-class.html">base.AGObject</a></code></b> (private):
       <code><a href="base.AGObject-class.html#_setattrs">_setattrs</a></code>
       </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.EnergyConsumingItem-class.html">EnergyConsumingItem</a></code></b>:
+      <code><a href="spaceship.EnergyConsumingItem-class.html#get_demand">get_demand</a></code>,
+      <code><a href="spaceship.EnergyConsumingItem-class.html#is_usable">is_usable</a></code>,
+      <code><a href="spaceship.EnergyConsumingItem-class.html#recharge">recharge</a></code>,
+      <code><a href="spaceship.EnergyConsumingItem-class.html#use">use</a></code>
+      </p>
     </td>
   </tr>
 </table>
@@ -148,53 +145,15 @@ The least powerful, yet energy effective projectile energy weapon.<br /><br />
       <code><a href="spaceship.Weapon-class.html#cfg">cfg</a></code>,
       <code><a href="spaceship.Weapon-class.html#cooldown">cooldown</a></code>,
       <code><a href="spaceship.Weapon-class.html#last_shot_time">last_shot_time</a></code>,
+      <code><a href="spaceship.Weapon-class.html#owner">owner</a></code>,
       <code><a href="spaceship.Weapon-class.html#remaining_cooldown">remaining_cooldown</a></code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="base.AGObject-class.html">base.AGObject</a></code></b>:
+      <code><a href="base.AGObject-class.html#clock">clock</a></code>
       </p>
     </td>
   </tr>
 </table>
-<!-- ==================== METHOD DETAILS ==================== -->
-<a name="section-MethodDetails"></a>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr bgcolor="#70b0f0" class="table-header">
-  <td colspan="2" class="table-header">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr valign="top">
-        <td align="left"><span class="table-header">Method Details</span></td>
-        <td align="right" valign="top"
-         ><span class="options">[<a href="#section-MethodDetails"
-         class="privatelink" onclick="toggle_private();"
-         >hide private</a>]</span></td>
-      </tr>
-    </table>
-  </td>
-</tr>
-</table>
-<a name="__init__"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>)</span>
-    <br /><em class="fname">(Constructor)</em>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="spaceship-pysrc.html#BasicProjectileEnergyWeapon.__init__">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </table>
-  
-  
-  <dl class="fields">
-    <dt>Overrides:
-      <a href="spaceship.ProjectileEnergyWeapon-class.html#__init__">ProjectileEnergyWeapon.__init__</a>
-    </dt>
-  </dl>
-</td></tr></table>
-</div>
-<br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
@@ -218,7 +177,7 @@ The least powerful, yet energy effective projectile energy weapon.<br /><br />
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0beta1 on Tue Oct 30 16:10:11 2007
+    Generated by Epydoc 3.0beta1 on Thu Jul 31 17:03:02 2008
     </td>
     <td align="right" class="footer">
       <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>

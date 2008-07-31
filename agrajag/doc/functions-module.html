@@ -52,6 +52,8 @@
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
 <h1 class="epydoc">Module functions</h1><span class="codelink"><a href="functions-pysrc.html">source&nbsp;code</a></span><br /><br />
+Helper functions for normalization, conversion, etc.<br /><br />
+
 <!-- ==================== FUNCTIONS ==================== -->
 <a name="section-Functions"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -75,7 +77,27 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="deg2rad"></a><span class="summary-sig-name">deg2rad</span>(<span class="summary-sig-arg">deg</span>)</span></td>
+          <td><span class="summary-sig"><a name="sgn"></a><span class="summary-sig-name">sgn</span>(<span class="summary-sig-arg">x</span>)</span><br />
+      Return sgn(x), that is: 1 if x is positive, -1 if x is negative, 0
+      if x is 0.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="functions-pysrc.html#sgn">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="functions-module.html#deg2rad" class="summary-sig-name">deg2rad</a>(<span class="summary-sig-arg">deg</span>,
+        <span class="summary-sig-arg">normalize</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Convert angle from degrees to radians.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="functions-pysrc.html#deg2rad">source&nbsp;code</a></span>
             
@@ -91,7 +113,9 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a name="rad2deg"></a><span class="summary-sig-name">rad2deg</span>(<span class="summary-sig-arg">rad</span>)</span></td>
+          <td><span class="summary-sig"><a href="functions-module.html#rad2deg" class="summary-sig-name">rad2deg</a>(<span class="summary-sig-arg">rad</span>,
+        <span class="summary-sig-arg">normalize</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Convert angle from radians to degrees.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="functions-pysrc.html#rad2deg">source&nbsp;code</a></span>
             
@@ -101,7 +125,110 @@
       
     </td>
   </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="normalize_rad"></a><span class="summary-sig-name">normalize_rad</span>(<span class="summary-sig-arg">rad</span>)</span><br />
+      Return angle in radians translated to [0, 2pi).</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="functions-pysrc.html#normalize_rad">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="normalize_deg"></a><span class="summary-sig-name">normalize_deg</span>(<span class="summary-sig-arg">deg</span>)</span><br />
+      Return angle in degrees translated to [0, 360).</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="functions-pysrc.html#normalize_deg">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
 </table>
+<!-- ==================== FUNCTION DETAILS ==================== -->
+<a name="section-FunctionDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Function Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-FunctionDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="deg2rad"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">deg2rad</span>(<span class="sig-arg">deg</span>,
+        <span class="sig-arg">normalize</span>=<span class="sig-default">True</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="functions-pysrc.html#deg2rad">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Convert angle from degrees to radians.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>deg</code></strong> (float) - Angle in degrees.</li>
+        <li><strong class="pname"><code>normalize</code></strong> (bool) - If true translate returned value to [0, 2pi)</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="rad2deg"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">rad2deg</span>(<span class="sig-arg">rad</span>,
+        <span class="sig-arg">normalize</span>=<span class="sig-default">True</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="functions-pysrc.html#rad2deg">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Convert angle from radians to degrees.
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>rad</code></strong> (float) - Angle in radians.</li>
+        <li><strong class="pname"><code>normalize</code></strong> (bool) - If true translate returned value to [0, 360)</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
@@ -125,7 +252,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0beta1 on Tue Oct 30 16:10:11 2007
+    Generated by Epydoc 3.0beta1 on Thu Jul 31 17:03:02 2008
     </td>
     <td align="right" class="footer">
       <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>

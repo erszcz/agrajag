@@ -1,6 +1,9 @@
 #!/usr/bin/python
 #coding: utf-8
 
+'''Displayables for the HUD.
+'''
+
 import pygame
 from gfxmanager import GfxManager
 
