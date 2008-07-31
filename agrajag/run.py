@@ -20,7 +20,7 @@ import mover
 from clock import Clock
 from hud import Hud
 
-from weakref import proxy, ref
+from weakref import ref
 
 #import psyco
 
@@ -80,7 +80,7 @@ def run():
 
   back = SpaceBackground(viewport_size)
 
-  for stage_name in stages:
+  for stage_name in sorted(stages.keys()):
     stage_clock = 0
     while True:
       for spawn_time in stages[stage_name]['spawn']:
@@ -144,7 +144,7 @@ def run():
       # time management
       clock.tick(40)
       #clock.tick( float(sys.argv[1]) )
-      stage_clock += clock.get_rawtime()
+      stage_clock += clock.get_time()
 
       for event in pygame.event.get():
         if   event.type == pygame.QUIT: sys.exit()

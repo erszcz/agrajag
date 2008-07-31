@@ -1,6 +1,9 @@
 #!/usr/bin/python
 #coding: utf-8
 
+'''Management and conversion to on-screen colour pallette of graphics.
+'''
+
 import os
 import pygame
 

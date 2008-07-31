@@ -2,7 +2,7 @@
 #coding: utf-8
 
 """
-Module contain definitions of different types of movers (objects thay control
+Definitions of different types of movers (objects thay control
 movement of other objects).
 
 All non abstract movers must have the same constructor signature. This

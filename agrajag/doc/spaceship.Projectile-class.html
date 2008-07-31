@@ -67,12 +67,26 @@ pygame.sprite.Sprite --+
 
 <dl><dt>Known Subclasses:</dt>
 <dd>
-    <a href="spaceship.Bullet-class.html">Bullet</a>,
+    <a href="spaceship.AutoCannonProjectile-class.html">AutoCannonProjectile</a>,
+    <a href="spaceship.BigProjectile-class.html">BigProjectile</a>,
+    <a href="spaceship.BlasterProjectile-class.html">BlasterProjectile</a>,
+    <a href="spaceship.SeekingProjectile-class.html">SeekingProjectile</a>,
+    <a href="spaceship.DualBlasterProjectile-class.html">DualBlasterProjectile</a>,
     <a href="spaceship.EnergyProjectile-class.html">EnergyProjectile</a>,
-    <a href="spaceship.Shell-class.html">Shell</a>
+    <a href="spaceship.ScatteringProjectile-class.html">ScatteringProjectile</a>,
+    <a href="spaceship.HeavyCannonProjectileFragment-class.html">HeavyCannonProjectileFragment</a>,
+    <a href="spaceship.MiniBlasterProjectile-class.html">MiniBlasterProjectile</a>,
+    <a href="spaceship.MiniCannonProjectile-class.html">MiniCannonProjectile</a>,
+    <a href="spaceship.MultiCannonProjectile-class.html">MultiCannonProjectile</a>,
+    <a href="spaceship.ScatterBlasterProjectileFragment-class.html">ScatterBlasterProjectileFragment</a>
 </dd></dl>
 
 <hr />
+Base class for all projectiles. Provides mechanics for projectile 
+  animation. Subclasses that need to provide own mechanism should override 
+  methods <code>_initialize_image</code> and 
+  <code>_update_image</code>.<br /><br />
+
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
 <table class="summary" border="1" cellpadding="3"
@@ -97,12 +111,49 @@ pygame.sprite.Sprite --+
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="spaceship.Projectile-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">g_coll</span>,
-        <span class="summary-sig-arg">g_expl</span>,
         <span class="summary-sig-arg">pos</span>,
-        <span class="summary-sig-arg">*groups</span>)</span></td>
+        <span class="summary-sig-arg">dir</span>,
+        <span class="summary-sig-arg">g_coll</span>,
+        <span class="summary-sig-arg">*groups</span>)</span><br />
+      Create projectile moving in direction <code>dir</code> colliding 
+      with objects from group <code>g_coll</code>.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="spaceship-pysrc.html#Projectile.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="spaceship.Projectile-class.html#_initialize_image" class="summary-sig-name">_initialize_image</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Initialize projectile's <code>image</code> and blit first 
+      state.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spaceship-pysrc.html#Projectile._initialize_image">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="spaceship.Projectile-class.html#_update_image" class="summary-sig-name">_update_image</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Update projectile looks based on anything you wish.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="spaceship-pysrc.html#Projectile._update_image">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -116,7 +167,9 @@ pygame.sprite.Sprite --+
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="spaceship.Projectile-class.html#update" class="summary-sig-name">update</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td><span class="summary-sig"><a href="spaceship.Projectile-class.html#update" class="summary-sig-name">update</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Update projectile's image, position, detect collisions and dispose
+      of the projectile if it leaves the screen.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="spaceship-pysrc.html#Projectile.update">source&nbsp;code</a></span>
             
@@ -160,11 +213,21 @@ pygame.sprite.Sprite --+
   </tr>
   <tr>
     <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.AGSprite-class.html">AGSprite</a></code></b>:
+      <code><a href="spaceship.AGSprite-class.html#closest">closest</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#distance">distance</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#is_offscreen">is_offscreen</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#kill">kill</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#set_mover">set_mover</a></code>
+      </p>
     <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.AGSprite-class.html">AGSprite</a></code></b> (private):
       <code><a href="spaceship.AGSprite-class.html#_blit_state">_blit_state</a></code>,
       <code><a href="spaceship.AGSprite-class.html#_check_cfg">_check_cfg</a></code>,
       <code><a href="spaceship.AGSprite-class.html#_check_gfx">_check_gfx</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#_init_animation">_init_animation</a></code>,
       <code><a href="spaceship.AGSprite-class.html#_initialize_position">_initialize_position</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#_state_area">_state_area</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#_update_animations">_update_animations</a></code>,
       <code><a href="spaceship.AGSprite-class.html#_update_position">_update_position</a></code>
       </p></div>
     <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="base.AGObject-class.html">base.AGObject</a></code></b> (private):
@@ -176,7 +239,6 @@ pygame.sprite.Sprite --+
       <code>add_internal</code>,
       <code>alive</code>,
       <code>groups</code>,
-      <code>kill</code>,
       <code>remove</code>,
       <code>remove_internal</code>
       </p>
@@ -190,6 +252,31 @@ pygame.sprite.Sprite --+
       <code>__setattr__</code>,
       <code>__str__</code>
       </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== STATIC METHODS ==================== -->
+<a name="section-StaticMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Static Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-StaticMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.AGSprite-class.html">AGSprite</a></code></b> (private):
+      <code><a href="spaceship.AGSprite-class.html#_closest_compare_dists">_closest_compare_dists</a></code>
+      </p></div>
     </td>
   </tr>
 </table>
@@ -217,20 +304,6 @@ pygame.sprite.Sprite --+
         <a name="damage"></a><span class="summary-name">damage</span> = <code title="0">0</code>
     </td>
   </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="cooldown"></a><span class="summary-name">cooldown</span> = <code title="0">0</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="offset"></a><span class="summary-name">offset</span> = <code title="0">0</code>
-    </td>
-  </tr>
 </table>
 <!-- ==================== INSTANCE VARIABLES ==================== -->
 <a name="section-InstanceVariables"></a>
@@ -249,15 +322,58 @@ pygame.sprite.Sprite --+
     </table>
   </td>
 </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a href="spaceship.Projectile-class.html#period" class="summary-name">period</a> = <code title="0">0</code><br />
+      Length of one animation period in miliseconds.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">str</span>
+    </td><td class="summary">
+        <a name="base_res_name"></a><span class="summary-name">base_res_name</span> = <code title="'projectile'"><code class="variable-quote">'</code><code class="variable-string">projectile</code><code class="variable-quote">'</code></code><br />
+      Name of resource used to animate projectile.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a name="time"></a><span class="summary-name">time</span> = <code title="0">0</code><br />
+      Time passed since projectile creation.
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+        <a href="spaceship.Projectile-class.html#frame_length" class="summary-name">frame_length</a><br />
+      Length of single animation frame in miliseconds.
+    </td>
+  </tr>
   <tr>
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.AGSprite-class.html">AGSprite</a></code></b>:
       <code><a href="spaceship.AGSprite-class.html#align">align</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#center">center</a></code>,
       <code><a href="spaceship.AGSprite-class.html#cfg">cfg</a></code>,
       <code><a href="spaceship.AGSprite-class.html#gfx">gfx</a></code>,
       <code><a href="spaceship.AGSprite-class.html#max_speed">max_speed</a></code>,
       <code><a href="spaceship.AGSprite-class.html#mover">mover</a></code>,
-      <code><a href="spaceship.AGSprite-class.html#pos">pos</a></code>
+      <code><a href="spaceship.AGSprite-class.html#offscreen_lifetime">offscreen_lifetime</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#offscreen_time">offscreen_time</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#pos">pos</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#screen_size">screen_size</a></code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.AGSprite-class.html">AGSprite</a></code></b> (private):
+      <code><a href="spaceship.AGSprite-class.html#_animations">_animations</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#_overlay">_overlay</a></code>
+      </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="base.AGObject-class.html">base.AGObject</a></code></b>:
+      <code><a href="base.AGObject-class.html#clock">clock</a></code>
       </p>
     </td>
   </tr>
@@ -313,9 +429,9 @@ pygame.sprite.Sprite --+
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">g_coll</span>,
-        <span class="sig-arg">g_expl</span>,
         <span class="sig-arg">pos</span>,
+        <span class="sig-arg">dir</span>,
+        <span class="sig-arg">g_coll</span>,
         <span class="sig-arg">*groups</span>)</span>
     <br /><em class="fname">(Constructor)</em>
   </h3>
@@ -324,12 +440,62 @@ pygame.sprite.Sprite --+
     </td>
   </table>
   
-  
+  Create projectile moving in direction <code>dir</code> colliding with 
+  objects from group <code>g_coll</code>. Add created projectile to 
+  <code>groups</code>.
   <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>dir</code></strong> (float) - Approximate direction in which the projectile is shoot. This 
+          should be used but may be ignored by projectile's mover.</li>
+    </ul></dd>
     <dt>Overrides:
       <a href="spaceship.AGSprite-class.html#__init__">AGSprite.__init__</a>
-        <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_initialize_image"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_initialize_image</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="spaceship-pysrc.html#Projectile._initialize_image">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Initialize projectile's <code>image</code> and blit first state. 
+  Initialize <code>frame_count</code> and <code>frame_length</code>. This 
+  method may be overriden by subclasses. By default state 
+  <code>'frame0'</code> of resource <code>'projectile'</code> is blit.
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_update_image"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_update_image</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="spaceship-pysrc.html#Projectile._update_image">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </table>
+  
+  Update projectile looks based on anything you wish. This method may be
+  overriden by subclasses. By default subsequent stages from 'frame0' to 
+  'frameN' of resource named <code>base_res_name</code> are cycled (N is 
+  equal to <code>frame_count</code>.
+  <dl class="fields">
   </dl>
 </td></tr></table>
 </div>
@@ -347,11 +513,68 @@ pygame.sprite.Sprite --+
     </td>
   </table>
   
-  
+  <p>Update projectile's image, position, detect collisions and dispose of 
+  the projectile if it leaves the screen.</p>
+  This method may be overriden provided it does all mentioned above.
   <dl class="fields">
     <dt>Overrides:
-      pygame.sprite.Sprite.update
+      <a href="spaceship.AGSprite-class.html#update">AGSprite.update</a>
     </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== INSTANCE VARIABLE DETAILS ==================== -->
+<a name="section-InstanceVariableDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Variable Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceVariableDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="period"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">period</h3>
+  Length of one animation period in miliseconds. Must be defined in 
+  <code>cfg</code> (but is not important if projectile is not 
+  animated).
+  <dl class="fields">
+    <dt>Type:</dt>
+      <dd>int</dd>
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+0
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="frame_length"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">frame_length</h3>
+  Length of single animation frame in miliseconds. Important only for 
+  animated projectiles.
+  <dl class="fields">
+    <dt>Type:</dt>
+      <dd>int</dd>
   </dl>
 </td></tr></table>
 </div>
@@ -379,7 +602,7 @@ pygame.sprite.Sprite --+
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0beta1 on Tue Oct 30 16:10:12 2007
+    Generated by Epydoc 3.0beta1 on Thu Jul 31 17:03:02 2008
     </td>
     <td align="right" class="footer">
       <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>

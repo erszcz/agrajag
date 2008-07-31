@@ -97,27 +97,10 @@ pygame.sprite.Sprite --+
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
           <td><span class="summary-sig"><a href="obstacle.Obstacle-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">g_expl</span>,
         <span class="summary-sig-arg">pos</span>,
         <span class="summary-sig-arg">*groups</span>)</span></td>
           <td align="right" valign="top">
             <span class="codelink"><a href="obstacle-pysrc.html#Obstacle.__init__">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="obstacle.Obstacle-class.html#update" class="summary-sig-name">update</a>(<span class="summary-sig-arg">self</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="obstacle-pysrc.html#Obstacle.update">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -131,11 +114,22 @@ pygame.sprite.Sprite --+
       <code><a href="spaceship.Destructible-class.html#damage">damage</a></code>,
       <code><a href="spaceship.Destructible-class.html#explode">explode</a></code>
       </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.AGSprite-class.html">spaceship.AGSprite</a></code></b>:
+      <code><a href="spaceship.AGSprite-class.html#closest">closest</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#distance">distance</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#is_offscreen">is_offscreen</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#kill">kill</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#set_mover">set_mover</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#update">update</a></code>
+      </p>
     <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.AGSprite-class.html">spaceship.AGSprite</a></code></b> (private):
       <code><a href="spaceship.AGSprite-class.html#_blit_state">_blit_state</a></code>,
       <code><a href="spaceship.AGSprite-class.html#_check_cfg">_check_cfg</a></code>,
       <code><a href="spaceship.AGSprite-class.html#_check_gfx">_check_gfx</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#_init_animation">_init_animation</a></code>,
       <code><a href="spaceship.AGSprite-class.html#_initialize_position">_initialize_position</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#_state_area">_state_area</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#_update_animations">_update_animations</a></code>,
       <code><a href="spaceship.AGSprite-class.html#_update_position">_update_position</a></code>
       </p></div>
     <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="base.AGObject-class.html">base.AGObject</a></code></b> (private):
@@ -147,7 +141,6 @@ pygame.sprite.Sprite --+
       <code>add_internal</code>,
       <code>alive</code>,
       <code>groups</code>,
-      <code>kill</code>,
       <code>remove</code>,
       <code>remove_internal</code>
       </p>
@@ -161,6 +154,31 @@ pygame.sprite.Sprite --+
       <code>__setattr__</code>,
       <code>__str__</code>
       </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== STATIC METHODS ==================== -->
+<a name="section-StaticMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Static Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-StaticMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.AGSprite-class.html">spaceship.AGSprite</a></code></b> (private):
+      <code><a href="spaceship.AGSprite-class.html#_closest_compare_dists">_closest_compare_dists</a></code>
+      </p></div>
     </td>
   </tr>
 </table>
@@ -185,16 +203,26 @@ pygame.sprite.Sprite --+
     <td colspan="2" class="summary">
     <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.Destructible-class.html">spaceship.Destructible</a></code></b>:
       <code><a href="spaceship.Destructible-class.html#durability">durability</a></code>,
-      <code><a href="spaceship.Destructible-class.html#explosion_cls_name">explosion_cls_name</a></code>,
-      <code><a href="spaceship.Destructible-class.html#g_expl">g_expl</a></code>
+      <code><a href="spaceship.Destructible-class.html#explosion_cls_name">explosion_cls_name</a></code>
       </p>
     <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.AGSprite-class.html">spaceship.AGSprite</a></code></b>:
       <code><a href="spaceship.AGSprite-class.html#align">align</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#center">center</a></code>,
       <code><a href="spaceship.AGSprite-class.html#cfg">cfg</a></code>,
       <code><a href="spaceship.AGSprite-class.html#gfx">gfx</a></code>,
       <code><a href="spaceship.AGSprite-class.html#max_speed">max_speed</a></code>,
       <code><a href="spaceship.AGSprite-class.html#mover">mover</a></code>,
-      <code><a href="spaceship.AGSprite-class.html#pos">pos</a></code>
+      <code><a href="spaceship.AGSprite-class.html#offscreen_lifetime">offscreen_lifetime</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#offscreen_time">offscreen_time</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#pos">pos</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#screen_size">screen_size</a></code>
+      </p>
+    <div class="private">    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="spaceship.AGSprite-class.html">spaceship.AGSprite</a></code></b> (private):
+      <code><a href="spaceship.AGSprite-class.html#_animations">_animations</a></code>,
+      <code><a href="spaceship.AGSprite-class.html#_overlay">_overlay</a></code>
+      </p></div>
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="base.AGObject-class.html">base.AGObject</a></code></b>:
+      <code><a href="base.AGObject-class.html#clock">clock</a></code>
       </p>
     </td>
   </tr>
@@ -250,7 +278,6 @@ pygame.sprite.Sprite --+
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
   <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">g_expl</span>,
         <span class="sig-arg">pos</span>,
         <span class="sig-arg">*groups</span>)</span>
     <br /><em class="fname">(Constructor)</em>
@@ -265,28 +292,6 @@ pygame.sprite.Sprite --+
     <dt>Overrides:
       <a href="spaceship.Destructible-class.html#__init__">spaceship.Destructible.__init__</a>
         <dd><em class="note">(inherited documentation)</em></dd>
-    </dt>
-  </dl>
-</td></tr></table>
-</div>
-<a name="update"></a>
-<div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">update</span>(<span class="sig-arg">self</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="obstacle-pysrc.html#Obstacle.update">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </table>
-  
-  
-  <dl class="fields">
-    <dt>Overrides:
-      pygame.sprite.Sprite.update
     </dt>
   </dl>
 </td></tr></table>
@@ -315,7 +320,7 @@ pygame.sprite.Sprite --+
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0beta1 on Tue Oct 30 16:10:11 2007
+    Generated by Epydoc 3.0beta1 on Thu Jul 31 17:03:02 2008
     </td>
     <td align="right" class="footer">
       <a href="http://epydoc.sourceforge.net">http://epydoc.sourceforge.net</a>

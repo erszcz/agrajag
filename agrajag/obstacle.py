@@ -1,6 +1,9 @@
 #!/usr/bin/python
 #coding: utf-8
 
+'''Dummy object intended to place on a level just to display something.
+'''
+
 import pygame
 import random
 from spaceship import Destructible

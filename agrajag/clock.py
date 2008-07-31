@@ -1,6 +1,9 @@
 #!/usr/bin/python
 #coding: utf-8
 
+'''Thin wrapper for pygame.Clock.
+'''
+
 import pygame
 
 class Clock(object):
@@ -34,7 +37,7 @@ class Clock(object):
 
   def tick(self, fps = 0):
     """
-    Tick the game clock (if instance type allows it).
+    Tick the game clock (if the instance allows for it).
 
     @type  fps: unsigned integer
     @param fps: Describes the number to which the framerate is capped.
@@ -46,6 +49,10 @@ class Clock(object):
       Clock.__total_time += Clock.__frame_span
 
       return Clock.__frame_span
+
+  @staticmethod
+  def get_time():
+    return Clock.__clock.get_time()
 
   @staticmethod
   def get_rawtime():

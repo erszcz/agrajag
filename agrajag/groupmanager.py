@@ -1,6 +1,9 @@
 #!/usr/bin/python
 #coding: utf-8
 
+'''Management of sprite groups.
+'''
+
 import os
 import pygame
 
@@ -33,4 +36,12 @@ class GroupManager:
       return GroupManager.content[name]
 
     return None
-    
+  
+  @classmethod
+  def reset(cls):
+    '''Delete all groups and their content.
+    '''
+    cls.content = {}
+
+  def __getitem__(self, x):
+    return self.get(x)

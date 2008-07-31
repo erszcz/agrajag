@@ -1,6 +1,9 @@
 #!/usr/bin/python
 #coding: utf-8
 
+'''Enemies, player ship, gear, projectiles, bonuses and maybe some other things.
+'''
+
 import pygame, math, random
 import sys
 
@@ -560,13 +563,13 @@ class Ship(BonusHolder):
     Deal damage and check whether the object ceases to exist. If so, call
     C{L{explode}}.
 
-    @type  damage: integer
+    @type  damage: C{int}
     @param damage: Amount of raw damage the ship takes.
 
-    @type  speed: float
+    @type  speed: C{float}
     @param speed: Speed of projectile dealing damage or None if projectile
-    does not have finite speed or damage comes from other source. This
-    parameter is used to determine whether autoshield will activate or not.
+      does not have finite speed or damage comes from other source. This
+      parameter is used to determine whether autoshield will activate or not.
     """
 
     if damage > 0 and self.shield is not None:
@@ -1769,10 +1772,10 @@ class MiniBlaster(ProjectileEnergyWeapon):
   """
   Projectile energy weapon with following characteristics:
 
-    * very small projectile
-    * low damage
-    * low energy consumption
-    * medium cooldown 
+  * very small projectile
+  * low damage
+  * low energy consumption
+  * medium cooldown 
   """
 
   pass
@@ -1782,10 +1785,10 @@ class Blaster(ProjectileEnergyWeapon):
   """
   Projectile energy weapon with following characteristics:
 
-    * small projectile
-    * medium damage
-    * medium energy consumption
-    * medium cooldown 
+  * small projectile
+  * medium damage
+  * medium energy consumption
+  * medium cooldown 
   """
 
   pass
@@ -1795,10 +1798,10 @@ class DualBlaster(ProjectileEnergyWeapon):
   """
   Projectile energy weapon with following characteristics:
 
-    * medium projectile
-    * medium/high damage
-    * medium/high energy consumption
-    * medium cooldown 
+  * medium projectile
+  * medium/high damage
+  * medium/high energy consumption
+  * medium cooldown 
   """
 
   pass
@@ -1808,10 +1811,10 @@ class ScatterBlaster(ProjectileEnergyWeapon):
   """
   Projectile energy weapon with following characteristics:
 
-    * medium scattering projectile
-    * medium damage
-    * medium energy consumption
-    * medium cooldown 
+  * medium scattering projectile
+  * medium damage
+  * medium energy consumption
+  * medium cooldown 
   """
 
   pass
@@ -1983,8 +1986,8 @@ class AutoShield(Shield):
     is activated. Do not allow the shield to be automatically deactivated
     id it was activated by player.
 
-    @type  activate: bool
-    @param activate: Tells whether shield should be activated or deactivated.
+    @type  on: bool
+    @param on: Tells whether shield should be activated or deactivated.
 
     @type  auto: bool
     @param auto: Tells whether action is taken by player or automatically.

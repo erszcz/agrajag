@@ -1,6 +1,9 @@
 #!/usr/bin/python
 #coding: utf-8
 
+'''Backend for XML processing managers.
+'''
+
 import os
 import pygame
 import xml.dom.minidom
