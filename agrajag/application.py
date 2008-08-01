@@ -40,20 +40,11 @@ import stagemanager as stgm
 import groupmanager as grpm
 import hud
 
-import spaceship
-import mover
-
-# temp
-import weakref
-import background
-#
 
 _here = os.path.dirname(__file__)
 _gfx  = os.path.join(_here, './gfx')
 _db   = os.path.join(_here, './db')
 _stg  = os.path.join(_here, './stages')
-
-app = None
 
 
 class AGApplication(object):
@@ -84,19 +75,17 @@ class AGApplication(object):
   __instance = None
 
   @classmethod
-  def singleton(cls, **kwargs):
+  def singleton(cls, size=(800, 600), fps=40, fullscreen=False):
     '''Get the singleton instance (with instantiating it if needed).
     '''
     if not cls.__instance:
-      cls.__instance = cls(**kwargs)
+      cls.__instance = cls(size, fps, fullscreen)
     return cls.__instance
 
-  def __init__(self, size=(800, 600), fps=40, fullscreen=False):
+  def __init__(self, size, fps, fullscreen):
     '''Initialize the singleton or raise exception if its instance exists.
        Do NOT call this method manually, use AGApplication.singleton instead.
     '''
-    global app
-
     if AGApplication.__instance:
       raise Exception('singleton instance exists')
 
@@ -122,7 +111,7 @@ class AGApplication(object):
 
     self.__init_managers()
 
-    app = AGApplication.__instance = self
+    AGApplication.__instance = self
 
   def _screen_width(self): return self.screen_size[0]
   screen_width = property(_screen_width)
@@ -146,7 +135,7 @@ class AGApplication(object):
   def run_level(self):
     '''Start a game level.
     '''
-    AGLevel.run()
+    AGLevel.run('ed01')
 
   def show_hiscores(self):
     '''Display the hiscore table.
@@ -163,16 +152,17 @@ class AGApplication(object):
     self.stgm = stgm.StageManager()
     self.stgm.import_stages(_stg)
 
-    self.grpm = grpm.GroupManager()
-    self.grpm.add('draw', 'OrderedUpdates')
-    self.grpm.add('ship')
-    self.grpm.add('enemies')
-    self.grpm.add('enemy_projectiles')
-    self.grpm.add('player_projectiles')
-    self.grpm.add('beams')
-    self.grpm.add('explosions')
-    self.grpm.add('shields')
-    self.grpm.add('bonuses')
+
+app = AGApplication.singleton()
+
+
+import spaceship
+import mover
+
+# temp
+import weakref
+import background
+#
 
 
 class AGMenu(object):
@@ -212,6 +202,7 @@ class AGLevel(object):
     self.stgm = stgm.StageManager()
 
     self.grpm = grpm.GroupManager()
+    self.grpm.reset()
     self.grpm.add('draw', 'OrderedUpdates')
     self.grpm.add('ship')
     self.grpm.add('enemies')
@@ -247,7 +238,7 @@ class AGLevel(object):
     ship = weakref.ref( spaceship.PlayerShip((175, app.screen_size[1] - 60),
                                              g_ship) )
     self.hud.setup_connections(ship())
-    back = background.SpaceBackground(app.screen_size)
+    back = background.SpaceBackground()
     #
 
     running = True
@@ -334,11 +325,11 @@ class AGLevel(object):
       if pressed_keys[pygame.K_UP]:
         if ship(): ship().fly_up(True)
       if pressed_keys[pygame.K_DOWN]:
-        if ship(): ship().fly_down(app.screen_size[1])
+        if ship(): ship().fly_down()
       if pressed_keys[pygame.K_LEFT]:
         if ship(): ship().fly_left()
       if pressed_keys[pygame.K_RIGHT]:
-        if ship(): ship().fly_right(app.screen_size[0])
+        if ship(): ship().fly_right()
       if pressed_keys[pygame.K_z]:
         if ship(): ship().shoot()
 
@@ -373,8 +364,8 @@ class AGLevel(object):
       else:
         name = stages[0]
 
-      level = AGLevel(name)
-      level.__run()
+    level = AGLevel(name)
+    level.__run()
 
 
 if __name__ == '__main__':
