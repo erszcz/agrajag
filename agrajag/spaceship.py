@@ -1631,7 +1631,7 @@ class BasicBeamer(InstantEnergyWeapon):
 
 class InstantEnergyBeam(AGSprite):
   """
-  Visual representation of energy fired by C{L{InstantEnergyWeapon}}s.
+  Abstract class for visual representation of energy beams fired by C{L{InstantEnergyWeapon}}s.
 
   @type pos: sequence
   @ivar pos: Central point of the farthests part of the beam.
@@ -1641,7 +1641,12 @@ class InstantEnergyBeam(AGSprite):
 
   @type init: bool
   @ivar init: Inital iteration or not
+
+  @type def_image: pygame.Surface
+  @cvar def_image: image representing initial state of the beam, its width is equal to screen's width
   """
+
+  def_image = None
 
   def __init__(self):
     """
@@ -1650,6 +1655,25 @@ class InstantEnergyBeam(AGSprite):
     AGSprite.__init__(self, (0,0))
     self.vanish_speed = self.cfg['vanish_speed']
     self.init = True
+
+    self._init_def_image()
+
+  def _init_def_image(self):
+    """
+    Initialize single instance of image shared between all instances of this class
+    that will be used to render the beam at the moment of its creation. Do nothing
+    if the image is already initialized.
+    """
+
+    if self.__class__.def_image is not None:
+      return
+
+    self.__class__.def_image = pygame.Surface((self.get_width(), self.screen_size[1]))
+    self.__class__.def_image.set_alpha(255)
+
+    area = self._state_area('beam_slice', 'def')
+    for i in xrange(0, self.screen_size[1] - 1):
+      self.__class__.def_image.blit(self.gfx['beam_slice']['image'], (0, i))
 
   def get_width(self):
     """Return width of the beam graphics in pixels."""
@@ -1664,8 +1688,7 @@ class InstantEnergyBeam(AGSprite):
     self._initialize_position(end, ('centerx', 'top'), size)
     self.image = pygame.Surface(size)
     self.image.set_alpha(255)
-    for i in xrange(0, self.rect.height - 1):
-      self._blit_state('beam_slice', 'def', (0, i))
+    self.image.blit(self.__class__.def_image, (0, 0), (0, 0, size[0], size[1]))
 
   def update(self):
     if self.init:
@@ -2641,6 +2664,10 @@ class HeavyCannonProjectile(ScatteringProjectile):
 class HeavyCannonProjectileFragment(Projectile):
   """Projectile generated when C{L{HeavyCannonProjectile}} explodes."""
 
+  pass
+
+
+class HunterProjectile(DirectedSeekingProjectile):
   pass
 
 

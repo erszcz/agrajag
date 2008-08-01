@@ -1,0 +1,20 @@
+<content>
+  <gfx>
+    <resource name='projectile' file='hunter.png' state_w='23' state_h='23'>
+      <state name='nw' x_off='1'    y_off='1' />
+      <state name='n'  x_off='25'   y_off='1' />
+      <state name='ne' x_off='51'   y_off='1' />
+      <state name='e'  x_off='51'   y_off='25' />
+      <state name='se' x_off='51'   y_off='51' />
+      <state name='s'  x_off='25'   y_off='51' />
+      <state name='sw' x_off='1'    y_off='51' />
+      <state name='w'  x_off='1'    y_off='25' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='max_speed'    type='int' value='470' />
+    <prop name='ang_speed'    type='int' value='180' />
+    <prop name='damage'       type='int' value='14' />
+    <prop name='explosion_cls_name'      value='MediumExplosion' />
+  </properties>
+</content>
