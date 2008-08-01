@@ -41,7 +41,7 @@ class GroupManager:
   def reset(cls):
     '''Delete all groups and their content.
     '''
-    cls.content = {}
+    cls.content.clear()
 
   def __getitem__(self, x):
     return self.get(x)

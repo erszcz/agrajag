@@ -17,6 +17,9 @@ from clock import Clock
 
 from functions import deg2rad, normalize_deg
 
+import application
+globals()['app'] = application.app
+
 
 class AGSprite(AGObject, pygame.sprite.Sprite):
   '''
@@ -683,17 +686,13 @@ class PlayerShip(Ship):
     else:
       self.exhaust(False)
 
-  def fly_down(self, boundary):
+  def fly_down(self):
     """
     Move the ship down.
-
-    @type  boundary: unsigned integer
-    @param boundary: Height of the viewport. Needed in order to check
-        whether the ship may fly farther downwards.
     """
 
     delta_y = round(self.clock.frame_span() * self.max_speed / 1000.)
-    if self.rect.bottom <= boundary + delta_y:
+    if self.rect.bottom <= app.screen_height + delta_y:
       self.rect.move_ip(0, delta_y)
       self.pos = self.pos[0], self.pos[1] + delta_y
       self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h'] / 2
@@ -709,17 +708,13 @@ class PlayerShip(Ship):
       self.pos = self.pos[0] + delta_x, self.pos[1]
       self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h'] / 2
 
-  def fly_right(self, boundary):
+  def fly_right(self):
     """
     Move the ship right.
-
-    @type  boundary: unsigned integer
-    @param boundary: Width of the viewport. Needed in order to check
-        whether the ship may fly farther towards the right edge of the screen.
     """
 
     delta_x = round(self.clock.frame_span() * self.max_speed / 1000.)
-    if self.rect.right <= boundary - delta_x:
+    if self.rect.right <= app.screen_width - delta_x:
       self.rect.move_ip(delta_x, 0)
       self.pos = self.pos[0] + delta_x, self.pos[1]
       self.center = self.pos[0], self.pos[1] + self.gfx['ship']['h'] / 2

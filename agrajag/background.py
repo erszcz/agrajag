@@ -8,19 +8,20 @@ import random
 import pygame
 
 from clock import Clock
+import application
+globals()['app'] = application.app
 
 class BackgroundObject(pygame.sprite.Sprite):
-  def __init__(self, pos, speed, boundary, *groups):
+  def __init__(self, pos, speed, *groups):
     pygame.sprite.Sprite.__init__(self, *groups)
     self.rect = pygame.Rect(pos, (0, 0))
     self.speed = speed
-    self.boundary = boundary	# wysokosc vieportu w pikselach
     self.clock = Clock()
 
   def update(self):
     delta_y = round(self.clock.frame_span() * self.speed / 1000)
     self.rect.move_ip(0, delta_y)
-    if self.rect.top >= self.boundary:
+    if self.rect.top >= app.screen_height:
       self.kill()
       del self
 
@@ -31,12 +32,12 @@ class BackgroundObject(pygame.sprite.Sprite):
 
 # temp
 class BackgroundImage(BackgroundObject):
-  def __init__(self, speed, boundary, *groups):
-    BackgroundObject.__init__(self, (0, 0), speed, boundary, *groups)
+  def __init__(self, speed, *groups):
+    BackgroundObject.__init__(self, (0, 0), speed, *groups)
 
     self.image = pygame.image.load('gfx/terrain/example_editor.png').convert_alpha()
-    #self.rect = pygame.Rect((0, self.image.get_height() - self.boundary), (0, 0))
-    self.rect = pygame.Rect((0, self.boundary - self.image.get_height()), (0, 0))
+    self.rect = pygame.Rect((0, app.screen_height - self.image.get_height()),
+                            (0, 0))
     self.clock = Clock()
 
   def update(self):
@@ -45,16 +46,16 @@ class BackgroundImage(BackgroundObject):
 # end of temp
 
 class DistantStar(BackgroundObject):
-  def __init__(self, pos, boundary, *groups):
-    BackgroundObject.__init__(self, pos, 80, boundary, *groups)
+  def __init__(self, pos, *groups):
+    BackgroundObject.__init__(self, pos, 80, *groups)
 
     self.image = pygame.Surface((1, 1))
     self.image.fill((255, 255, 255))
     self.rect = pygame.Rect(pos, (1, 1))
 
 class CloserStar(BackgroundObject):
-  def __init__(self, pos, boundary, *groups):
-    BackgroundObject.__init__(self, pos, 120, boundary, *groups)
+  def __init__(self, pos, *groups):
+    BackgroundObject.__init__(self, pos, 120, *groups)
 
     self.image = pygame.Surface((3, 3))
     self.image.set_colorkey((0, 0, 0))
@@ -72,8 +73,8 @@ class CloserStar(BackgroundObject):
 class CloserStarCluster(BackgroundObject):
   '''Cluster of small random numer of CloserStar instances positioned randomly each close to one another'''
 
-  def __init__(self, pos, boundary, *groups):
-    BackgroundObject.__init__(self, pos, 160, boundary, *groups)
+  def __init__(self, pos, *groups):
+    BackgroundObject.__init__(self, pos, 160, *groups)
 
     count = random.randint(2, 5)
     size = 75
@@ -98,8 +99,8 @@ class CloserStarCluster(BackgroundObject):
         self.image.set_at(pixel, (r, g, b))
 
 class SpaceBackground():
-  def __init__(self, screen_dims):
-    self.dims = screen_dims
+  def __init__(self):
+    self.dims = app.screen_size
     self.distant_count = 20
     self.closer_count = 16
     self.closer_cluster_count = 3
@@ -113,42 +114,42 @@ class SpaceBackground():
     for star in range(self.distant_count):
       x, y = random.randint(0, self.dims[0]),\
              random.randint(0, self.dims[1])
-      self.distant_stars.add(DistantStar((x, y), self.dims[1]))
+      self.distant_stars.add(DistantStar((x, y)))
 
   def distant_stars_update(self):
     self.distant_stars.update()
 
     if self.distant_stars.sprites().__len__() < self.distant_count:
       x, y = random.randint(0, self.dims[0]), 0
-      self.distant_stars.add(DistantStar((x,y), self.dims[1]))
+      self.distant_stars.add(DistantStar((x,y)))
 
   def closer_stars_init(self):
     self.closer_stars = pygame.sprite.Group()
     for star in range(self.closer_count):
       x, y = random.randint(0, self.dims[0]),\
              random.randint(0, self.dims[1])
-      self.closer_stars.add(CloserStar((x, y), self.dims[1]))
+      self.closer_stars.add(CloserStar((x, y)))
 
   def closer_stars_update(self):
     self.closer_stars.update()
 
     if self.closer_stars.sprites().__len__() < self.closer_count:
         x, y = random.randint(0, self.dims[0]), 0
-        self.closer_stars.add(CloserStar((x,y), self.dims[1]))
+        self.closer_stars.add(CloserStar((x,y)))
 
   def closer_star_clusters_init(self):
     self.closer_star_clusters = pygame.sprite.Group()
     for cluster in range(self.closer_cluster_count):
       x, y = random.randint(0, self.dims[0]),\
              random.randint(0, self.dims[1])
-      self.closer_star_clusters.add(CloserStarCluster((x, y), self.dims[1]))
+      self.closer_star_clusters.add(CloserStarCluster((x, y)))
 
   def closer_star_clusters_update(self):
     self.closer_star_clusters.update()
 
     if self.closer_star_clusters.sprites().__len__() < self.closer_cluster_count:
       x, y = random.randint(0, self.dims[0]), 0
-      self.closer_star_clusters.add(CloserStarCluster((x,y), self.dims[1]))
+      self.closer_star_clusters.add(CloserStarCluster((x,y)))
 
   def clear(self, surface, callback):
     self.distant_stars.clear(surface, callback)
