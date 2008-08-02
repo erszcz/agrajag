@@ -1,0 +1,13 @@
+<content>
+  <gfx>
+  </gfx>
+  <properties>
+    <prop name='explosion_cls_name' value='MediumBeamExplosion' />
+    <prop name='beam_cls_name' value='MediumBeam' />
+    <prop name='damage' value='9' type='int' />
+    <prop name='maximum' value='700' type='int' />
+    <prop name='recharge_rate' value='8' type='int' />
+    <prop name='cost' value='21' type='int' />
+    <prop name='cooldown' value='0.65' type='float' />
+  </properties>
+</content>
