@@ -875,6 +875,12 @@ class MidgetBeamShip(EnemyShip):
   pass
 
 
+class BeamShip(EnemyShip):
+  """Mid-size enemy ship equipped with medium beam weapon."""
+
+  pass
+
+
 class EnemyMine(Destructible):
   """
   """
@@ -1624,6 +1630,13 @@ class BasicBeamer(InstantEnergyWeapon):
   pass
 
 
+class MediumBeamer(InstantEnergyWeapon):
+  """
+  """
+
+  pass
+
+
 class InstantEnergyBeam(AGSprite):
   """
   Abstract class for visual representation of energy beams fired by C{L{InstantEnergyWeapon}}s.
@@ -1701,6 +1714,14 @@ class InstantEnergyBeam(AGSprite):
 class BasicBeam(InstantEnergyBeam):
   """
   Beam used by BasicBeamer gun.
+  """
+
+  pass
+
+
+class MediumBeam(InstantEnergyBeam):
+  """
+  Beam used by MediumBeamer gun.
   """
 
   pass
@@ -2259,6 +2280,10 @@ class BasicBeamExplosion(Explosion):
   pass
 
 
+class MediumBeamExplosion(Explosion):
+  pass
+
+
 class ObstacleExplosion(Explosion):
   pass
 
@@ -2708,14 +2733,14 @@ class Bonus(AGSprite):
 
     ship = self._detect_collisions()
     if ship is not None:
-      self._use(ship)
-      self.kill()
-      self = None
-      return
+      if self._use(ship):
+        self.kill()
+        self = None
 
   def _use(self, ship):
     """
-    Use bonus on C{ship}. Classes derived from C{Bonus} need to override
+    Use bonus on C{ship} and return true. Return false if bonus cannot be used at this
+    moment and should not disappear. Classes derived from C{Bonus} need to override
     this method.
     """
   
@@ -2740,6 +2765,7 @@ class RechargeBonus(Bonus):
     """
 
     ship.recharge(self.power, True)
+    return True
 
 class SuperShieldBonus(Bonus):
   """
@@ -2751,6 +2777,7 @@ class SuperShieldBonus(Bonus):
     """
 
     SuperShield(ship)
+    return True
 
 
 class ShieldUpgradeBonus(Bonus):
@@ -2772,6 +2799,8 @@ class ShieldUpgradeBonus(Bonus):
   def _use(self, ship):
     if ship.shield is not None:
       current_cls_name = ship.shield.__class__.__name__
+      if current_cls_name == 'SuperShield':
+        return False
 
       try:
         index = self.shield_chain.index(current_cls_name)
@@ -2798,4 +2827,6 @@ class ShieldUpgradeBonus(Bonus):
     else:
       new_cls_name = eval(self.shield_chain[0])
       ship.shield = new_cls_name(ship)
+
+    return True
 
