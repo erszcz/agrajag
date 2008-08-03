@@ -1,0 +1,17 @@
+<content>
+  <gfx>
+    <resource name='background' file='menu_background_template.png'
+    state_w='800' state_h='600'>
+      <state name='default'   x_off='0'   y_off='0' />
+    </resource>
+    <resource name='main_options' file='menu_main_options.png'
+              state_w='400' state_h='80'>
+      <state name='play'     x_off='0' y_off='0' />
+      <state name='settings' x_off='0' y_off='80' />
+      <state name='hiscores' x_off='0' y_off='160' />
+      <state name='exit'     x_off='0' y_off='240' />
+    </resource>
+  </gfx>
+  <properties>
+  </properties>
+</content>
