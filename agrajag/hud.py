@@ -5,11 +5,24 @@
 '''
 
 import pygame
+from pygame.color import Color
 
+import spaceship
 from widgets import VerticalProgressBar
 
-class Hud:
+class Hud(object):
+  __instance = None
+
+  @classmethod
+  def singleton(cls, viewport_size):
+    if not cls.__instance:
+      cls.__instance == cls(viewport_size)
+    return cls.__instance
+
   def __init__(self, viewport_size):
+    if Hud.__instance:
+      raise Exception('singleton instance exists')
+
     self.vps = viewport_size
 
     self.g_hud = pygame.sprite.Group()
@@ -49,40 +62,35 @@ class Hud:
     self.s_ammo.rect = pygame.Rect((self.vps[0] - 50, self.vps[1] - 6 - self.label_font.size('s')[1]),
                                      self.s_ammo.image.get_size())
 
+    Hud.__instance = self
 
   def clear(self, screen, callback):
     self.g_hud.clear(screen, callback)
 
-
   def update(self):
     self.g_hud.update()
-
 
   def draw(self, screen):
     self.g_hud.draw(screen)
 
+  def update_shield(self, shield):
+    self.pb_shield.max = shield.maximum
+    self.pb_shield.val = shield.current
 
-  def slot_shield_updated(self, value, maximum):
-    self.pb_shield.max = maximum
-    self.pb_shield.val = value
+  def update_armour(self, value):
+    self.s_armour.image = self.label_font.render('%03d' % value, True,
+                                                 Color('white'))
 
+  def update_weapon(self, weapon):
+    if isinstance(weapon, spaceship.EnergyWeapon):
+      self.s_ammo.image = self.label_font.render(
+                            '%02d%%' % (weapon.current * 100 / weapon.maximum),
+                            True, Color('white'))
+      self.pb_eweapon.max = weapon.maximum
+      self.pb_eweapon.val = weapon.current
+    elif isinstance(weapon, spaceship.AmmoWeapon):
+      self.pb_eweapon.max = weapon.maximum
+      self.pb_eweapon.val = weapon.current
+      self.s_ammo.image = self.label_font.render('%03d' % weapon.current,
+                                                 True, Color('white'))
 
-  def slot_armour_updated(self, value):
-    self.s_armour.image = self.label_font.render('%03d' % value, True, (255, 255, 255))
-
-
-  def slot_weapon_updated(self, type, value, maximum = None):
-    if type == 'energy':
-      self.s_ammo.image = self.label_font.render('000', True, (255, 255, 255))
-      self.pb_eweapon.max = maximum
-      self.pb_eweapon.val = value
-    elif type == 'ammo':
-      self.pb_eweapon.val = 0
-      self.s_ammo.image = self.label_font.render('%03d' % value, True, (255, 255, 255))
-
-
-  # temp
-  def setup_connections(self, ship):
-    ship.shield_updated.connect(self.slot_shield_updated)
-    ship.armour_updated.connect(self.slot_armour_updated)
-    ship.weapon_updated.connect(self.slot_weapon_updated)

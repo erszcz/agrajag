@@ -9,7 +9,7 @@ import pygame
 
 from clock import Clock
 import application
-globals()['app'] = application.app
+app = application.app
 
 class BackgroundObject(pygame.sprite.Sprite):
   def __init__(self, pos, speed, *groups):
@@ -71,7 +71,7 @@ class CloserStar(BackgroundObject):
     self.rect = pygame.Rect(pos, (3, 3))
 
 class CloserStarCluster(BackgroundObject):
-  '''Cluster of small random numer of CloserStar instances positioned randomly each close to one another'''
+  '''Cluster of small random number of CloserStar instances positioned randomly each close to one another'''
 
   def __init__(self, pos, *groups):
     BackgroundObject.__init__(self, pos, 160, *groups)
@@ -165,3 +165,25 @@ class SpaceBackground():
     self.distant_stars.draw(surface)
     self.closer_stars.draw(surface)
     self.closer_star_clusters.draw(surface)
+
+
+class TiledBackground(object):
+  '''Provides a scrolling background composed of tiles, which can be
+     dynamically created or loaded. Tiles are created just before displaying
+     and salvaged when they float out of view.
+  '''
+
+  # public
+  def __init__(self):
+    pass
+
+  def clear(self, surface, callback):
+    pass
+
+  def update(self):
+    pass
+
+  def draw(self, surface):
+    pass
+
+  # private
