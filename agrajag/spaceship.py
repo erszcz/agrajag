@@ -20,6 +20,8 @@ from functions import deg2rad, normalize_deg
 import application
 globals()['app'] = application.app
 
+import hud
+
 
 class AGSprite(AGObject, pygame.sprite.Sprite):
   '''
@@ -40,26 +42,26 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
 
   @type offscreen_lifetime: int or None
   @ivar offscreen_lifetime: Maximum amount of time object can spend 
-  offscreen (may not apply to some objects).
+    offscreen (may not apply to some objects).
 
   @type mover: None or class derived from C{Mover}
   @ivar mover: Object responsible for controlling sprite movement.
 
   @type max_speed: integer
   @ivar max_speed: Maximal speed object can by moved with expressed in
-  pixels per second.
+    pixels per second.
 
   @type pos: sequence
   @ivar pos: Current position of arbitrary object's point in global
-  coordinate system.
+    coordinate system.
 
   @type center: sequence
   @ivar center: Current position of object's center in global coordinate
-  system.
+    system.
 
   @type align: string or tuple
   @ivar align: Name or names of properties used to align object's C{rect}
-  attribute.
+    attribute.
 
   @type _overlay: C{L{Overlay}}
   @ivar _overlay: Object used to display auxiliary animations.
@@ -628,15 +630,13 @@ class PlayerShip(Ship):
 
     self.exhaust(False) 
 
-    self.weapons = [
-        SeekerBlaster(self),
-        SeekerCannon(self),
-        MultiCannon(self),
-        ScatterBlaster(self),
-        AutoCannon(self),
-        HeavyCannon(self), 
-        BasicBeamer(self)
-      ]
+    self.weapons = [SeekerBlaster(self),
+                    SeekerCannon(self),
+                    MultiCannon(self),
+                    ScatterBlaster(self),
+                    AutoCannon(self),
+                    HeavyCannon(self), 
+                    BasicBeamer(self)]
 
     self._current_weapon = 0
 
@@ -650,6 +650,18 @@ class PlayerShip(Ship):
     self.weapon_updated = Signal()
     self.shield.shield_state_updated.connect(self.shield_updated)
     self.weapons[self._current_weapon].weapon_state_updated.connect(self.weapon_updated)
+
+    # connections
+    h = hud.Hud.singleton(app.screen_size)
+    self.shield_updated.connect(h.update_shield)
+    self.armour_updated.connect(h.update_armour)
+    self.weapon_updated.connect(h.update_weapon)
+
+    # update hud display state by calling signals
+    self.shield_updated(self.shield)
+    self.armour_updated(self.durability + self.armour.current)
+    self.weapon_updated(self.weapons[self._current_weapon])
+
 
   def exhaust(self, on):
     """
@@ -729,34 +741,20 @@ class PlayerShip(Ship):
   def next_weapon(self):
     """Select next weapon."""
     self.current_weapon.weapon_state_updated.disconnect(self.weapon_updated)
-    
-    if self._current_weapon == len(self.weapons) - 1 or \
-        self._current_weapon is None:
-      self._current_weapon = 0
-    else:
-      self._current_weapon += 1
+
+    self._current_weapon = (self._current_weapon + 1) % len(self.weapons)
 
     self.current_weapon.weapon_state_updated.connect(self.weapon_updated)
-    if isinstance(self.current_weapon, AmmoWeapon):
-      self.weapon_updated('ammo', self.current_weapon.current)
-    elif isinstance(self.current_weapon, EnergyWeapon):
-      self.weapon_updated('energy', self.current_weapon.current, self.current_weapon.maximum)
+    self.weapon_updated(self.weapons[self._current_weapon])
 
   def previous_weapon(self):
     """Select previous weapon."""
     self.current_weapon.weapon_state_updated.disconnect(self.weapon_updated)
 
-    if self._current_weapon == 0 or \
-        self._current_weapon is None:
-      self._current_weapon = len(self.weapons) - 1
-    else:
-      self._current_weapon -= 1
+    self._current_weapon = (self._current_weapon - 1) % len(self.weapons)
 
     self.current_weapon.weapon_state_updated.connect(self.weapon_updated)
-    if isinstance(self.current_weapon, AmmoWeapon):
-      self.weapon_updated('ammo', self.current_weapon.current)
-    elif isinstance(self.current_weapon, EnergyWeapon):
-      self.weapon_updated('energy', self.current_weapon.current, self.current_weapon.maximum)
+    self.weapon_updated(self.weapons[self._current_weapon])
 
   def shoot(self):
     """
@@ -767,7 +765,7 @@ class PlayerShip(Ship):
     if self._current_weapon is not None:
       if self.weapons[self._current_weapon].shoot(self.pos):
         self._init_animation('shot', self.shot_anim_period,
-            (0, -self.gfx['ship']['h'] / 2.))
+                             (0, -self.gfx['ship']['h'] / 2.))
 
   def activate_shield(self, on):
     if self.shield is not None:
@@ -991,7 +989,7 @@ class AmmoConsumingItem(AGSprite):
   def use(self):
     self.current -= 1
 
-    self.state_updated('ammo', self.current, self.maximum)
+    self.state_updated(self)
 
 
 class EnergyConsumingItem(AGObject):
@@ -1048,7 +1046,7 @@ class EnergyConsumingItem(AGObject):
     if self.current > self.maximum:
       self.current = self.maximum
 
-    self.state_updated('energy', self.current, self.maximum)
+    self.state_updated(self)
 
   def is_usable(self):
     """Return C{True} if the item can be used, C{False} otherwise."""
@@ -1058,7 +1056,7 @@ class EnergyConsumingItem(AGObject):
   def use(self):
     self.current -= self.cost
 
-    self.state_updated('energy', self.current, self.maximum)
+    self.state_updated(self)
 
 
 class Weapon(AGObject):
@@ -1928,7 +1926,7 @@ class Shield(AGSprite):
       pos = self.owner.center
       self._initialize_position(pos, 'center', self.gfx['shield']['size'])
 
-    self.shield_state_updated(self.current, self.maximum)
+    self.shield_state_updated(self)
 
 
   def activate(self, on):
@@ -2108,8 +2106,15 @@ class SuperShield(AutoShield):
     self._setattrs('lifetime', self.cfg)
 
     self.time = 0
+    
+    # swap owner shield with SuperShield
+    # remember about proper signal connecions
+    self.owner.shield.shield_state_updated.disconnect(self.owner.shield_updated)
     self.previous_shield = owner.shield
     self.owner.shield = self
+    self.shield_state_updated.connect(self.owner.shield_updated)
+
+
     if self.previous_shield is not None:
       if self.previous_shield.active:
 
@@ -2120,7 +2125,7 @@ class SuperShield(AutoShield):
           self.previous_shield.activate(False)
           self.activate(True)
 
-    self.owner.shield_updated(self.current, self.maximum)
+    self.shield_state_updated(self)
 
   def absorb(self, damage, efficiency = 1.0, speed = None):
     """
@@ -2129,21 +2134,23 @@ class SuperShield(AutoShield):
     """
 
     damage = AutoShield.absorb(self, damage, efficiency, speed)
-    print self.current, self.maximum
     if self.current <= 0:
-      self.shield_updated(self.current, self.maximum)
+      self.shield_state_updated(self)
+      self.shield_state_updated.disconnect(self.owner.shield_updated)
       self.owner.shield = self.previous_shield
+      self.owner.shield.shield_state_updated.connect(self.owner.shield_updated)
 
       self.kill()
       del self
-
 
     return damage
 
   def update(self):
     self.time += self.clock.frame_span()
     if self.time > self.lifetime:
+      self.shield_state_updated.disconnect(self.owner.shield_updated)
       self.owner.shield = self.previous_shield
+      self.owner.shield.shield_state_updated.connect(self.owner.shield_updated)
 
       self.kill()
       self = None
@@ -2783,7 +2790,7 @@ class SuperShieldBonus(Bonus):
 class ShieldUpgradeBonus(Bonus):
   """
   This bonus replaces player ship's shield with a better one. New
-  shield comes with full energy. If ships is already equipped with the best
+  shield comes with full energy. If ship is already equipped with the best
   shield its energy is restored to maximum. 
 
   Shield chain must be defined in bonus's XML config.
@@ -2793,7 +2800,7 @@ class ShieldUpgradeBonus(Bonus):
     Bonus.__init__(self, pos, *groups)
     self._setattrs('shield_chain', self.cfg)
 
-    if len(self.shield_chain) == 0:
+    if not self.shield_chain:
       raise ValueError, "Shield chain is empty!"
 
   def _use(self, ship):
@@ -2814,10 +2821,11 @@ class ShieldUpgradeBonus(Bonus):
         active = ship.shield.active
         auto = ship.shield.auto if hasattr(ship.shield, 'auto') else None
 
-        new_cls_name = eval(self.shield_chain[index + 1])
+        new_shield_cls = eval(self.shield_chain[index + 1])
         
         ship.shield.kill()
-        ship.shield = new_cls_name(ship)
+        ship.shield = new_shield_cls(ship)
+        ship.shield.shield_state_updated.connect(ship.shield_updated)
 
         if isinstance(ship.shield, AutoShield):
           ship.shield.activate(active, auto)
@@ -2825,8 +2833,10 @@ class ShieldUpgradeBonus(Bonus):
           ship.shield.activate(active)
 
     else:
-      new_cls_name = eval(self.shield_chain[0])
-      ship.shield = new_cls_name(ship)
+      new_shield_cls = eval(self.shield_chain[0])
+      ship.shield = new_shield_cls(ship)
+      ship.shield.shield_state_updated.connect(ship.shield_updated)
 
+    ship.shield.shield_state_updated(ship.shield)
     return True
 

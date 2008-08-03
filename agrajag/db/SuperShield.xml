@@ -9,6 +9,6 @@
     <prop name='recharge_rate' value='13' type='int' />
     <prop name='cost' value='4' type='int' />
     <prop name='critical_speed' value='2000' type='float' />
-    <prop name='lifetime' value='600000' type='int' />
+    <prop name='lifetime' value='60000' type='int' />
   </properties>
 </content>

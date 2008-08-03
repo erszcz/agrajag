@@ -6,7 +6,7 @@ Main Agrajag application class with helper classes.
 
 @type _here: C{str}
 @var  _here: Module pathname base directory. 
-  Equivalent to C{__FILE__} stripped of module filename.
+  Equivalent to C{__file__} stripped of module filename.
   NOT INTENDED to use outside the module.
 
 @type _gfx: C{str}
@@ -25,6 +25,7 @@ Main Agrajag application class with helper classes.
   instance. Intended to supply information such as screen size, etc. in various
   places throughout the program where it wouldn't be accessible otherwise.
 '''
+
 
 import os
 import sys
@@ -45,6 +46,77 @@ _here = os.path.dirname(__file__)
 _gfx  = os.path.join(_here, './gfx')
 _db   = os.path.join(_here, './db')
 _stg  = os.path.join(_here, './stages')
+
+
+class AGMenu(object):
+  '''Main Agrajag game menu.
+  '''
+
+  main_options = ['play',
+#                  'settings',  # any need for that?
+                  'hiscores',
+                  'exit']
+
+  hiscores_options = []
+  
+  def __init__(self):
+    self.gfx = gfxm.GfxManager().get(self.__class__.__name__)
+
+  def run_main(self):
+    '''Run the main menu level and return user choice.
+    '''
+    selected = 0
+    while True:
+      # handle events
+      for event in pygame.event.get():
+        if   event.type == pygame.QUIT: sys.exit()
+        elif event.type == pygame.KEYDOWN:
+          if   event.key == pygame.K_UP:
+            selected = (selected - 1) % len(AGMenu.main_options)
+          elif event.key == pygame.K_DOWN:
+            selected = (selected + 1) % len(AGMenu.main_options)
+#          elif pygame.K_LEFT:
+#          elif pygame.K_RIGHT:
+          elif event.key == pygame.K_RETURN:
+            return AGMenu.main_options[selected]
+
+      # draw
+      app.screen.fill(Color('black'))
+
+      app.screen.blit(self.gfx['background']['image'], (0, 0))
+
+      app.screen.blit(self.gfx['main_options']['image'], (450, 0),
+                      (self.gfx['main_options']['states']['play']['x_off'],
+                       self.gfx['main_options']['states']['play']['y_off'],
+                       self.gfx['main_options']['w'],
+                       self.gfx['main_options']['h']))
+      app.screen.blit(self.gfx['main_options']['image'], (450, 70),
+                      (self.gfx['main_options']['states']['hiscores']['x_off'],
+                       self.gfx['main_options']['states']['hiscores']['y_off'],
+                       self.gfx['main_options']['w'],
+                       self.gfx['main_options']['h']))
+      app.screen.blit(self.gfx['main_options']['image'], (450, 140),
+                      (self.gfx['main_options']['states']['exit']['x_off'],
+                       self.gfx['main_options']['states']['exit']['y_off'],
+                       self.gfx['main_options']['w'],
+                       self.gfx['main_options']['h']))
+
+      pygame.draw.circle(app.screen, Color('white'), (500, 50+70*selected), 15)
+
+      pygame.display.update()
+
+      app.clock.tick(app.fps)
+
+  def run_hiscores(self):
+    '''Run the hiscores menu level.
+    '''
+    pass
+
+#  # possibly
+#  def run_settings(self):
+#    '''Run the settings menu level.
+#    '''
+#    pass
 
 
 class AGApplication(object):
@@ -111,6 +183,8 @@ class AGApplication(object):
 
     self.__init_managers()
 
+    self.menu = AGMenu()
+
     AGApplication.__instance = self
 
   def _screen_width(self): return self.screen_size[0]
@@ -122,25 +196,27 @@ class AGApplication(object):
   def main(self):
     '''Run Agrajag application.'''
     while True:
-      menu_choice = AGMenu.run()
-      if menu_choice == PLAY:
-        self.run_level()
-      elif menu_choice == HISCORES:
-        self.show_hiscores()
-      elif menu_choice == EXIT:
+      menu_choice = self.menu.run_main()
+      if   menu_choice == 'play':
+        AGLevel.run()
+      elif menu_choice == 'hiscores':
+        self.menu.run_hiscores()
+      elif menu_choice == 'exit':
         break
       else:
         raise Exception('unknown menu option')
 
-  def run_level(self):
-    '''Start a game level.
+  def pause(self):
+    '''Pause the application.
     '''
-    AGLevel.run('ed01')
+    while True:
+      for event in pygame.event.get():
+        if   event.type == pygame.QUIT: sys.exit()
+        elif event.type == pygame.KEYDOWN:
+          if   event.key == pygame.K_q: sys.exit()
+          elif event.key == pygame.K_p: return  # pause
 
-  def show_hiscores(self):
-    '''Display the hiscore table.
-    '''
-    raise NotImplementedError('AGApplication.show_hiscores')
+      self.clock.tick(self.fps)
 
   def __init_managers(self):
     self.dbm = dbm.DBManager()
@@ -163,25 +239,6 @@ import mover
 import weakref
 import background
 #
-
-
-class AGMenu(object):
-  '''Main Agrajag game menu.
-  '''
-  
-  def __init__(self, screen):
-    raise NotImplementedError('AGMenu.__init__')
-
-  def __run(self):
-    '''Start the menu loop.
-    '''
-    raise NotImplementedError('AGMenu.__run')
-  
-  @staticmethod
-  def run():
-    '''Run the menu and return option selected by the user.
-    '''
-    raise NotImplementedError('AGMenu.run')
 
 
 class AGLevel(object):
@@ -217,6 +274,8 @@ class AGLevel(object):
 
     self.hud = hud.Hud(app.screen_size)
 
+    app.screen.fill(Color('black'))
+
   def __run(self):
     '''Start the level loop.
     '''
@@ -232,12 +291,11 @@ class AGLevel(object):
     g_enemy_projectiles  = self.grpm.get('enemy_projectiles')
     g_player_projectiles = self.grpm.get('player_projectiles')
 
-    clear_bg = lambda surf, rect: surf.fill((0, 0, 0), rect)
+    clear_bg = lambda surf, rect: surf.fill(Color('black'), rect)
 
     # temp
     ship = weakref.ref( spaceship.PlayerShip((175, app.screen_size[1] - 60),
                                              g_ship) )
-    self.hud.setup_connections(ship())
     back = background.SpaceBackground()
     #
 
@@ -302,13 +360,16 @@ class AGLevel(object):
                 g_player_projectiles.add(object)
 
       # time management
-      app.clock.tick(40)
+      app.clock.tick(app.fps)
       self.stage_clock += app.clock.get_time()
 
       for event in pygame.event.get():
         if   event.type == pygame.QUIT: sys.exit()
         elif event.type == pygame.KEYDOWN:
           if   event.key == pygame.K_q: sys.exit()
+          # temp
+          elif event.key == pygame.K_p: app.pause()  # pause
+          #
           elif event.key == pygame.K_s:
             if ship(): ship().next_weapon()
           elif event.key == pygame.K_a:
@@ -334,15 +395,14 @@ class AGLevel(object):
         if ship(): ship().shoot()
 
       back.clear(app.screen, clear_bg)
-      back.update()
-      back.draw(app.screen)
-
       g_draw.clear(app.screen, clear_bg)
       self.hud.clear(app.screen, clear_bg)
 
+      back.update()
       g_draw.update()
       self.hud.update()
 
+      back.draw(app.screen)
       g_draw.draw(app.screen)
       self.hud.draw(app.screen)
 
@@ -370,4 +430,4 @@ class AGLevel(object):
 
 if __name__ == '__main__':
   agrajag = AGApplication.singleton()
-  agrajag.run_level()
+  agrajag.main()
