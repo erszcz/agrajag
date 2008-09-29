@@ -1,0 +1,13 @@
+<content>
+  <gfx>
+    <resource name='ship' file='medium_enemy.png' state_w='39' state_h='36'>
+      <state name='def'  x_off='0'  y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='explosion_cls_name' value='MediumExplosion' />
+    <prop name='weapons_cls_names' value='ScatterBlaster' type='tuple' />
+    <prop name='durability' value='150' type='int' />
+    <prop name='max_speed' value='60' type='int' />
+  </properties>
+</content>
