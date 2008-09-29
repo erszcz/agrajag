@@ -1,5 +1,15 @@
 <events>
   <spawn
+    time='0' x='140' y='0'
+    object_base_cls_name='Projectile'
+    object_cls_name='EnergyProjectile'>
+
+    <object_param name='dir' value='0' type='float' />
+    <object_param name='collision_group' value='ship' />
+    <group name='enemy_projectiles' />
+  </spawn>
+
+  <spawn
     time='0' x='50' y='50'
     object_cls_name='EnemyInterceptor'
     mover_cls_name='LinearPlayerTargetingMover'
@@ -17,39 +27,50 @@
     <mover_param name='vertical_div' value='0.3' type='float' />
     <group name='enemies' />
   </spawn>
-  <spawn time='2500' x='300' y='0' object_cls_name='EnemyShip'
-    mover_cls_name='LinearMover'
-    bonus_cls_name='ShieldUpgradeBonus'>
+  <spawn time='2500' x='300' y='0' object_cls_name='SmallEnemyShip'
+    mover_cls_name='LinearMover'>
     <object_param name='zxc' value='zxc' />
-    <mover_param name='dir' value='10' type='int' />
+    <mover_param name='dir' value='15' type='int' />
     <group name='enemies' />
   </spawn>
-  <spawn time='1500' x='250' y='0' object_cls_name='EnemyShip'
+  <spawn time='1500' x='250' y='0' object_cls_name='MediumEnemyShip'
     mover_cls_name='ZigZagMover'>
     <object_param name='zxc' value='zxc' />
-    <mover_param name='radius' value='30' type='int' />
+    <mover_param name='radius' value='60' type='int' />
     <group name='enemies' />
   </spawn>
 
-  <spawn time='0' x='200' y='200' object_cls_name='MidgetBeamShip'
+  <spawn time='0' x='200' y='200' object_cls_name='BeamShip'
     mover_cls_name='CircularMover'>
     <mover_param name='radius' value='80' type='int' />
     <group name='enemies' />
   </spawn>
 
-  <spawn time='0' x='220' y='200' object_cls_name='MidgetBeamShip'
+  <spawn time='0' x='220' y='200' object_cls_name='BeamShip'
     mover_cls_name='CircularMover'>
     <mover_param name='radius' value='80' type='int' />
     <group name='enemies' />
   </spawn>
 
-  <spawn time='0' x='240' y='200' object_cls_name='MidgetBeamShip'
+  <spawn time='0' x='240' y='200' object_cls_name='BeamShip'
     mover_cls_name='CircularMover'>
     <mover_param name='radius' value='80' type='int' />
     <group name='enemies' />
   </spawn>
 
   <spawn time='0' x='260' y='200' object_cls_name='MidgetBeamShip'
+    mover_cls_name='CircularMover'>
+    <mover_param name='radius' value='80' type='int' />
+    <group name='enemies' />
+  </spawn>
+
+  <spawn time='0' x='200' y='200' object_cls_name='BeamShip'
+    mover_cls_name='CircularMover'>
+    <mover_param name='radius' value='80' type='int' />
+    <group name='enemies' />
+  </spawn>
+
+  <spawn time='0' x='220' y='200' object_cls_name='MidgetBeamShip'
     mover_cls_name='CircularMover'>
     <mover_param name='radius' value='80' type='int' />
     <group name='enemies' />
