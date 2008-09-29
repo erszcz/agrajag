@@ -860,6 +860,14 @@ class EnemyShip(Ship):
     self.shoot()
 
 
+class SmallEnemyShip(EnemyShip):
+  pass
+
+
+class MediumEnemyShip(EnemyShip):
+  pass
+
+
 class EnemyInterceptor(EnemyShip):
   """
   """

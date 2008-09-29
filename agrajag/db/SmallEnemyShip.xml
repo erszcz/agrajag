@@ -1,0 +1,13 @@
+<content>
+  <gfx>
+    <resource name='ship' file='small_enemy.png' state_w='21' state_h='21'>
+      <state name='def'  x_off='0'  y_off='0' />
+    </resource>
+  </gfx>
+  <properties>
+    <prop name='explosion_cls_name' value='SmallExplosion' />
+    <prop name='weapons_cls_names' value='MiniBlaster' type='tuple' />
+    <prop name='durability' value='10' type='int' />
+    <prop name='max_speed' value='140' type='int' />
+  </properties>
+</content>
