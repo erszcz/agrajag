@@ -325,7 +325,7 @@ class AGLevel(object):
                 params = spawn['object_params']
 
                 dir = params['dir']
-                g_coll = groupmanager.get(params['collision_group'])
+                g_coll = self.grpm.get(params['collision_group'])
                 object = object_cls(pos, dir, g_coll)
 
               elif spawn['object_base_cls_name'] == 'Bonus':
