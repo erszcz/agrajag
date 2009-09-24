@@ -329,22 +329,6 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
     return math.fabs(self.center[0] - peer.center[0]) + \
         math.fabs(self.center[1] - peer.center[1])
 
-  @staticmethod
-  def _closest_compare_dists(a, b):
-    """
-    For dictionaries C{a} and {b} return -1, 0, 1 depending on 
-    values for C{dict} keys.
-
-    This method is used by C{AGSprite.closest(peers)}.
-    """
-
-    if a['dist'] < b['dist']:
-      return -1
-    elif a['dist'] == b['dist']:
-      return 0
-    else:
-      return 1
-
   def closest(self, peers):
     """
     Return object selected from C{peers} closest to C{self}. Return 
@@ -357,15 +341,10 @@ class AGSprite(AGObject, pygame.sprite.Sprite):
     if len(peers) == 0:
       return None
 
-    dists = []
+    closest = peers[0]
     for p in peers:
-      d = { 'dist' : self.distance(p),
-            'index': peers.index(p) }
-
-      dists.append(d)
-
-    dists.sort(cmp = self._closest_compare_dists)
-    return peers[dists[0]['index']]
+      closest = p if self.distance(p) < self.distance(closest) else closest
+    return closest
 
 
 class Destructible(AGSprite):
@@ -652,7 +631,7 @@ class PlayerShip(Ship):
     self.weapons[self._current_weapon].weapon_state_updated.connect(self.weapon_updated)
 
     # connections
-    h = hud.Hud.singleton(app.screen_size)
+    h = hud.Hud()
     self.shield_updated.connect(h.update_shield)
     self.armour_updated.connect(h.update_armour)
     self.weapon_updated.connect(h.update_weapon)

@@ -202,4 +202,3 @@ class AGRect(pygame.Rect):
       setattr(self, align, pos)
     else:
       raise ValueError("Invalid align value")
-
