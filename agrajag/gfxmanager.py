@@ -34,4 +34,3 @@ class GfxManager:
     '''Returns gfx for a specific class or for all classes if no classname is given'''
 
     return GfxManager.content[class_name] if class_name else GfxManager.content
-    
