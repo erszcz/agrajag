@@ -4,7 +4,8 @@
 import sys
 import pygame
 
-import debug
+import logging
+log = logging.getLogger('EventManager')
 
 class EventManager(object):
   def __init__(self):
@@ -23,13 +24,13 @@ class EventManager(object):
     try:
       self.event_handlers[event_type].remove(handler)
       handler_count = len(self.event_handlers[event_type])
-      debug.info("unregistered handler %s for event type %s" \
+      log.debug("unregistered handler %s for event type %s" \
             % (handler, pygame.event.event_name(event_type)))
       if handler_count == 0:
-        debug.info("event %s blocked" % pygame.event.event_name(event_type))
+        log.debug("event %s blocked" % pygame.event.event_name(event_type))
         pygame.event.set_blocked(event_type)
     except ValueError, e:
-      debug.info("Can't unregister %s for event type %s - not registered" \
+      log.debug("Can't unregister %s for event type %s - not registered" \
             % (str(handler), str(event_type)))
 
   def process(self):
