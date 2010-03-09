@@ -34,9 +34,6 @@ import pygame
 from pygame.color import Color
 import random
 
-import debug
-debug.verbosity_level = debug.INFO
-
 import singleton
 
 import clock
@@ -52,6 +49,10 @@ _here = os.path.dirname(__file__)
 _gfx  = os.path.join(_here, './gfx')
 _db   = os.path.join(_here, './db')
 _stg  = os.path.join(_here, './stages')
+
+import logging
+LOGFILE = os.path.join(_here,'agrajag.log')
+logging.basicConfig(filename=LOGFILE, level=logging.DEBUG)
 
 # abstract class
 class AGStage(object):
@@ -650,10 +651,11 @@ class AGLevel(object):
 
 
 if __name__ == '__main__':
+  log = logging.getLogger('__main__')
   agrajag = AGApplication.singleton()
   if len(sys.argv) > 1:
-    debug.info('trying to play level: %s' % sys.argv[1])
+    log.debug('trying to play level: %s' % sys.argv[1])
     agrajag.play_level(sys.argv[1])
   else:
-    debug.info('no commandline args given')
+    log.debug('no commandline args given')
     agrajag.main()
